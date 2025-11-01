@@ -11,8 +11,8 @@ SplashScreen.preventAutoHideAsync();
 // Configure Expo Router to use (tabs) as the initial route
 export const unstable_settings = {
   // 'anchor' tells Expo which route should be loaded first
-  // In this case, it will load the (tabs) group/folder
-  anchor: "(tabs)",
+  // In this case, it will load the (private)/(tabs) group/folder
+  anchor: "(private)/(tabs)",
 };
 
 function AppLayout() {
@@ -38,11 +38,11 @@ function AppLayout() {
   return (
     <Stack>
       <Stack.Protected guard={isAuthenticated}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen
           name="(private)/(tabs)"
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack.Protected>
 
       <Stack.Protected guard={!isAuthenticated}>
