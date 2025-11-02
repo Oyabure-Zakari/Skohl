@@ -1,24 +1,26 @@
 import COLORS from "@/constants/colors";
+import TEXTINPUTSTYLES from "@/constants/textInputStyles";
 import React from "react";
 import { TextInput } from "react-native";
 
 type InputFieldProps = {
+  value: string;
   placeholder: string;
+  onChangeText: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const InputField: React.FC<InputFieldProps> = ({ placeholder }) => {
+const InputField: React.FC<InputFieldProps> = ({
+  value,
+  placeholder,
+  onChangeText,
+}) => {
   return (
     <TextInput
+      value={value}
+      onChangeText={onChangeText}
       placeholder={placeholder}
       placeholderTextColor={COLORS.darkGrey}
-      style={{
-        color: COLORS.darkGrey,
-        fontFamily: "Segoe_UI_Bold",
-        backgroundColor: COLORS.lightGrey,
-        borderRadius: 10,
-        paddingHorizontal: 16,
-        marginBottom: 20,
-      }}
+      style={{ ...TEXTINPUTSTYLES }}
     />
   );
 };
