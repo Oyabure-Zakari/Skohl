@@ -79,5 +79,11 @@ export default function useReuseableStyles() {
       paddingHorizontal: 16,
       marginBottom: 20,
     },
+
+    keyboardAwareScrollViewStyles: {
+      flexGrow: 1, // allows scrolling when content grows
+      justifyContent: "center",
+      paddingBottom: 50,
+    },
   });
 }

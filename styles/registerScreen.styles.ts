@@ -1,15 +1,9 @@
-import COLORS from "@/constants/colors";
 import { StyleSheet, useWindowDimensions } from "react-native";
 
 export default function useRegisterScreenStyles() {
   const { width } = useWindowDimensions();
 
   return StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: COLORS.white,
-    },
-
     profile: {
       flexDirection: "row",
       alignSelf: "center",

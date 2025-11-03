@@ -11,8 +11,9 @@ import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 import { useRouter } from "expo-router";
 
+import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import React, { useState } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 export default function RegistartionScreen() {
   const router = useRouter();
@@ -25,52 +26,44 @@ export default function RegistartionScreen() {
   const registerStyles = useRegisterScreenStyles();
 
   return (
-    <View style={registerStyles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <RegisterImage />
+    <CustomKeyboard>
+      <RegisterImage />
 
-        <TitleText text={"Create Account"} />
+      <TitleText text={"Create Account"} />
 
-        <SubTitleText text={"Sign up to continue"} />
+      <SubTitleText text={"Sign up to continue"} />
 
-        <View style={registerStyles.profile}>
-          <DefaultAvatar />
-          <EditPicButton />
-        </View>
+      <View style={registerStyles.profile}>
+        <DefaultAvatar />
+        <EditPicButton />
+      </View>
 
-        <View style={reuableStyles.textInputContainer}>
-          <InputField
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Email"
-          />
+      <View style={reuableStyles.textInputContainer}>
+        <InputField value={email} onChangeText={setEmail} placeholder="Email" />
 
-          <InputField
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-          />
+        <InputField
+          value={password}
+          onChangeText={setPassword}
+          placeholder="Password"
+        />
 
-          <InputField
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            placeholder="Confirm Password"
-          />
-        </View>
+        <InputField
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          placeholder="Confirm Password"
+        />
+      </View>
 
-        <TouchableOpacity onPress={() => router.back()}>
-          <CustomButton text={"Sign Up"} />
+      <TouchableOpacity onPress={() => router.back()}>
+        <CustomButton text={"Sign Up"} />
+      </TouchableOpacity>
+
+      <View style={reuableStyles.footer}>
+        <FooterText1 text={"Already have an account?"} />
+        <TouchableOpacity onPress={() => router.push("/(public)/(auth)/Login")}>
+          <FooterText2 text={"Sign In"} />
         </TouchableOpacity>
-
-        <View style={reuableStyles.footer}>
-          <FooterText1 text={"Already have an account?"} />
-          <TouchableOpacity
-            onPress={() => router.push("/(public)/(auth)/Login")}
-          >
-            <FooterText2 text={"Sign In"} />
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </View>
+      </View>
+    </CustomKeyboard>
   );
 }

@@ -1,4 +1,5 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
+import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import InputField from "@/components/reuseableComponents/InputField";
 import SubTitleText from "@/components/reuseableComponents/SubTitleText";
 import TitleText from "@/components/reuseableComponents/TitleText";
@@ -8,7 +9,7 @@ import useReuseableStyles from "@/styles/reuable.styles";
 import { useRouter } from "expo-router";
 
 import React, { useState } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 export default function VerificationScreen() {
   const router = useRouter();
@@ -21,51 +22,49 @@ export default function VerificationScreen() {
   const [selectedUniversity, setSelectedUniversity] = useState("none");
 
   return (
-    <View style={reuableStyles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <VerifyImage />
+    <CustomKeyboard>
+      <VerifyImage />
 
-        <TitleText text={"Verify Account"} />
+      <TitleText text={"Verify Account"} />
 
-        <SubTitleText text={"Let's confirm you're a student"} />
+      <SubTitleText text={"Let's confirm you're a student"} />
 
-        <View style={reuableStyles.textInputContainer}>
-          <InputField
-            value={firstName}
-            onChangeText={setFirstName}
-            placeholder="First Name"
-          />
+      <View style={reuableStyles.textInputContainer}>
+        <InputField
+          value={firstName}
+          onChangeText={setFirstName}
+          placeholder="First Name"
+        />
 
-          <InputField
-            value={surname}
-            onChangeText={setSurname}
-            placeholder="Surname"
-          />
+        <InputField
+          value={surname}
+          onChangeText={setSurname}
+          placeholder="Surname"
+        />
 
-          <InputField
-            value={department}
-            onChangeText={setDepartment}
-            placeholder="Department"
-          />
+        <InputField
+          value={department}
+          onChangeText={setDepartment}
+          placeholder="Department"
+        />
 
-          <InputField
-            value={faculty}
-            onChangeText={setFaculty}
-            placeholder="Faculty"
-          />
+        <InputField
+          value={faculty}
+          onChangeText={setFaculty}
+          placeholder="Faculty"
+        />
 
-          <SelectUniPicker
-            selectedUniversity={selectedUniversity}
-            setSelectedUniversity={setSelectedUniversity}
-          />
-        </View>
+        <SelectUniPicker
+          selectedUniversity={selectedUniversity}
+          setSelectedUniversity={setSelectedUniversity}
+        />
+      </View>
 
-        <TouchableOpacity
-          onPress={() => router.push("/(public)/(auth)/Register")}
-        >
-          <CustomButton text={"Verify Me"} />
-        </TouchableOpacity>
-      </ScrollView>
-    </View>
+      <TouchableOpacity
+        onPress={() => router.push("/(public)/(auth)/Register")}
+      >
+        <CustomButton text={"Verify Me"} />
+      </TouchableOpacity>
+    </CustomKeyboard>
   );
 }

@@ -3,6 +3,7 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -57,7 +58,9 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <StatusBar style="auto" />
       <SafeScreen>
-        <AppLayout />
+        <KeyboardProvider>
+          <AppLayout />
+        </KeyboardProvider>
       </SafeScreen>
     </SafeAreaProvider>
   );
