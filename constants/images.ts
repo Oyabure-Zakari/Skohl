@@ -5,6 +5,7 @@ const IMAGES = {
   noRecord: require("../assets/images/noRecord.png"),
   register: require("../assets/images/register.png"),
   verify: require("../assets/images/verify.png"),
+  login: require("../assets/images/login.png"),
 };
 
 export default IMAGES;
