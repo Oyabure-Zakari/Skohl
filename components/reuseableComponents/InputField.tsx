@@ -1,5 +1,5 @@
 import COLORS from "@/constants/colors";
-import TEXTINPUTSTYLES from "@/constants/textInputStyles";
+import useReuseableStyles from "@/styles/reuable.styles";
 import React from "react";
 import { TextInput } from "react-native";
 
@@ -14,15 +14,15 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   onChangeText,
 }) => {
+  const reuableStyles = useReuseableStyles();
   return (
     <TextInput
       value={value}
       onChangeText={onChangeText}
       placeholder={placeholder}
       placeholderTextColor={COLORS.darkGrey}
-      style={{ ...TEXTINPUTSTYLES }}
+      style={reuableStyles.textInputStyles}
     />
   );
 };
-
 export default InputField;
