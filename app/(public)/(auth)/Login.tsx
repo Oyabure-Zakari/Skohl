@@ -1,16 +1,16 @@
+import LoginImage from "@/components/login/LoginImage";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FooterText1 from "@/components/reuseableComponents/FooterText1";
 import FooterText2 from "@/components/reuseableComponents/FooterText2";
 import InputField from "@/components/reuseableComponents/InputField";
 import SubTitleText from "@/components/reuseableComponents/SubTitleText";
 import TitleText from "@/components/reuseableComponents/TitleText";
-import IMAGES from "@/constants/images";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 import { useRouter } from "expo-router";
 
 import React, { useState } from "react";
-import { Image, ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -24,10 +24,7 @@ export default function LoginScreen() {
   return (
     <View style={registerStyles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Image
-          style={{ backgroundColor: "red", width: "100%", height: 200 }}
-          source={IMAGES.login}
-        />
+        <LoginImage />
 
         <TitleText text={"Login Account"} />
 
@@ -47,7 +44,7 @@ export default function LoginScreen() {
           />
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/(public)/(auth)")}>
           <CustomButton text={"Sign In"} />
         </TouchableOpacity>
 
