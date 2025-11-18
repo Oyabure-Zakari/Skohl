@@ -9,7 +9,7 @@ import useReuseableStyles from "@/styles/reuable.styles";
 import { useRouter } from "expo-router";
 
 import Constants from "expo-constants";
-import { WebView } from "react-native-webview";
+import { WebView, WebViewNavigation } from "react-native-webview";
 
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import COLORS from "@/constants/colors";
@@ -43,27 +43,50 @@ export default function VerificationScreen() {
   const [studentInfo, setStudentInfo] = useState<StudentInfoType>();
 
   const abuLoginPortalUrl = new URL("https://portal.abu.edu.ng/");
-  const abuStudentProfileUrl = "https://portal.abu.edu.ng/notification/profile";
-  const abuStudentDashboardUrl =
-    "https://portal.abu.edu.ng/notification/dashboard";
-
+  const abuStudentProfileUrl = new URL(
+    "https://portal.abu.edu.ng/notification/profile"
+  );
+  const abuStudentDashboardUrl = new URL(
+    "https://portal.abu.edu.ng/notification/dashboard"
+  );
   const webViewRef = useRef<WebView>(null);
 
-  const handleNavigationStateChange = (navState: any) => {
+  //this automatically navigates users to the profile page
+  const handleNavigationStateChange = (navState: WebViewNavigation) => {
     const { url } = navState;
 
     // Detect when the site tries to redirect to the dashboard after login
-    if (url.startsWith(abuStudentDashboardUrl)) {
+    if (url.startsWith(abuStudentDashboardUrl.href)) {
       // Force navigation to your desired profile page
       webViewRef.current?.injectJavaScript(`
         window.location.href = "${abuStudentProfileUrl}";
         true; // <- important: prevents React Native warning
       `);
-
-      // OR use postMessage + injected script (more reliable on some sites)
-      // webViewRef.current?.postMessage(JSON.stringify({ type: 'GO_TO_PROFILE' }));
     }
   };
+
+  const injectedJS =
+    // disable clickable elements
+    `
+    (function() {
+      // Disable all pointer events (most effective)
+      document.body.style.pointerEvents = 'none';
+      
+      // Optional: also remove any existing click handlers
+      document.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }, true);
+
+      // Optional: disable touch events too (extra safety)
+      document.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+      }, true);
+
+      true; // Required for RN WebView
+    })();
+  `;
 
   const handleVerification = () => {
     if (
@@ -135,15 +158,19 @@ export default function VerificationScreen() {
             style={styles.webview}
             source={{ uri: abuLoginPortalUrl.href, method: "GET" }}
             ref={webViewRef}
-            onNavigationStateChange={handleNavigationStateChange}
-            // Optional: improve performance & UX
+            // Enables isables JavaScript execution inside the WebView
             javaScriptEnabled={true}
+            // navigates users to profile page
+            onNavigationStateChange={handleNavigationStateChange}
+            injectedJavaScript={injectedJS}
+            // Enables localStorage and sessionStorage
             // domStorageEnabled={true}
+            // Optional: improve performance & UX
             startInLoadingState={true}
             scalesPageToFit={true}
             onLoadStart={() => setIsLoading(true)}
             onLoadEnd={() => setIsLoading(false)}
-            onError={() => setIsLoading(false)} // Stop spinner on error
+            onError={() => setIsLoading(false)}
           />
 
           {/* Full-screen loading overlay */}
