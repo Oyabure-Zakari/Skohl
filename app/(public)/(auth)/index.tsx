@@ -1,32 +1,34 @@
-import CustomButton from "@/components/reuseableComponents/CustomButton";
-import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
-import InputField from "@/components/reuseableComponents/InputField";
-import SubTitleText from "@/components/reuseableComponents/SubTitleText";
-import TitleText from "@/components/reuseableComponents/TitleText";
-import SelectUniPicker from "@/components/verification/SelectUniPicker";
-import VerifyImage from "@/components/verification/VerifyImage";
-import useReuseableStyles from "@/styles/reuable.styles";
-import { useRouter } from "expo-router";
-
-import Constants from "expo-constants";
-import { WebView, WebViewNavigation } from "react-native-webview";
-
-import FormErrorText from "@/components/reuseableComponents/FormErrorText";
-import COLORS from "@/constants/colors";
 import React, { useRef, useState } from "react";
+
 import {
   ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
+import { WebView } from "react-native-webview";
 
-type StudentInfoType = {
-  Firstname: string;
-  Surname: string;
-  Department: string;
-  Faculty: string;
-};
+import Constants from "expo-constants";
+import { useRouter } from "expo-router";
+
+import CustomButton from "@/components/reuseableComponents/CustomButton";
+import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
+import FormErrorText from "@/components/reuseableComponents/FormErrorText";
+import InputField from "@/components/reuseableComponents/InputField";
+import SubTitleText from "@/components/reuseableComponents/SubTitleText";
+import TitleText from "@/components/reuseableComponents/TitleText";
+import SelectUniPicker from "@/components/verification/SelectUniPicker";
+import VerifyImage from "@/components/verification/VerifyImage";
+
+import useReuseableStyles from "@/styles/reuable.styles";
+
+import COLORS from "@/constants/colors";
+
+import useWebViewRedirect from "@/hooks/webViewRedirect";
+
+import { abuLoginPortalUrl, abuStudentProfileUrl } from "@/urls/ABU";
+
+import injectedJS from "@/utils/webViewUtils/webViewInjectedJS";
 
 export default function VerificationScreen() {
   const [showWebView, setShowWebView] = useState(false);
@@ -39,54 +41,8 @@ export default function VerificationScreen() {
   const [surname, setSurname] = useState("");
   const [faculty, setFaculty] = useState("");
   const [selectedUniversity, setSelectedUniversity] = useState("none");
-  const [isStudentVerified, setIsStudentVerified] = useState(false);
-  const [studentInfo, setStudentInfo] = useState<StudentInfoType>();
 
-  const abuLoginPortalUrl = new URL("https://portal.abu.edu.ng/");
-  const abuStudentProfileUrl = new URL(
-    "https://portal.abu.edu.ng/notification/profile"
-  );
-  const abuStudentDashboardUrl = new URL(
-    "https://portal.abu.edu.ng/notification/dashboard"
-  );
   const webViewRef = useRef<WebView>(null);
-
-  //this automatically navigates users to the profile page
-  const handleNavigationStateChange = (navState: WebViewNavigation) => {
-    const { url } = navState;
-
-    // Detect when the site tries to redirect to the dashboard after login
-    if (url.startsWith(abuStudentDashboardUrl.href)) {
-      // Force navigation to your desired profile page
-      webViewRef.current?.injectJavaScript(`
-        window.location.href = "${abuStudentProfileUrl}";
-        true; // <- important: prevents React Native warning
-      `);
-    }
-  };
-
-  const injectedJS =
-    // disable clickable elements
-    `
-    (function() {
-      // Disable all pointer events (most effective)
-      document.body.style.pointerEvents = 'none';
-      
-      // Optional: also remove any existing click handlers
-      document.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }, true);
-
-      // Optional: disable touch events too (extra safety)
-      document.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-      }, true);
-
-      true; // Required for RN WebView
-    })();
-  `;
 
   const handleVerification = () => {
     if (
@@ -102,6 +58,13 @@ export default function VerificationScreen() {
     setShowWebView(true);
     setIsLoading(true); // Start loading immediately
   };
+
+  //custom hook that automatically navigates users to the profile page
+  const { handleNavigationStateChange } = useWebViewRedirect({
+    webViewRef,
+    fromUrl: abuLoginPortalUrl.href,
+    toUrl: abuStudentProfileUrl.href,
+  });
 
   return (
     <CustomKeyboard>
@@ -164,7 +127,7 @@ export default function VerificationScreen() {
             onNavigationStateChange={handleNavigationStateChange}
             injectedJavaScript={injectedJS}
             // Enables localStorage and sessionStorage
-            // domStorageEnabled={true}
+            domStorageEnabled={true}
             // Optional: improve performance & UX
             startInLoadingState={true}
             scalesPageToFit={true}
