@@ -33,6 +33,13 @@ export default function useReuseableStyles() {
       marginBottom: 10,
     },
 
+    errorText: {
+      color: COLORS.red,
+      fontFamily: "Segoe_UI_Bold",
+      fontSize: fontScale * 12,
+      paddingHorizontal: 20,
+    },
+
     textInputContainer: {
       justifyContent: "center",
       paddingHorizontal: 20,

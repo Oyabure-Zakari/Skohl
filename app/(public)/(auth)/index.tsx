@@ -11,8 +11,9 @@ import { useRouter } from "expo-router";
 import Constants from "expo-constants";
 import { WebView } from "react-native-webview";
 
+import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import COLORS from "@/constants/colors";
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -20,26 +21,64 @@ import {
   View,
 } from "react-native";
 
+type StudentInfoType = {
+  Firstname: string;
+  Surname: string;
+  Department: string;
+  Faculty: string;
+};
+
 export default function VerificationScreen() {
   const [showWebView, setShowWebView] = useState(false);
   const router = useRouter();
   const reuableStyles = useReuseableStyles();
   const [isloading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const [firstName, setFirstName] = useState("");
+  const [firstname, setFirstname] = useState("");
   const [surname, setSurname] = useState("");
-  const [department, setDepartment] = useState("");
   const [faculty, setFaculty] = useState("");
   const [selectedUniversity, setSelectedUniversity] = useState("none");
+  const [isStudentVerified, setIsStudentVerified] = useState(false);
+  const [studentInfo, setStudentInfo] = useState<StudentInfoType>();
 
-  useEffect(() => {
-    if (selectedUniversity === "ABU") {
-      setShowWebView(true);
-      setIsLoading(true); // Start loading immediately
+  const abuLoginPortalUrl = new URL("https://portal.abu.edu.ng/");
+  const abuStudentProfileUrl = "https://portal.abu.edu.ng/notification/profile";
+  const abuStudentDashboardUrl =
+    "https://portal.abu.edu.ng/notification/dashboard";
+
+  const webViewRef = useRef<WebView>(null);
+
+  const handleNavigationStateChange = (navState: any) => {
+    const { url } = navState;
+
+    // Detect when the site tries to redirect to the dashboard after login
+    if (url.startsWith(abuStudentDashboardUrl)) {
+      // Force navigation to your desired profile page
+      webViewRef.current?.injectJavaScript(`
+        window.location.href = "${abuStudentProfileUrl}";
+        true; // <- important: prevents React Native warning
+      `);
+
+      // OR use postMessage + injected script (more reliable on some sites)
+      // webViewRef.current?.postMessage(JSON.stringify({ type: 'GO_TO_PROFILE' }));
     }
-  }, [selectedUniversity]);
+  };
 
-  const abuPortalUrl = new URL("https://portal.abu.edu.ng/");
+  const handleVerification = () => {
+    if (
+      firstname === "" ||
+      surname === "" ||
+      faculty === "" ||
+      selectedUniversity === "none"
+    ) {
+      setError("All fields are required");
+      return;
+    }
+
+    setShowWebView(true);
+    setIsLoading(true); // Start loading immediately
+  };
 
   return (
     <CustomKeyboard>
@@ -51,23 +90,19 @@ export default function VerificationScreen() {
 
           <SubTitleText text={"Let's confirm you're a student"} />
 
+          {error && <FormErrorText error={error} />}
+
           <View style={reuableStyles.textInputContainer}>
             <InputField
-              value={firstName}
-              onChangeText={setFirstName}
-              placeholder="First Name"
+              value={firstname}
+              onChangeText={setFirstname}
+              placeholder="Firstname"
             />
 
             <InputField
               value={surname}
               onChangeText={setSurname}
               placeholder="Surname"
-            />
-
-            <InputField
-              value={department}
-              onChangeText={setDepartment}
-              placeholder="Department"
             />
 
             <InputField
@@ -82,10 +117,13 @@ export default function VerificationScreen() {
             />
           </View>
 
+          <TouchableOpacity onPress={handleVerification}>
+            <CustomButton text={"Verify Me"} />
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => router.push("/(public)/(auth)/Register")}
           >
-            <CustomButton text={"Verify Me"} />
+            <CustomButton text={"Go to register"} />
           </TouchableOpacity>
         </>
       )}
@@ -95,7 +133,14 @@ export default function VerificationScreen() {
         <View style={styles.webviewContainer}>
           <WebView
             style={styles.webview}
-            source={{ uri: abuPortalUrl.href, method: "GET" }}
+            source={{ uri: abuLoginPortalUrl.href, method: "GET" }}
+            ref={webViewRef}
+            onNavigationStateChange={handleNavigationStateChange}
+            // Optional: improve performance & UX
+            javaScriptEnabled={true}
+            // domStorageEnabled={true}
+            startInLoadingState={true}
+            scalesPageToFit={true}
             onLoadStart={() => setIsLoading(true)}
             onLoadEnd={() => setIsLoading(false)}
             onError={() => setIsLoading(false)} // Stop spinner on error
