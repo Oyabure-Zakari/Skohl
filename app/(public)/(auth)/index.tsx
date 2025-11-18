@@ -121,11 +121,11 @@ export default function VerificationScreen() {
             style={styles.webview}
             source={{ uri: abuLoginPortalUrl.href, method: "GET" }}
             ref={webViewRef}
+            injectedJavaScript={injectedJS}
             // Enables isables JavaScript execution inside the WebView
             javaScriptEnabled={true}
             // navigates users to profile page
             onNavigationStateChange={handleNavigationStateChange}
-            injectedJavaScript={injectedJS}
             // Enables localStorage and sessionStorage
             domStorageEnabled={true}
             // Optional: improve performance & UX
