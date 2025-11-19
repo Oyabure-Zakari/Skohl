@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 
 import {
   ActivityIndicator,
+  Alert,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -134,6 +135,13 @@ export default function VerificationScreen() {
             onLoadStart={() => setIsLoading(true)}
             onLoadEnd={() => setIsLoading(false)}
             onError={() => setIsLoading(false)}
+            onMessage={(e) => {
+              const msg = JSON.parse(e.nativeEvent.data);
+              if (msg.type === "FORM_DATA") {
+                console.log(msg.payload);
+                Alert.alert("Done", JSON.stringify(msg.payload, null, 2));
+              }
+            }}
           />
 
           {/* Full-screen loading overlay */}
