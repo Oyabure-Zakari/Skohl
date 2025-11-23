@@ -122,6 +122,7 @@ export default function VerificationScreen() {
             style={styles.webview}
             source={{ uri: abuLoginPortalUrl.href, method: "GET" }}
             ref={webViewRef}
+            // Responsible for injecting Javascript in the browser
             injectedJavaScript={injectedJS}
             // Enables isables JavaScript execution inside the WebView
             javaScriptEnabled={true}
@@ -135,6 +136,7 @@ export default function VerificationScreen() {
             onLoadStart={() => setIsLoading(true)}
             onLoadEnd={() => setIsLoading(false)}
             onError={() => setIsLoading(false)}
+            // Data received from webview
             onMessage={(e) => {
               const msg = JSON.parse(e.nativeEvent.data);
               if (msg.type === "FORM_DATA") {
