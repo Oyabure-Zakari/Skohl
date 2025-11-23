@@ -4,7 +4,7 @@ const COLORS = {
   darkBlue: "#050110",
   yellow: "#FFC60C",
   purple: "#541EDC",
-  green: "#2975A1",
+  green: "#29a187ff",
   white: "#FCFCFC",
   red: "#EE3629"
 };
