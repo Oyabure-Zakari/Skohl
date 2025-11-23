@@ -1,6 +1,6 @@
 import useReuseableStyles from "@/styles/reuable.styles";
 import React from "react";
-import { Text } from "react-native";
+import Animated, { FadeInLeft, FadeOutLeft } from "react-native-reanimated";
 
 type FormErrorTextProps = {
   error: string;
@@ -8,7 +8,15 @@ type FormErrorTextProps = {
 
 const FormErrorText: React.FC<FormErrorTextProps> = ({ error }) => {
   const reuableStyles = useReuseableStyles();
-  return <Text style={reuableStyles.errorText}>{error}</Text>;
+  return (
+    <Animated.Text
+      entering={FadeInLeft}
+      exiting={FadeOutLeft}
+      style={reuableStyles.errorText}
+    >
+      {error}
+    </Animated.Text>
+  );
 };
 
 export default FormErrorText;
