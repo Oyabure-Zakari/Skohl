@@ -1,19 +1,16 @@
 import disableUserInteraction from "./disableUserInteraction";
 import extractStudentInfo from "./extractStudentInfo";
 
-const injectedJS = 
-`
+const injectedJS = `
   (function() {
-    // Disable all user interactions in the website 
+    // Disable interactions only on protected pages (post-login)
     ${disableUserInteraction}
 
-    // Extract data from the website 
+    // Extract only on profile page
     ${extractStudentInfo}
 
-    // this is required by react-native-webview on iOS
-    true;
+    true; // Required for iOS
   })();
 `;
 
 export default injectedJS;
-

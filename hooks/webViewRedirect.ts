@@ -1,35 +1,35 @@
-// Custom hook that forces a redirect to `toUrl` when the WebView tries to navigate to `fromUrl`
+// Custom hook that forces a redirect to profile when the WebView navigates to dashboard (post-login)
 import { RefObject, useCallback } from "react";
 import { WebView, WebViewNavigation } from "react-native-webview";
 
 type UseWebViewRedirectProps = {
   webViewRef: RefObject<WebView | null>;
-  fromUrl: string; // e.g., dashboard URL (the one we want to intercept)
-  toUrl: string; // e.g., profile URL (where we want to force redirect)
+  dashboardUrl: string; // e.g., dashboard URL (post-login success point to intercept)
+  profileUrl: string; // e.g., profile URL (where we want to force redirect)
 };
 
 const useWebViewRedirect = ({
   webViewRef,
-  fromUrl,
-  toUrl,
+  dashboardUrl,
+  profileUrl,
 }: UseWebViewRedirectProps) => {
   const handleNavigationStateChange = useCallback(
     (navState: WebViewNavigation) => {
       const { url } = navState;
 
-      if (url.startsWith(fromUrl)) {
-        // Prevent the unwanted navigation and force redirect
+      if (url.startsWith(dashboardUrl)) {
+        // User has logged in successfully—prevent dashboard load and force profile
         webViewRef.current?.injectJavaScript(`
           (function() {
-            if (window.location.href !== "${toUrl}") {
-              window.location.replace("${toUrl}");
+            if (window.location.href !== "${profileUrl}") {
+              window.location.replace("${profileUrl}");
             }
             true;
           })();
         `);
       }
     },
-    [webViewRef, fromUrl, toUrl]
+    [webViewRef, dashboardUrl, profileUrl]
   );
 
   return { handleNavigationStateChange };

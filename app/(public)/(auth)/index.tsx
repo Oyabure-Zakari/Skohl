@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import {
   ActivityIndicator,
@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { WebView } from "react-native-webview";
+import { WebView, WebViewMessageEvent } from "react-native-webview";
 
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
@@ -26,7 +26,11 @@ import COLORS from "@/constants/colors";
 
 import useWebViewRedirect from "@/hooks/webViewRedirect";
 
-import { abuLoginPortalUrl, abuStudentProfileUrl } from "@/urls/ABU";
+import {
+  abuLoginPortalUrl,
+  abuStudentDashboardUrl,
+  abuStudentProfileUrl,
+} from "@/urls/ABU";
 
 import injectedJS from "@/utils/webViewUtils/webViewInjectedJS";
 
@@ -62,24 +66,27 @@ export default function VerificationScreen() {
   //custom hook that automatically navigates users to the profile page
   const { handleNavigationStateChange } = useWebViewRedirect({
     webViewRef,
-    fromUrl: abuLoginPortalUrl.href,
-    toUrl: abuStudentProfileUrl.href,
+    dashboardUrl: abuStudentDashboardUrl.href, // Intercept post-login
+    profileUrl: abuStudentProfileUrl.href,
   });
 
-  // Auto hides error message (i.e toast message)
-  useEffect(() => {
-    // Don't do anything if error is empty
-    if (!error) return;
-
-    const timer = setTimeout(() => {
-      setError("");
-    }, 2000);
-
-    // Cleanup: cancel timer if error changes or component unmounts
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [error]);
+  // Handle extracted data recieved from the website (i.e webview)
+  const handleWebViewMessage = (event: WebViewMessageEvent) => {
+    try {
+      const msg = JSON.parse(event.nativeEvent.data);
+      if (
+        msg.type === "FORM_DATA" &&
+        msg.payload &&
+        Object.keys(msg.payload).length > 0
+      ) {
+        console.log("Extracted student data:", msg.payload);
+        // TODO: Save data to state/store (e.g., update user profile)
+        setShowWebView(false);
+      }
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
 
   return (
     <CustomKeyboard>
@@ -136,27 +143,20 @@ export default function VerificationScreen() {
             style={styles.webview}
             source={{ uri: abuLoginPortalUrl.href, method: "GET" }}
             ref={webViewRef}
-            // Responsible for injecting Javascript in the browser
-            injectedJavaScript={injectedJS}
             // Enables isables JavaScript execution inside the WebView
             javaScriptEnabled={true}
+            // Responsible for injecting Javascript in the browser
+            injectedJavaScript={injectedJS}
             // navigates users to profile page
             onNavigationStateChange={handleNavigationStateChange}
-            // Enables localStorage and sessionStorage
-            domStorageEnabled={true}
-            // Optional: improve performance & UX
+            // Improve performance & UX
             startInLoadingState={true}
             scalesPageToFit={true}
             onLoadStart={() => setIsLoading(true)}
             onLoadEnd={() => setIsLoading(false)}
             onError={() => setIsLoading(false)}
             // Data received from webview
-            onMessage={(e) => {
-              const msg = JSON.parse(e.nativeEvent.data);
-              if (msg.type === "FORM_DATA") {
-                console.log(msg.payload);
-              }
-            }}
+            onMessage={handleWebViewMessage}
           />
 
           {/* Full-screen loading overlay */}
