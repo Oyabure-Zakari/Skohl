@@ -1,8 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   ActivityIndicator,
-  Alert,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -66,6 +65,21 @@ export default function VerificationScreen() {
     fromUrl: abuLoginPortalUrl.href,
     toUrl: abuStudentProfileUrl.href,
   });
+
+  // Auto hides error message (i.e toast message)
+  useEffect(() => {
+    // Don't do anything if error is empty
+    if (!error) return;
+
+    const timer = setTimeout(() => {
+      setError("");
+    }, 2000);
+
+    // Cleanup: cancel timer if error changes or component unmounts
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [error]);
 
   return (
     <CustomKeyboard>
@@ -141,7 +155,6 @@ export default function VerificationScreen() {
               const msg = JSON.parse(e.nativeEvent.data);
               if (msg.type === "FORM_DATA") {
                 console.log(msg.payload);
-                Alert.alert("Done", JSON.stringify(msg.payload, null, 2));
               }
             }}
           />
