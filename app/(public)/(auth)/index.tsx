@@ -1,28 +1,22 @@
 import React, { useRef, useState } from "react";
 
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { WebView, WebViewMessageEvent } from "react-native-webview";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { WebView } from "react-native-webview";
 
 import Constants from "expo-constants";
-import { useRouter } from "expo-router";
 
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import InputField from "@/components/reuseableComponents/InputField";
+import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import SubTitleText from "@/components/reuseableComponents/SubTitleText";
 import TitleText from "@/components/reuseableComponents/TitleText";
+import VerificationLogic from "@/components/reuseableComponents/VerificationLogic";
 import SelectUniPicker from "@/components/verification/SelectUniPicker";
 import VerifyImage from "@/components/verification/VerifyImage";
 
 import useReuseableStyles from "@/styles/reuable.styles";
-
-import COLORS from "@/constants/colors";
 
 import useWebViewRedirect from "@/hooks/webViewRedirect";
 
@@ -32,24 +26,16 @@ import {
   abuStudentProfileUrl,
 } from "@/urls/ABU";
 
-import VerificationStatusComponent from "@/components/reuseableComponents/VerificationStatusComponent";
-import { captilizeWord } from "@/utils/captilizeWord";
+import useWebViewHandleMessage from "@/hooks/webViewHandleMessage";
+import openWebView from "@/utils/webViewUtils/openWebView";
 import injectedJS from "@/utils/webViewUtils/webViewInjectedJS";
-
-type ExtractedStudentDataType = {
-  firstname: string;
-  surname: string;
-  faculty: string;
-  gender: string;
-  religion: string;
-};
 
 export default function VerificationScreen() {
   const [showWebView, setShowWebView] = useState(false);
-  const router = useRouter();
-  const reuableStyles = useReuseableStyles();
   const [isloading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const reuableStyles = useReuseableStyles();
 
   const [firstname, setFirstname] = useState("");
   const [surname, setSurname] = useState("");
@@ -60,21 +46,6 @@ export default function VerificationScreen() {
 
   const webViewRef = useRef<WebView>(null);
 
-  const handleVerification = () => {
-    if (
-      firstname === "" ||
-      surname === "" ||
-      faculty === "" ||
-      selectedUniversity === "none"
-    ) {
-      setError("All fields are required");
-      return;
-    } else setError("");
-
-    setShowWebView(true);
-    setIsLoading(true); // Start loading immediately
-  };
-
   //custom hook that automatically navigates users to the profile page
   const { handleNavigationStateChange } = useWebViewRedirect({
     webViewRef,
@@ -83,68 +54,29 @@ export default function VerificationScreen() {
   });
 
   // Handle extracted data recieved from the website (i.e webview)
-  const handleWebViewMessage = (event: WebViewMessageEvent) => {
-    try {
-      const msg = JSON.parse(event.nativeEvent.data);
-      if (
-        msg.type === "FORM_DATA" &&
-        msg.payload &&
-        Object.keys(msg.payload).length > 0
-      ) {
-        setShowWebView(false);
+  const { studentProfile, handleWebViewMessage } = useWebViewHandleMessage({
+    firstname,
+    surname,
+    faculty,
+    setError,
+    setShowWebView,
+    setVerificationStatus,
+  });
 
-        // Save data
-        const extractedStudentData = {
-          firstname: captilizeWord(msg.payload.firstname),
-          surname: captilizeWord(msg.payload.surname),
-          faculty: captilizeWord(msg.payload.faculty),
-        };
-
-        const isFirstname =
-          firstname.trim().toLowerCase() ===
-          extractedStudentData.firstname.trim().toLowerCase();
-        const isSurname =
-          surname.trim().toLowerCase() ===
-          extractedStudentData.surname.trim().toLowerCase();
-        const isFaculty =
-          faculty.trim().toLowerCase() ===
-          extractedStudentData.faculty.trim().toLowerCase();
-
-        if (isFirstname && isSurname && isFaculty) {
-          setVerificationStatus("Successful");
-        } else {
-          setVerificationStatus("Failed");
-        }
-      }
-    } catch (error: any) {
-      setError(error.message);
-    }
-  };
-
-  function closeOverlay() {
+  function closeVerificationComponent() {
     setVerificationStatus("Pending");
   }
 
+  console.log("Student Profile: ", studentProfile);
+
   return (
     <>
-      {VerificationStatus !== "Pending" &&
-        (VerificationStatus === "Successful" ? (
-          <VerificationStatusComponent
-            message={
-              "Verification Successful\nyour details matched with\nthe university's portal!"
-            }
-            isSuccessful={true}
-            closeOverlay={closeOverlay}
-          />
-        ) : (
-          <VerificationStatusComponent
-            message={
-              "Verification Failed\nyour details didn't match with\nthe university's portal!"
-            }
-            isSuccessful={false}
-            closeOverlay={closeOverlay}
-          />
-        ))}
+      {VerificationStatus !== "Pending" && (
+        <VerificationLogic
+          VerificationStatus={VerificationStatus}
+          closeVerificationComponent={closeVerificationComponent}
+        />
+      )}
 
       <CustomKeyboard>
         {!showWebView && (
@@ -182,18 +114,26 @@ export default function VerificationScreen() {
               />
             </View>
 
-            <TouchableOpacity onPress={handleVerification}>
-              <CustomButton text={"Verify Me"} />
-            </TouchableOpacity>
+            {/* Button that open webview after form has been validated*/}
             <TouchableOpacity
-              onPress={() => router.push("/(public)/(auth)/Register")}
+              onPress={() =>
+                openWebView(
+                  firstname,
+                  surname,
+                  faculty,
+                  selectedUniversity,
+                  setError,
+                  setShowWebView,
+                  setIsLoading
+                )
+              }
             >
-              <CustomButton text={"Go to register"} />
+              <CustomButton text={"Verify Me"} />
             </TouchableOpacity>
           </>
         )}
 
-        {/* === WEBVIEW + LOADING INDICATOR === */}
+        {/* Webview and loading indicator */}
         {showWebView && (
           <View style={styles.webviewContainer}>
             <WebView
@@ -217,11 +157,7 @@ export default function VerificationScreen() {
             />
 
             {/* Full-screen loading overlay */}
-            {isloading && (
-              <View style={styles.loadingOverlay}>
-                <ActivityIndicator size="large" color={COLORS.darkBlue} />
-              </View>
-            )}
+            {isloading && <OverlayLoadingIndicator />}
           </View>
         )}
       </CustomKeyboard>
@@ -236,12 +172,5 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
-  },
-  loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000,
   },
 });
