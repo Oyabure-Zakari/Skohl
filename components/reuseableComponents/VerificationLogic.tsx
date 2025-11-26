@@ -3,12 +3,12 @@ import VerificationStatusComponent from "./VerificationStatusComponent";
 
 type VerificationLogicType = {
   VerificationStatus: string;
-  closeOverlay: () => void;
+  closeVerificationComponent: () => void;
 };
 
 const VerificationLogic: React.FC<VerificationLogicType> = ({
   VerificationStatus,
-  closeOverlay,
+  closeVerificationComponent,
 }) => {
   return (
     <>
@@ -18,7 +18,7 @@ const VerificationLogic: React.FC<VerificationLogicType> = ({
             "Verification Successful\nyour details matched with\nthe university's portal!"
           }
           isSuccessful={true}
-          closeOverlay={closeOverlay}
+          closeVerificationComponent={closeVerificationComponent}
         />
       ) : (
         <VerificationStatusComponent
@@ -26,7 +26,7 @@ const VerificationLogic: React.FC<VerificationLogicType> = ({
             "Verification Failed\nyour details didn't match with\nthe university's portal!"
           }
           isSuccessful={false}
-          closeOverlay={closeOverlay}
+          closeVerificationComponent={closeVerificationComponent}
         />
       )}
     </>

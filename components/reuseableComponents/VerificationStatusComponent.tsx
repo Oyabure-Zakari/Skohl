@@ -16,14 +16,14 @@ const { width } = Dimensions.get("window");
 type VerificationStatusComponentType = {
   message: string;
   isSuccessful: boolean;
-  closeOverlay?: () => void;
+  closeVerificationComponent?: () => void;
 };
 
 const color = "rgba(0, 0, 0, 0.6)";
 
 const VerificationStatusComponent: React.FC<
   VerificationStatusComponentType
-> = ({ message, isSuccessful, closeOverlay }) => {
+> = ({ message, isSuccessful, closeVerificationComponent }) => {
   return (
     <>
       <StatusBar style="light" backgroundColor={color} />
@@ -53,12 +53,15 @@ const VerificationStatusComponent: React.FC<
           {isSuccessful ? (
             <TouchableOpacity
               style={[styles.button, { backgroundColor: COLORS.green }]}
-              onPress={closeOverlay}
+              onPress={closeVerificationComponent}
             >
               <Text style={[styles.buttonText]}>Continue</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.button} onPress={closeOverlay}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={closeVerificationComponent}
+            >
               <Text style={styles.buttonText}>Retry</Text>
             </TouchableOpacity>
           )}
