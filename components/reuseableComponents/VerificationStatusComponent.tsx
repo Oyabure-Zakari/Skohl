@@ -1,5 +1,6 @@
 import COLORS from "@/constants/colors";
 import LOTTIES from "@/constants/lottie";
+import { StatusBar } from "expo-status-bar";
 import LottieView from "lottie-react-native";
 import React from "react";
 import {
@@ -18,58 +19,63 @@ type VerificationStatusComponentType = {
   closeOverlay?: () => void;
 };
 
+const color = "rgba(0, 0, 0, 0.6)";
+
 const VerificationStatusComponent: React.FC<
   VerificationStatusComponentType
 > = ({ message, isSuccessful, closeOverlay }) => {
   return (
-    <View style={styles.overlay}>
-      <View style={styles.container}>
-        {isSuccessful ? (
-          <LottieView
-            autoPlay
-            style={{
-              width: 100,
-              height: 100,
-            }}
-            source={LOTTIES.verified}
-          />
-        ) : (
-          <LottieView
-            autoPlay
-            speed={0.7}
-            style={{
-              width: 100,
-              height: 100,
-            }}
-            source={LOTTIES.error}
-          />
-        )}
-        <Text style={styles.text}>{message}</Text>
-        {isSuccessful ? (
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: COLORS.green }]}
-            onPress={closeOverlay}
-          >
-            <Text style={[styles.buttonText]}>Continue</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.button} onPress={closeOverlay}>
-            <Text style={styles.buttonText}>Retry</Text>
-          </TouchableOpacity>
-        )}
+    <>
+      <StatusBar style="light" backgroundColor={color} />
+      <View style={[styles.overlay, { backgroundColor: color }]}>
+        <View style={styles.container}>
+          {isSuccessful ? (
+            <LottieView
+              autoPlay
+              style={{
+                width: 100,
+                height: 100,
+              }}
+              source={LOTTIES.verified}
+            />
+          ) : (
+            <LottieView
+              autoPlay
+              speed={0.7}
+              style={{
+                width: 100,
+                height: 100,
+              }}
+              source={LOTTIES.error}
+            />
+          )}
+          <Text style={styles.text}>{message}</Text>
+          {isSuccessful ? (
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: COLORS.green }]}
+              onPress={closeOverlay}
+            >
+              <Text style={[styles.buttonText]}>Continue</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.button} onPress={closeOverlay}>
+              <Text style={styles.buttonText}>Retry</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1000,
   },
+
   container: {
     width: width * 0.8,
     padding: 20,
