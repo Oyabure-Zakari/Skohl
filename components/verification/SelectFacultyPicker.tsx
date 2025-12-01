@@ -1,11 +1,8 @@
 import COLORS from "@/constants/colors";
+import SelectFacultyPickerProps from "@/types/SelectFacultyPickerProps";
 import { Picker } from "@react-native-picker/picker";
 import React from "react";
 
-type SelectFacultyPickerProps = {
-  selectedFaculty: string;
-  setSelectedFaculty: React.Dispatch<React.SetStateAction<string>>;
-};
 const SelectFacultyPicker: React.FC<SelectFacultyPickerProps> = ({
   selectedFaculty,
   setSelectedFaculty,

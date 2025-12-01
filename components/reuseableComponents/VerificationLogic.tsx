@@ -1,10 +1,6 @@
+import VerificationLogicType from "@/types/VerificationLogicType";
 import React from "react";
 import VerificationStatusComponent from "./VerificationStatusComponent";
-
-type VerificationLogicType = {
-  VerificationStatus: string;
-  closeVerificationComponent: () => void;
-};
 
 const VerificationLogic: React.FC<VerificationLogicType> = ({
   VerificationStatus,

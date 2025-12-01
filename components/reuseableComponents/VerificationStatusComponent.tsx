@@ -1,5 +1,6 @@
 import COLORS from "@/constants/colors";
 import LOTTIES from "@/constants/lottie";
+import VerificationStatusComponentType from "@/types/VerificationStatusComponentType ";
 import { StatusBar } from "expo-status-bar";
 import LottieView from "lottie-react-native";
 import React from "react";
@@ -12,12 +13,6 @@ import {
 } from "react-native";
 
 const { width } = Dimensions.get("window");
-
-type VerificationStatusComponentType = {
-  message: string;
-  isSuccessful: boolean;
-  closeVerificationComponent?: () => void;
-};
 
 const color = "rgba(0, 0, 0, 0.6)";
 

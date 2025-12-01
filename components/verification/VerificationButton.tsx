@@ -1,18 +1,10 @@
+import VerificationButtonProps from "@/types/VerificationButtonProps";
 import isFormValidated from "@/utils/validateForm";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import CustomButton from "../reuseableComponents/CustomButton";
 
-type VefVerificationButtonProps = {
-  firstname: string;
-  surname: string;
-  selectedFaculty: string;
-  setError: (value: string) => void;
-  setIsLoading: (value: boolean) => void;
-  setIsWebViewOpen: (value: boolean) => void;
-};
-
-const VerificationButton: React.FC<VefVerificationButtonProps> = ({
+const VerificationButton: React.FC<VerificationButtonProps> = ({
   surname,
   firstname,
   selectedFaculty,
