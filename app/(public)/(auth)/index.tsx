@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react";
+import { View } from "react-native";
 
-import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { WebView } from "react-native-webview";
 
 import Constants from "expo-constants";
 
-import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import InputField from "@/components/reuseableComponents/InputField";
@@ -13,11 +12,11 @@ import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoa
 import SubTitleText from "@/components/reuseableComponents/SubTitleText";
 import TitleText from "@/components/reuseableComponents/TitleText";
 import VerificationLogic from "@/components/reuseableComponents/VerificationLogic";
-import SelectUniPicker from "@/components/verification/SelectUniPicker";
+import SelectFacultyPicker from "@/components/verification/SelectFacultyPicker";
+import VerificationButton from "@/components/verification/VerificationButton";
 import VerifyImage from "@/components/verification/VerifyImage";
 
-import useReuseableStyles from "@/styles/reuable.styles";
-
+import useWebViewHandleMessage from "@/hooks/webViewHandleMessage";
 import useWebViewRedirect from "@/hooks/webViewRedirect";
 
 import {
@@ -26,25 +25,23 @@ import {
   abuStudentProfileUrl,
 } from "@/urls/ABU";
 
-import useWebViewHandleMessage from "@/hooks/webViewHandleMessage";
-import openWebView from "@/utils/webViewUtils/openWebView";
+import useReuseableStyles from "@/styles/reuable.styles";
+
 import injectedJS from "@/utils/webViewUtils/webViewInjectedJS";
 
 export default function VerificationScreen() {
-  const [showWebView, setShowWebView] = useState(false);
-  const [isloading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const reuableStyles = useReuseableStyles();
-
-  const [firstname, setFirstname] = useState("");
   const [surname, setSurname] = useState("");
-  const [faculty, setFaculty] = useState("");
-  const [selectedUniversity, setSelectedUniversity] = useState("none");
-
-  const [VerificationStatus, setVerificationStatus] = useState("Pending");
+  const [firstname, setFirstname] = useState("");
+  const [selectedFaculty, setSelectedFaculty] = useState("none");
+  const [VerificationStatus, setVerificationStatus] = useState("");
+  const [isloading, setIsLoading] = useState(false);
+  const [isWebViewOpen, setIsWebViewOpen] = useState(false);
 
   const webViewRef = useRef<WebView>(null);
+
+  // Custom hook to apply resuseable style on component
+  const reuableStyles = useReuseableStyles();
 
   //custom hook that automatically navigates users to the profile page
   const { handleNavigationStateChange } = useWebViewRedirect({
@@ -54,24 +51,22 @@ export default function VerificationScreen() {
   });
 
   // Handle extracted data recieved from the website (i.e webview)
-  const { studentProfile, handleWebViewMessage } = useWebViewHandleMessage({
+  const { handleWebViewMessage } = useWebViewHandleMessage({
     firstname,
     surname,
-    faculty,
+    selectedFaculty,
     setError,
-    setShowWebView,
+    setIsWebViewOpen,
     setVerificationStatus,
   });
 
   function closeVerificationComponent() {
-    setVerificationStatus("Pending");
+    setVerificationStatus("");
   }
-
-  console.log("Student Profile: ", studentProfile);
 
   return (
     <>
-      {VerificationStatus !== "Pending" && (
+      {VerificationStatus !== "" && (
         <VerificationLogic
           VerificationStatus={VerificationStatus}
           closeVerificationComponent={closeVerificationComponent}
@@ -79,7 +74,7 @@ export default function VerificationScreen() {
       )}
 
       <CustomKeyboard>
-        {!showWebView && (
+        {!isWebViewOpen && (
           <>
             <VerifyImage />
 
@@ -102,57 +97,39 @@ export default function VerificationScreen() {
                 placeholder="Surname"
               />
 
-              <InputField
-                value={faculty}
-                onChangeText={setFaculty}
-                placeholder="Faculty"
-              />
-
-              <SelectUniPicker
-                selectedUniversity={selectedUniversity}
-                setSelectedUniversity={setSelectedUniversity}
+              <SelectFacultyPicker
+                selectedFaculty={selectedFaculty}
+                setSelectedFaculty={setSelectedFaculty}
               />
             </View>
 
-            {/* Button that open webview after form has been validated*/}
-            <TouchableOpacity
-              onPress={() =>
-                openWebView(
-                  firstname,
-                  surname,
-                  faculty,
-                  selectedUniversity,
-                  setError,
-                  setShowWebView,
-                  setIsLoading
-                )
-              }
-            >
-              <CustomButton text={"Verify Me"} />
-            </TouchableOpacity>
+            {/* Button that open webview once form has been validated*/}
+            <VerificationButton
+              firstname={firstname}
+              surname={surname}
+              selectedFaculty={selectedFaculty}
+              setError={setError}
+              setIsLoading={setIsLoading}
+              setIsWebViewOpen={setIsWebViewOpen}
+            />
           </>
         )}
 
         {/* Webview and loading indicator */}
-        {showWebView && (
-          <View style={styles.webviewContainer}>
+        {isWebViewOpen && (
+          <View style={{ flex: 1, marginTop: Constants.statusBarHeight }}>
             <WebView
-              style={styles.webview}
+              style={{ flex: 1 }}
               source={{ uri: abuLoginPortalUrl.href, method: "GET" }}
               ref={webViewRef}
-              // Enables isables JavaScript execution inside the WebView
               javaScriptEnabled={true}
-              // Responsible for injecting Javascript in the browser
               injectedJavaScript={injectedJS}
-              // navigates users to profile page
               onNavigationStateChange={handleNavigationStateChange}
-              // Improve performance & UX
               startInLoadingState={true}
               scalesPageToFit={true}
               onLoadStart={() => setIsLoading(true)}
               onLoadEnd={() => setIsLoading(false)}
               onError={() => setIsLoading(false)}
-              // Data received from webview
               onMessage={handleWebViewMessage}
             />
 
@@ -164,13 +141,3 @@ export default function VerificationScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  webviewContainer: {
-    flex: 1,
-    marginTop: Constants.statusBarHeight,
-  },
-  webview: {
-    flex: 1,
-  },
-});
