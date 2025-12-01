@@ -6,28 +6,26 @@ import { WebViewMessageEvent } from "react-native-webview";
 type UseWebViewHandleMessageProps = {
   firstname: string;
   surname: string;
-  faculty: string;
+  selectedFaculty: string;
   setError: (value: string) => void;
-  setShowWebView: (value: boolean) => void;
+  setIsWebViewOpen: (value: boolean) => void;
   setVerificationStatus: (value: string) => void;
 };
 
 type StudentProfileType = {
   profileFirstname: string;
   profileSurname: string;
-  profileFaculty: string;
   profileReligion: string;
   profileGender: string;
-  profileUniversity: string;
-  profileImage: string;
+  profileFaculty: string;
 }
 
 const useWebViewHandleMessage = ({
   firstname,
   surname,
-  faculty,
+  selectedFaculty,
   setError,
-  setShowWebView,
+  setIsWebViewOpen,
   setVerificationStatus,
 }: UseWebViewHandleMessageProps) => {
   // Holds the successfully verified student profile data (from webview)
@@ -45,7 +43,7 @@ const useWebViewHandleMessage = ({
           msg.payload &&
           Object.keys(msg.payload).length > 0
         ) {
-          setShowWebView(false);
+          setIsWebViewOpen(false);
 
           // Extract and format student data from the portal
           const {
@@ -57,7 +55,7 @@ const useWebViewHandleMessage = ({
           // Compare user-entered values with data scraped from student portal
           const isFirstname = doDetailsMatch(firstname, studentFirstname);
           const isSurname = doDetailsMatch(surname, studentSurname);
-          const isFaculty = doDetailsMatch(faculty, studentFaculty);
+          const isFaculty = doDetailsMatch(selectedFaculty, studentFaculty);
 
           // If all three core details match → verification successful
           if (isFirstname && isSurname && isFaculty) {
@@ -68,8 +66,6 @@ const useWebViewHandleMessage = ({
               profileFaculty: msg.payload.faculty,
               profileReligion: msg.payload.religion,
               profileGender: msg.payload.gender,
-              profileUniversity: "",
-              profileImage: ""
             }
             // Store verified profile
             setStudentProfile({...data})
@@ -83,7 +79,7 @@ const useWebViewHandleMessage = ({
       }
     },
     // Dependencies: re-create handler only if these values change
-    [firstname, surname, faculty, setError, setShowWebView, setVerificationStatus]
+    [firstname, surname,  selectedFaculty, setError, setIsWebViewOpen, setVerificationStatus]
   );
 
   return {studentProfile, handleWebViewMessage };

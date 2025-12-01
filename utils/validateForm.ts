@@ -1,15 +1,13 @@
 const isFormValidated = (
   firstname: string,
   surname: string,
-  faculty: string,
-  selectedUniversity: string,
+  selectedFaculty: string,
   setError: (error: string) => void
 ): boolean => {
   if (
     firstname === "" ||
     surname === "" ||
-    faculty === "" ||
-    selectedUniversity === "none"
+    selectedFaculty === "none"
   ) {
     setError("All fields are required");
     return false;
