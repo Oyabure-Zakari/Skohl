@@ -27,12 +27,10 @@ export default function RegistartionScreen() {
   const registerStyles = useRegisterScreenStyles();
 
   const studentInfo = useVerificationStore((state) => state.studentInfo);
-  const verificationToken = useVerificationStore(
-    (state) => state.verificationToken
-  );
+  const verificationToken = useVerificationStore((state) => state.verificationToken);
 
-  console.log("studentInfo", studentInfo);
-  console.log("verification token", verificationToken);
+  console.log("studentInfo: ", studentInfo);
+  console.log("verification token: ", verificationToken);
 
   // Redirect to verification screen if verification token is not present
   if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
@@ -53,11 +51,7 @@ export default function RegistartionScreen() {
       <View style={reuableStyles.textInputContainer}>
         <InputField value={email} onChangeText={setEmail} placeholder="Email" />
 
-        <InputField
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-        />
+        <InputField value={password} onChangeText={setPassword} placeholder="Password" />
 
         <InputField
           value={confirmPassword}

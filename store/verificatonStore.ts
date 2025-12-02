@@ -12,10 +12,11 @@ const useVerificationStore = create<VerificationStoreStore>()((set) => ({
     religion: "",
     gender: "",
   },
+
+  // Update the studentInfo and verificationToken state
   getVerificationToken: (value) => {
     const token = process.env.EXPO_PUBLIC_VERIFICATION_TOKEN;
     if (value) {
-      // Set student info
       set({
         studentInfo: {
           firstname: captilizeWord(value.firstname),
@@ -24,9 +25,10 @@ const useVerificationStore = create<VerificationStoreStore>()((set) => ({
           religion: captilizeWord(value.religion),
           gender: captilizeWord(value.gender),
         },
+        verificationToken: token,
       });
 
-      // Store token in AsyncStorage
+      // Store the token in AsyncStorage
       (async () => {
         try {
           await AsyncStorage.setItem("@verificationToken", token!);
@@ -37,7 +39,7 @@ const useVerificationStore = create<VerificationStoreStore>()((set) => ({
     }
   },
 
-  // Retrieve token from AsyncStorage
+  // Retrieve the token from AsyncStorage and update the verificationToken state
   checkVerificationToken: async () => {
     try {
       const storedToken = await AsyncStorage.getItem("@verificationToken");
@@ -48,10 +50,12 @@ const useVerificationStore = create<VerificationStoreStore>()((set) => ({
       console.log("Error retrieving token", error.message);
     }
   },
+
+  // Clear the token from AsyncStorage, and reset both verificationToken state and studentInfo
   clearVerificationToken: async () => {
     try {
       await AsyncStorage.removeItem("@verificationToken");
-      set({ verificationToken: "" });
+      set({verificationToken: ""});
     } catch (error: any) {
       console.log("Error clearing token", error.message);
     }
