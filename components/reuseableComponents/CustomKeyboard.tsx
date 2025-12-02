@@ -12,7 +12,7 @@ const CustomKeyboard: React.FC<CustomKeyboardProps> = ({ children }) => {
     <KeyboardAwareScrollView
       style={reuableStyles.container}
       contentContainerStyle={reuableStyles.keyboardAwareScrollViewStyles}
-      keyboardShouldPersistTaps="handled" //lets us tap buttons even when the keyboard is open></KeyboardAwareScrollView>;
+      keyboardShouldPersistTaps="handled" //lets us tap buttons even when the keyboard is open
     >
       {children}
     </KeyboardAwareScrollView>

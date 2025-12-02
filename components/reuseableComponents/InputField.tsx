@@ -1,20 +1,17 @@
 import COLORS from "@/constants/colors";
 import useReuseableStyles from "@/styles/reuable.styles";
+import InputFieldProps from "@/types/InputFieldProps ";
 import React from "react";
 import { TextInput } from "react-native";
-
-type InputFieldProps = {
-  value: string;
-  placeholder: string;
-  onChangeText: React.Dispatch<React.SetStateAction<string>>;
-};
 
 const InputField: React.FC<InputFieldProps> = ({
   value,
   placeholder,
   onChangeText,
 }) => {
+  // Custom hook to apply resuseable style on component
   const reuableStyles = useReuseableStyles();
+
   return (
     <TextInput
       value={value}
