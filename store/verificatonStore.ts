@@ -51,7 +51,7 @@ const useVerificationStore = create<VerificationStoreStore>()((set) => ({
     }
   },
 
-  // Clear the token from AsyncStorage, and reset both verificationToken state and studentInfo
+  // Clear the token from AsyncStorage and reset verification Token
   clearVerificationToken: async () => {
     try {
       await AsyncStorage.removeItem("@verificationToken");
