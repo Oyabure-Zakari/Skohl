@@ -12,6 +12,7 @@ const useVerificationStore = create<VerificationStoreStore>()((set) => ({
     gender: "",
   },
   getVerificationToken: (value) => {
+    const token = process.env.EXPO_PUBLIC_VERIFICATION_TOKEN;
     if (value) {
       set({
         studentInfo: {
@@ -21,7 +22,7 @@ const useVerificationStore = create<VerificationStoreStore>()((set) => ({
           religion: captilizeWord(value.religion),
           gender: captilizeWord(value.gender),
         },
-        verificationToken: "verified",
+        verificationToken: token,
       });
     }
   },
