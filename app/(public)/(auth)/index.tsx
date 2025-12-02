@@ -19,11 +19,7 @@ import VerifyImage from "@/components/verification/VerifyImage";
 import useWebViewHandleMessage from "@/hooks/webViewHandleMessage";
 import useWebViewRedirect from "@/hooks/webViewRedirect";
 
-import {
-  abuLoginPortalUrl,
-  abuStudentDashboardUrl,
-  abuStudentProfileUrl,
-} from "@/urls/ABU";
+import { abuLoginPortalUrl, abuStudentDashboardUrl, abuStudentProfileUrl } from "@/urls/ABU";
 
 import useReuseableStyles from "@/styles/reuable.styles";
 
@@ -93,17 +89,9 @@ export default function VerificationScreen() {
             {error && <FormErrorText error={error} />}
 
             <View style={reuableStyles.textInputContainer}>
-              <InputField
-                value={firstname}
-                onChangeText={setFirstname}
-                placeholder="Firstname"
-              />
+              <InputField value={firstname} onChangeText={setFirstname} placeholder="Firstname" />
 
-              <InputField
-                value={surname}
-                onChangeText={setSurname}
-                placeholder="Surname"
-              />
+              <InputField value={surname} onChangeText={setSurname} placeholder="Surname" />
 
               <SelectFacultyPicker
                 selectedFaculty={selectedFaculty}
