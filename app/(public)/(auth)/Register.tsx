@@ -34,6 +34,7 @@ export default function RegistartionScreen() {
   console.log("studentInfo", studentInfo);
   console.log("verification token", verificationToken);
 
+  // Redirect to verification screen if verification token is not present
   if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
 
   return (
