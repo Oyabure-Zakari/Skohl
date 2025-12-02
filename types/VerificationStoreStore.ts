@@ -4,8 +4,8 @@ type VerificationStoreStore = {
   verificationToken: string;
   studentInfo: StudentInfoType;
   getVerificationToken: (value: StudentInfoType) => void;
-  checkVerificationToken: () => void;
-  clearVerificationToken: () => void;
+  checkVerificationToken: () => Promise<void>;
+  clearVerificationToken: () => Promise<void>;
 };
 
 export default VerificationStoreStore;
