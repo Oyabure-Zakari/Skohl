@@ -9,9 +9,10 @@ import SubTitleText from "@/components/reuseableComponents/SubTitleText";
 import TitleText from "@/components/reuseableComponents/TitleText";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
+import useVerificationStore from "@/store/verificatonStore";
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
@@ -24,6 +25,16 @@ export default function RegistartionScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const registerStyles = useRegisterScreenStyles();
+
+  const studentInfo = useVerificationStore((state) => state.studentInfo);
+  const verificationToken = useVerificationStore(
+    (state) => state.verificationToken
+  );
+
+  console.log("studentInfo", studentInfo);
+  console.log("verification token", verificationToken);
+
+  if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
 
   return (
     <CustomKeyboard>
