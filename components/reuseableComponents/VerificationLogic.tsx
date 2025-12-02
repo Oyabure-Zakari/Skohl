@@ -5,6 +5,7 @@ import VerificationStatusComponent from "./VerificationStatusComponent";
 const VerificationLogic: React.FC<VerificationLogicType> = ({
   VerificationStatus,
   closeVerificationComponent,
+  goToRegistrationScreen,
 }) => {
   return (
     <>
@@ -14,7 +15,7 @@ const VerificationLogic: React.FC<VerificationLogicType> = ({
             "Verification Successful\nyour details matched with\nthe university's portal!"
           }
           isSuccessful={true}
-          closeVerificationComponent={closeVerificationComponent}
+          goToRegistrationScreen={goToRegistrationScreen}
         />
       ) : (
         <VerificationStatusComponent

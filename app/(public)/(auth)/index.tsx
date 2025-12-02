@@ -28,6 +28,7 @@ import {
 import useReuseableStyles from "@/styles/reuable.styles";
 
 import injectedJS from "@/utils/webViewUtils/webViewInjectedJS";
+import { useRouter } from "expo-router";
 
 export default function VerificationScreen() {
   const [error, setError] = useState("");
@@ -39,6 +40,8 @@ export default function VerificationScreen() {
   const [isWebViewOpen, setIsWebViewOpen] = useState(false);
 
   const webViewRef = useRef<WebView>(null);
+
+  const router = useRouter();
 
   // Custom hook to apply resuseable style on component
   const reuableStyles = useReuseableStyles();
@@ -64,12 +67,17 @@ export default function VerificationScreen() {
     setVerificationStatus("");
   }
 
+  function goToRegistrationScreen() {
+    router.replace("/(public)/(auth)/Register");
+  }
+
   return (
     <>
       {VerificationStatus !== "" && (
         <VerificationLogic
           VerificationStatus={VerificationStatus}
           closeVerificationComponent={closeVerificationComponent}
+          goToRegistrationScreen={goToRegistrationScreen}
         />
       )}
 

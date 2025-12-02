@@ -18,7 +18,12 @@ const color = "rgba(0, 0, 0, 0.6)";
 
 const VerificationStatusComponent: React.FC<
   VerificationStatusComponentType
-> = ({ message, isSuccessful, closeVerificationComponent }) => {
+> = ({
+  message,
+  isSuccessful,
+  closeVerificationComponent,
+  goToRegistrationScreen,
+}) => {
   return (
     <>
       <StatusBar style="light" backgroundColor={color} />
@@ -48,7 +53,7 @@ const VerificationStatusComponent: React.FC<
           {isSuccessful ? (
             <TouchableOpacity
               style={[styles.button, { backgroundColor: COLORS.green }]}
-              onPress={closeVerificationComponent}
+              onPress={goToRegistrationScreen}
             >
               <Text style={[styles.buttonText]}>Continue</Text>
             </TouchableOpacity>
