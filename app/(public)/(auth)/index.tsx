@@ -35,6 +35,8 @@ export default function VerificationScreen() {
   const [isloading, setIsLoading] = useState(false);
   const [isWebViewOpen, setIsWebViewOpen] = useState(false);
 
+  const firstnameInputRef = useRef("");
+  const surnameInputRef = useRef("");
   const webViewRef = useRef<WebView>(null);
 
   const router = useRouter();
@@ -67,6 +69,8 @@ export default function VerificationScreen() {
     router.replace("/(public)/(auth)/Register");
   }
 
+  console.log("Component Rendered");
+
   return (
     <>
       {VerificationStatus !== "" && (
@@ -89,9 +93,15 @@ export default function VerificationScreen() {
             {error && <FormErrorText error={error} />}
 
             <View style={reuableStyles.textInputContainer}>
-              <InputField value={firstname} onChangeText={setFirstname} placeholder="Firstname" />
+              <InputField
+                onChangeText={(text) => (firstnameInputRef.current = text)}
+                placeholder="Firstname"
+              />
 
-              <InputField value={surname} onChangeText={setSurname} placeholder="Surname" />
+              <InputField
+                onChangeText={(text) => (surnameInputRef.current = text)}
+                placeholder="Surname"
+              />
 
               <SelectFacultyPicker
                 selectedFaculty={selectedFaculty}
