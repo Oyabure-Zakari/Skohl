@@ -9,6 +9,7 @@ import { TextInput, TouchableOpacity, View } from "react-native";
 const InputField: React.FC<InputFieldProps> = ({
   iconType,
   placeholder,
+  autoCapitalize,
   secureTextEntry,
   onChangeText,
   togglePasswordVisibility,
@@ -47,6 +48,7 @@ const InputField: React.FC<InputFieldProps> = ({
       )}
 
       <TextInput
+        autoCapitalize={autoCapitalize}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={COLORS.darkGrey}

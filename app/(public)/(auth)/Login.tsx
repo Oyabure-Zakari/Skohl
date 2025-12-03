@@ -52,6 +52,7 @@ export default function LoginScreen() {
               onChangeText={(text) => (emailInputRef.current = text)}
               placeholder="Email"
               iconType={"person"}
+              autoCapitalize={"none"}
             />
 
             <InputField

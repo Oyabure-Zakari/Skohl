@@ -69,6 +69,7 @@ export default function RegistartionScreen() {
               onChangeText={(text) => (emailInputRef.current = text)}
               placeholder="Email"
               iconType={"person"}
+              autoCapitalize={"none"}
             />
 
             <InputField
