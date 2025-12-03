@@ -4,13 +4,14 @@ import InputFieldProps from "@/types/InputFieldProps ";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Octicons from "@expo/vector-icons/Octicons";
 import React from "react";
-import { TextInput, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 
 const InputField: React.FC<InputFieldProps> = ({
   iconType,
   placeholder,
   secureTextEntry,
   onChangeText,
+  togglePasswordVisibility,
 }) => {
   // Custom hook to apply resuseable style on component
   const reuableStyles = useReuseableStyles();
@@ -33,12 +34,16 @@ const InputField: React.FC<InputFieldProps> = ({
       )}
 
       {iconType === "padlock" && (
-        <MaterialIcons
-          name="lock-outline"
-          size={20}
-          color={COLORS.darkGrey}
+        <TouchableOpacity
+          onPress={togglePasswordVisibility}
           style={{ alignSelf: "center", paddingLeft: 10 }}
-        />
+        >
+          <MaterialIcons
+            name={secureTextEntry ? "lock-outline" : "lock-open"}
+            size={20}
+            color={COLORS.darkGrey}
+          />
+        </TouchableOpacity>
       )}
 
       <TextInput

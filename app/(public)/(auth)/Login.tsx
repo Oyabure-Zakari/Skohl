@@ -8,6 +8,7 @@ import InputField from "@/components/reuseableComponents/InputField";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import SubTitleText from "@/components/reuseableComponents/SubTitleText";
 import TitleText from "@/components/reuseableComponents/TitleText";
+import useTogglePasswordVisibility from "@/hooks/togglePasswordVisibility";
 import useVerificationStore from "@/store/verificatonStore";
 import useReuseableStyles from "@/styles/reuable.styles";
 import { Redirect, useRouter } from "expo-router";
@@ -25,6 +26,7 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
 
   const verificationToken = useVerificationStore((state) => state.verificationToken);
+  const { isPasswordHidden, togglePasswordVisibility } = useTogglePasswordVisibility();
 
   // Redirect to verification screen if verification token is not present
   if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
@@ -57,6 +59,7 @@ export default function LoginScreen() {
               placeholder="Password"
               secureTextEntry={true}
               iconType={"padlock"}
+              togglePasswordVisibility={togglePasswordVisibility}
             />
           </View>
 

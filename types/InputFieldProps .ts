@@ -3,6 +3,7 @@ type InputFieldProps = {
   placeholder: string;
   secureTextEntry?: boolean;
   onChangeText: (prevState: string) => string;
+  togglePasswordVisibility?: () => void;
 };
 
 export default InputFieldProps;

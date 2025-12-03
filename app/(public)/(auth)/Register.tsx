@@ -20,6 +20,7 @@ import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 
 import useExpoImagePicker from "@/hooks/expoImagePicker";
+import useTogglePasswordVisibility from "@/hooks/togglePasswordVisibility";
 
 export default function RegistartionScreen() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function RegistartionScreen() {
   const { image, pickImage } = useExpoImagePicker();
 
   const registerStyles = useRegisterScreenStyles();
+  const { isPasswordHidden, togglePasswordVisibility } = useTogglePasswordVisibility();
 
   const verificationToken = useVerificationStore((state) => state.verificationToken);
 
@@ -72,15 +74,17 @@ export default function RegistartionScreen() {
             <InputField
               onChangeText={(text) => (passwordInputRef.current = text)}
               placeholder="Password"
-              secureTextEntry={true}
+              secureTextEntry={isPasswordHidden}
               iconType={"padlock"}
+              togglePasswordVisibility={togglePasswordVisibility}
             />
 
             <InputField
               onChangeText={(text) => (confirmPasswordInputRef.current = text)}
               placeholder="Confirm Password"
-              secureTextEntry={true}
+              secureTextEntry={isPasswordHidden}
               iconType={"padlock"}
+              togglePasswordVisibility={togglePasswordVisibility}
             />
           </View>
 
