@@ -3,9 +3,19 @@ import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import React from "react";
 import { Image } from "react-native";
 
-const DefaultAvatar = () => {
+type DefaultAvatarProps = {
+  userImage: string;
+};
+
+const DefaultAvatar: React.FC<DefaultAvatarProps> = ({ userImage }) => {
   const registerStyles = useRegisterScreenStyles();
-  return <Image source={IMAGES.defaultAvatar} style={registerStyles.image} />;
+
+  return (
+    <Image
+      source={userImage ? { uri: userImage } : IMAGES.defaultAvatar}
+      style={registerStyles.image}
+    />
+  );
 };
 
 export default DefaultAvatar;

@@ -4,7 +4,7 @@ import InputFieldProps from "@/types/InputFieldProps ";
 import React from "react";
 import { TextInput } from "react-native";
 
-const InputField: React.FC<InputFieldProps> = ({ placeholder, onChangeText }) => {
+const InputField: React.FC<InputFieldProps> = ({ placeholder, secureTextEntry, onChangeText }) => {
   // Custom hook to apply resuseable style on component
   const reuableStyles = useReuseableStyles();
 
@@ -13,6 +13,7 @@ const InputField: React.FC<InputFieldProps> = ({ placeholder, onChangeText }) =>
       onChangeText={onChangeText}
       placeholder={placeholder}
       placeholderTextColor={COLORS.darkGrey}
+      secureTextEntry={secureTextEntry}
       style={reuableStyles.textInputStyles}
     />
   );

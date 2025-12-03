@@ -4,10 +4,14 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 
-const EditPicButton = () => {
+type EditPicButtonProps = {
+  pickImage: () => Promise<void>;
+};
+
+const EditPicButton: React.FC<EditPicButtonProps> = ({ pickImage }) => {
   const registerStyles = useRegisterScreenStyles();
   return (
-    <TouchableOpacity style={registerStyles.editButton}>
+    <TouchableOpacity onPress={pickImage} style={registerStyles.editButton}>
       <FontAwesome5 name="pen-square" size={25} color={COLORS.purple} />
     </TouchableOpacity>
   );

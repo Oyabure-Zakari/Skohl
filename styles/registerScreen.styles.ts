@@ -15,6 +15,7 @@ export default function useRegisterScreenStyles() {
       height: width * 0.2,
       resizeMode: "contain",
       marginBottom: 20,
+      borderRadius: 50,
       // backgroundColor: "red",
     },
 
