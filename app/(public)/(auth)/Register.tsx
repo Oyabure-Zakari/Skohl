@@ -17,6 +17,7 @@ import React, { useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
+import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import { auth } from "@/firebase/firebase.config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
@@ -25,6 +26,7 @@ export default function RegistartionScreen() {
   const reuableStyles = useReuseableStyles();
 
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const emailInputRef = useRef("");
   const passwordInputRef = useRef("");
@@ -51,8 +53,8 @@ export default function RegistartionScreen() {
       setError("Passwords do not match");
       return;
     }
-
     try {
+      setIsLoading(true);
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         emailInputRef.current,
@@ -60,6 +62,7 @@ export default function RegistartionScreen() {
       );
       console.log("User: ", JSON.stringify(userCredential, null, 2));
       // User registration successful then create user in firestore database
+      setError("");
     } catch (error: any) {
       switch (error.code) {
         case "auth/email-already-in-use":
@@ -80,48 +83,59 @@ export default function RegistartionScreen() {
         default:
           setError("An error occurred. Please try again later.");
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <CustomKeyboard>
-      <RegisterImage />
+    <>
+      {isLoading ? (
+        <OverlayLoadingIndicator />
+      ) : (
+        <CustomKeyboard>
+          <RegisterImage />
 
-      <TitleText text={"Create Account"} />
+          <TitleText text={"Create Account"} />
 
-      <SubTitleText text={"Sign up to continue"} />
+          <SubTitleText text={"Sign up to continue"} />
 
-      <View style={registerStyles.profile}>
-        <DefaultAvatar />
-        <EditPicButton />
-      </View>
+          <View style={registerStyles.profile}>
+            <DefaultAvatar />
+            <EditPicButton />
+          </View>
 
-      {error && <FormErrorText error={error} />}
+          {error && <FormErrorText error={error} />}
 
-      <View style={reuableStyles.textInputContainer}>
-        <InputField onChangeText={(text) => (emailInputRef.current = text)} placeholder="Email" />
+          <View style={reuableStyles.textInputContainer}>
+            <InputField
+              onChangeText={(text) => (emailInputRef.current = text)}
+              placeholder="Email"
+            />
 
-        <InputField
-          onChangeText={(text) => (passwordInputRef.current = text)}
-          placeholder="Password"
-        />
+            <InputField
+              onChangeText={(text) => (passwordInputRef.current = text)}
+              placeholder="Password"
+            />
 
-        <InputField
-          onChangeText={(text) => (confirmPasswordInputRef.current = text)}
-          placeholder="Confirm Password"
-        />
-      </View>
+            <InputField
+              onChangeText={(text) => (confirmPasswordInputRef.current = text)}
+              placeholder="Confirm Password"
+            />
+          </View>
 
-      <TouchableOpacity onPress={handleSignUp}>
-        <CustomButton text={"Sign Up"} />
-      </TouchableOpacity>
+          <TouchableOpacity onPress={handleSignUp}>
+            <CustomButton text={"Sign Up"} />
+          </TouchableOpacity>
 
-      <View style={reuableStyles.footer}>
-        <FooterText1 text={"Already have an account?"} />
-        <TouchableOpacity onPress={() => router.push("/(public)/(auth)/Login")}>
-          <FooterText2 text={"Sign In"} />
-        </TouchableOpacity>
-      </View>
-    </CustomKeyboard>
+          <View style={reuableStyles.footer}>
+            <FooterText1 text={"Already have an account?"} />
+            <TouchableOpacity onPress={() => router.push("/(public)/(auth)/Login")}>
+              <FooterText2 text={"Sign In"} />
+            </TouchableOpacity>
+          </View>
+        </CustomKeyboard>
+      )}
+    </>
   );
 }
