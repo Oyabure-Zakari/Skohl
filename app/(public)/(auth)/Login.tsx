@@ -57,7 +57,7 @@ export default function LoginScreen() {
             <InputField
               onChangeText={(text) => (passwordInputRef.current = text)}
               placeholder="Password"
-              secureTextEntry={true}
+              secureTextEntry={isPasswordHidden}
               iconType={"padlock"}
               togglePasswordVisibility={togglePasswordVisibility}
             />
