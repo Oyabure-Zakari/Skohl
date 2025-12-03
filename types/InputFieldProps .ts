@@ -1,7 +1,6 @@
 type InputFieldProps = {
-  value: string;
   placeholder: string;
-  onChangeText: React.Dispatch<React.SetStateAction<string>>;
+  onChangeText: (prevState: string) => string;
 };
 
 export default InputFieldProps;

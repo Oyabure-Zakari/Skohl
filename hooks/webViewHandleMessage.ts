@@ -4,8 +4,8 @@ import doDetailsMatch from "@/utils/doDetailsMatch";
 import { WebViewMessageEvent } from "react-native-webview";
 
 const useWebViewHandleMessage = ({
-  firstname,
-  surname,
+  firstnameInputRef,
+  surnameInputRef,
   selectedFaculty,
   setError,
   setIsWebViewOpen,
@@ -35,8 +35,8 @@ const useWebViewHandleMessage = ({
         const studentFaculty = msg.payload.faculty;
 
         // Compare user-entered values with data scraped from student portal
-        const isFirstname = doDetailsMatch(firstname, studentFirstname);
-        const isSurname = doDetailsMatch(surname, studentSurname);
+        const isFirstname = doDetailsMatch(firstnameInputRef.current, studentFirstname);
+        const isSurname = doDetailsMatch(surnameInputRef.current, studentSurname);
         const isFaculty = doDetailsMatch(selectedFaculty, studentFaculty);
 
         // If all three core details match → verification successful

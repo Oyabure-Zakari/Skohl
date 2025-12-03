@@ -13,16 +13,16 @@ import { Redirect, useRouter } from "expo-router";
 
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import useVerificationStore from "@/store/verificatonStore";
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 export default function RegistartionScreen() {
   const router = useRouter();
   const reuableStyles = useReuseableStyles();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const emailInputRef = useRef("");
+  const passwordInputRef = useRef("");
+  const confirmPasswordInputRef = useRef("");
 
   const registerStyles = useRegisterScreenStyles();
 
@@ -49,13 +49,15 @@ export default function RegistartionScreen() {
       </View>
 
       <View style={reuableStyles.textInputContainer}>
-        <InputField value={email} onChangeText={setEmail} placeholder="Email" />
-
-        <InputField value={password} onChangeText={setPassword} placeholder="Password" />
+        <InputField onChangeText={(text) => (emailInputRef.current = text)} placeholder="Email" />
 
         <InputField
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
+          onChangeText={(text) => (passwordInputRef.current = text)}
+          placeholder="Password"
+        />
+
+        <InputField
+          onChangeText={(text) => (confirmPasswordInputRef.current = text)}
           placeholder="Confirm Password"
         />
       </View>

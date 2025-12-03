@@ -10,15 +10,15 @@ import useVerificationStore from "@/store/verificatonStore";
 import useReuseableStyles from "@/styles/reuable.styles";
 import { Redirect, useRouter } from "expo-router";
 
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { TouchableOpacity, View } from "react-native";
 
 export default function LoginScreen() {
   const router = useRouter();
   const reuableStyles = useReuseableStyles();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const emailInputRef = useRef("");
+  const passwordInputRef = useRef("");
 
   const verificationToken = useVerificationStore((state) => state.verificationToken);
 
@@ -34,9 +34,12 @@ export default function LoginScreen() {
       <SubTitleText text={"Welcome Back!"} />
 
       <View style={reuableStyles.textInputContainer}>
-        <InputField value={email} onChangeText={setEmail} placeholder="Email" />
+        <InputField onChangeText={(text) => (emailInputRef.current = text)} placeholder="Email" />
 
-        <InputField value={password} onChangeText={setPassword} placeholder="Password" />
+        <InputField
+          onChangeText={(text) => (passwordInputRef.current = text)}
+          placeholder="Password"
+        />
       </View>
 
       <TouchableOpacity onPress={() => router.push("/(public)/(auth)")}>

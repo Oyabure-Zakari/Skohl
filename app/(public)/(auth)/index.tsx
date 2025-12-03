@@ -19,11 +19,7 @@ import VerifyImage from "@/components/verification/VerifyImage";
 import useWebViewHandleMessage from "@/hooks/webViewHandleMessage";
 import useWebViewRedirect from "@/hooks/webViewRedirect";
 
-import {
-  abuLoginPortalUrl,
-  abuStudentDashboardUrl,
-  abuStudentProfileUrl,
-} from "@/urls/ABU";
+import { abuLoginPortalUrl, abuStudentDashboardUrl, abuStudentProfileUrl } from "@/urls/ABU";
 
 import useReuseableStyles from "@/styles/reuable.styles";
 
@@ -32,13 +28,13 @@ import { useRouter } from "expo-router";
 
 export default function VerificationScreen() {
   const [error, setError] = useState("");
-  const [surname, setSurname] = useState("");
-  const [firstname, setFirstname] = useState("");
   const [selectedFaculty, setSelectedFaculty] = useState("none");
   const [VerificationStatus, setVerificationStatus] = useState("");
   const [isloading, setIsLoading] = useState(false);
   const [isWebViewOpen, setIsWebViewOpen] = useState(false);
 
+  const firstnameInputRef = useRef("");
+  const surnameInputRef = useRef("");
   const webViewRef = useRef<WebView>(null);
 
   const router = useRouter();
@@ -55,8 +51,8 @@ export default function VerificationScreen() {
 
   // Handle extracted data recieved from the website (i.e webview)
   const { handleWebViewMessage } = useWebViewHandleMessage({
-    firstname,
-    surname,
+    firstnameInputRef,
+    surnameInputRef,
     selectedFaculty,
     setError,
     setIsWebViewOpen,
@@ -94,14 +90,12 @@ export default function VerificationScreen() {
 
             <View style={reuableStyles.textInputContainer}>
               <InputField
-                value={firstname}
-                onChangeText={setFirstname}
+                onChangeText={(text) => (firstnameInputRef.current = text)}
                 placeholder="Firstname"
               />
 
               <InputField
-                value={surname}
-                onChangeText={setSurname}
+                onChangeText={(text) => (surnameInputRef.current = text)}
                 placeholder="Surname"
               />
 
@@ -113,8 +107,8 @@ export default function VerificationScreen() {
 
             {/* Button that open webview once form has been validated*/}
             <VerificationButton
-              firstname={firstname}
-              surname={surname}
+              firstnameInputRef={firstnameInputRef.current}
+              surnameInputRef={surnameInputRef.current}
               selectedFaculty={selectedFaculty}
               setError={setError}
               setIsLoading={setIsLoading}
