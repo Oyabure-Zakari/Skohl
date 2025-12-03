@@ -28,8 +28,6 @@ import { useRouter } from "expo-router";
 
 export default function VerificationScreen() {
   const [error, setError] = useState("");
-  const [surname, setSurname] = useState("");
-  const [firstname, setFirstname] = useState("");
   const [selectedFaculty, setSelectedFaculty] = useState("none");
   const [VerificationStatus, setVerificationStatus] = useState("");
   const [isloading, setIsLoading] = useState(false);
@@ -53,8 +51,8 @@ export default function VerificationScreen() {
 
   // Handle extracted data recieved from the website (i.e webview)
   const { handleWebViewMessage } = useWebViewHandleMessage({
-    firstname,
-    surname,
+    firstnameInputRef,
+    surnameInputRef,
     selectedFaculty,
     setError,
     setIsWebViewOpen,
@@ -68,8 +66,6 @@ export default function VerificationScreen() {
   function goToRegistrationScreen() {
     router.replace("/(public)/(auth)/Register");
   }
-
-  console.log("Component Rendered");
 
   return (
     <>

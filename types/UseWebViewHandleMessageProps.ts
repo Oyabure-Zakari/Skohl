@@ -1,6 +1,8 @@
+import { RefObject } from "react";
+
 type UseWebViewHandleMessageProps = {
-  firstname: string;
-  surname: string;
+  firstnameInputRef: RefObject<string>;
+  surnameInputRef: RefObject<string>;
   selectedFaculty: string;
   setError: (value: string) => void;
   setIsWebViewOpen: (value: boolean) => void;
