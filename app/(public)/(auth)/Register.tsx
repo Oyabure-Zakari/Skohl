@@ -13,12 +13,18 @@ import { Redirect, useRouter } from "expo-router";
 
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import useVerificationStore from "@/store/verificatonStore";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
+
+import FormErrorText from "@/components/reuseableComponents/FormErrorText";
+import { auth } from "@/firebase/firebase.config";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function RegistartionScreen() {
   const router = useRouter();
   const reuableStyles = useReuseableStyles();
+
+  const [error, setError] = useState("");
 
   const emailInputRef = useRef("");
   const passwordInputRef = useRef("");
@@ -35,6 +41,48 @@ export default function RegistartionScreen() {
   // Redirect to verification screen if verification token is not present
   if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
 
+  const handleSignUp = async () => {
+    if (!emailInputRef.current || !passwordInputRef.current || !confirmPasswordInputRef.current) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (passwordInputRef.current !== confirmPasswordInputRef.current) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        emailInputRef.current,
+        passwordInputRef.current
+      );
+      console.log("User: ", JSON.stringify(userCredential, null, 2));
+      // User registration successful then create user in firestore database
+    } catch (error: any) {
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          setError("The email address is already in use by another account.");
+          break;
+        case "auth/invalid-email":
+          setError("The email address is not valid.");
+          break;
+        case "auth/weak-password":
+          setError("The password must be at least 6 characters long.");
+          break;
+        case "auth/network-request-failed":
+          setError("Network issue. Please check your internet connection.");
+          break;
+        case "auth/internal-error":
+          setError("An internal server error occurred. Please try again later.");
+          break;
+        default:
+          setError("An error occurred. Please try again later.");
+      }
+    }
+  };
+
   return (
     <CustomKeyboard>
       <RegisterImage />
@@ -47,6 +95,8 @@ export default function RegistartionScreen() {
         <DefaultAvatar />
         <EditPicButton />
       </View>
+
+      {error && <FormErrorText error={error} />}
 
       <View style={reuableStyles.textInputContainer}>
         <InputField onChangeText={(text) => (emailInputRef.current = text)} placeholder="Email" />
@@ -62,7 +112,7 @@ export default function RegistartionScreen() {
         />
       </View>
 
-      <TouchableOpacity onPress={() => router.back()}>
+      <TouchableOpacity onPress={handleSignUp}>
         <CustomButton text={"Sign Up"} />
       </TouchableOpacity>
 
