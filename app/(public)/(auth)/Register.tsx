@@ -18,8 +18,8 @@ import { TouchableOpacity, View } from "react-native";
 
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
-import { auth } from "@/firebase/firebase.config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+
+import useExpoImagePicker from "@/hooks/expoImagePicker";
 
 export default function RegistartionScreen() {
   const router = useRouter();
@@ -32,61 +32,16 @@ export default function RegistartionScreen() {
   const passwordInputRef = useRef("");
   const confirmPasswordInputRef = useRef("");
 
+  const { image, pickImage } = useExpoImagePicker();
+
   const registerStyles = useRegisterScreenStyles();
 
-  const studentInfo = useVerificationStore((state) => state.studentInfo);
   const verificationToken = useVerificationStore((state) => state.verificationToken);
-
-  console.log("studentInfo: ", studentInfo);
-  console.log("verification token: ", verificationToken);
 
   // Redirect to verification screen if verification token is not present
   if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
 
-  const handleSignUp = async () => {
-    if (!emailInputRef.current || !passwordInputRef.current || !confirmPasswordInputRef.current) {
-      setError("All fields are required");
-      return;
-    }
-
-    if (passwordInputRef.current !== confirmPasswordInputRef.current) {
-      setError("Passwords do not match");
-      return;
-    }
-    try {
-      setIsLoading(true);
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        emailInputRef.current,
-        passwordInputRef.current
-      );
-      console.log("User: ", JSON.stringify(userCredential, null, 2));
-      // User registration successful then create user in firestore database
-      setError("");
-    } catch (error: any) {
-      switch (error.code) {
-        case "auth/email-already-in-use":
-          setError("The email address is already in use by another account.");
-          break;
-        case "auth/invalid-email":
-          setError("The email address is not valid.");
-          break;
-        case "auth/weak-password":
-          setError("The password must be at least 6 characters long.");
-          break;
-        case "auth/network-request-failed":
-          setError("Network issue. Please check your internet connection.");
-          break;
-        case "auth/internal-error":
-          setError("An internal server error occurred. Please try again later.");
-          break;
-        default:
-          setError("An error occurred. Please try again later.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const handleSignUp = async () => {};
 
   return (
     <>
@@ -101,8 +56,8 @@ export default function RegistartionScreen() {
           <SubTitleText text={"Sign up to continue"} />
 
           <View style={registerStyles.profile}>
-            <DefaultAvatar />
-            <EditPicButton />
+            <DefaultAvatar userImage={image} />
+            <EditPicButton pickImage={pickImage} />
           </View>
 
           {error && <FormErrorText error={error} />}
@@ -116,11 +71,13 @@ export default function RegistartionScreen() {
             <InputField
               onChangeText={(text) => (passwordInputRef.current = text)}
               placeholder="Password"
+              secureTextEntry={true}
             />
 
             <InputField
               onChangeText={(text) => (confirmPasswordInputRef.current = text)}
               placeholder="Confirm Password"
+              secureTextEntry={true}
             />
           </View>
 
