@@ -44,6 +44,8 @@ export default function useReuseableStyles() {
       justifyContent: "center",
       paddingHorizontal: 20,
       marginTop: 10,
+      marginBottom: 30,
+      gap: 20
     },
 
     customButton: {
@@ -83,8 +85,8 @@ export default function useReuseableStyles() {
       fontFamily: "Segoe_UI_Bold",
       backgroundColor: COLORS.lightGrey,
       borderRadius: 10,
-      paddingHorizontal: 16,
-      marginBottom: 20,
+      paddingHorizontal: 8,
+      flex: 1,
     },
 
     keyboardAwareScrollViewStyles: {

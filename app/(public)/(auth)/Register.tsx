@@ -66,18 +66,21 @@ export default function RegistartionScreen() {
             <InputField
               onChangeText={(text) => (emailInputRef.current = text)}
               placeholder="Email"
+              iconType={"person"}
             />
 
             <InputField
               onChangeText={(text) => (passwordInputRef.current = text)}
               placeholder="Password"
               secureTextEntry={true}
+              iconType={"padlock"}
             />
 
             <InputField
               onChangeText={(text) => (confirmPasswordInputRef.current = text)}
               placeholder="Confirm Password"
               secureTextEntry={true}
+              iconType={"padlock"}
             />
           </View>
 

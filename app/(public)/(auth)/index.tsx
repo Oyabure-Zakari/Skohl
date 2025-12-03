@@ -92,11 +92,13 @@ export default function VerificationScreen() {
               <InputField
                 onChangeText={(text) => (firstnameInputRef.current = text)}
                 placeholder="Firstname"
+                iconType={"person"}
               />
 
               <InputField
                 onChangeText={(text) => (surnameInputRef.current = text)}
                 placeholder="Surname"
+                iconType={"person"}
               />
 
               <SelectFacultyPicker

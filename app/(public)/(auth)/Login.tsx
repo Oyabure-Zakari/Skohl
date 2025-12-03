@@ -49,12 +49,14 @@ export default function LoginScreen() {
             <InputField
               onChangeText={(text) => (emailInputRef.current = text)}
               placeholder="Email"
+              iconType={"person"}
             />
 
             <InputField
               onChangeText={(text) => (passwordInputRef.current = text)}
               placeholder="Password"
               secureTextEntry={true}
+              iconType={"padlock"}
             />
           </View>
 
