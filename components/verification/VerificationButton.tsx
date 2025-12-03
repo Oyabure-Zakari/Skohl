@@ -5,8 +5,8 @@ import { TouchableOpacity } from "react-native";
 import CustomButton from "../reuseableComponents/CustomButton";
 
 const VerificationButton: React.FC<VerificationButtonProps> = ({
-  surname,
-  firstname,
+  surnameInputRef,
+  firstnameInputRef,
   selectedFaculty,
   setError,
   setIsLoading,
@@ -14,7 +14,7 @@ const VerificationButton: React.FC<VerificationButtonProps> = ({
 }) => {
   const openWebView = () => {
     // Validate form
-    if (!isFormValidated(firstname, surname, selectedFaculty, setError)) return;
+    if (!isFormValidated(firstnameInputRef, surnameInputRef, selectedFaculty, setError)) return;
 
     // Open Webview
     setIsWebViewOpen(true);

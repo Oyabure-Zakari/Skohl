@@ -111,8 +111,8 @@ export default function VerificationScreen() {
 
             {/* Button that open webview once form has been validated*/}
             <VerificationButton
-              firstname={firstname}
-              surname={surname}
+              firstnameInputRef={firstnameInputRef.current}
+              surnameInputRef={surnameInputRef.current}
               selectedFaculty={selectedFaculty}
               setError={setError}
               setIsLoading={setIsLoading}

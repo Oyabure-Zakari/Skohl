@@ -1,6 +1,6 @@
 type VerificationButtonProps = {
-  firstname: string;
-  surname: string;
+  firstnameInputRef: string;
+  surnameInputRef: string;
   selectedFaculty: string;
   setError: (value: string) => void;
   setIsLoading: (value: boolean) => void;
