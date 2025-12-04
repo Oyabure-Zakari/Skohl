@@ -3,11 +3,11 @@ import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import React from "react";
 import { Image } from "react-native";
 
-type DefaultAvatarProps = {
+type ProfileImageProps = {
   userImage: string;
 };
 
-const DefaultAvatar: React.FC<DefaultAvatarProps> = ({ userImage }) => {
+const ProfileImage: React.FC<ProfileImageProps> = ({ userImage }) => {
   const registerStyles = useRegisterScreenStyles();
 
   return (
@@ -18,4 +18,4 @@ const DefaultAvatar: React.FC<DefaultAvatarProps> = ({ userImage }) => {
   );
 };
 
-export default DefaultAvatar;
+export default ProfileImage;

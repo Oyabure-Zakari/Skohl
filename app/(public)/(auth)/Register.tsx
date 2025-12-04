@@ -1,31 +1,28 @@
-import DefaultAvatar from "@/components/registration/DefaultAvatar";
-import EditPicButton from "@/components/registration/EditPicButton";
-import RegisterImage from "@/components/registration/RegisterImage";
-import CustomButton from "@/components/reuseableComponents/CustomButton";
-import FooterText1 from "@/components/reuseableComponents/FooterText1";
-import FooterText2 from "@/components/reuseableComponents/FooterText2";
-import InputField from "@/components/reuseableComponents/InputField";
-import SubTitleText from "@/components/reuseableComponents/SubTitleText";
-import TitleText from "@/components/reuseableComponents/TitleText";
-import useRegisterScreenStyles from "@/styles/registerScreen.styles";
-import useReuseableStyles from "@/styles/reuable.styles";
-import { Redirect, useRouter } from "expo-router";
-
-import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
-import useVerificationStore from "@/store/verificatonStore";
 import React, { useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
+import { Redirect, useRouter } from "expo-router";
+
+import EditPicButton from "@/components/registration/EditPicButton";
+import ProfileImage from "@/components/registration/ProfileImage";
+import RegisterImage from "@/components/registration/RegisterImage";
+import CustomButton from "@/components/reuseableComponents/CustomButton";
+import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
+import FooterText1 from "@/components/reuseableComponents/FooterText1";
+import FooterText2 from "@/components/reuseableComponents/FooterText2";
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
+import InputField from "@/components/reuseableComponents/InputField";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
+import SubTitleText from "@/components/reuseableComponents/SubTitleText";
+import TitleText from "@/components/reuseableComponents/TitleText";
 
 import useExpoImagePicker from "@/hooks/expoImagePicker";
 import useTogglePasswordVisibility from "@/hooks/togglePasswordVisibility";
+import useVerificationStore from "@/store/verificatonStore";
 
+import useRegisterScreenStyles from "@/styles/registerScreen.styles";
+import useReuseableStyles from "@/styles/reuable.styles";
 export default function RegistartionScreen() {
-  const router = useRouter();
-  const reuableStyles = useReuseableStyles();
-
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,9 +30,13 @@ export default function RegistartionScreen() {
   const passwordInputRef = useRef("");
   const confirmPasswordInputRef = useRef("");
 
+  const router = useRouter();
+
+  const reuableStyles = useReuseableStyles();
+  const registerStyles = useRegisterScreenStyles();
+
   const { image, pickImage } = useExpoImagePicker();
 
-  const registerStyles = useRegisterScreenStyles();
   const { isPasswordHidden, togglePasswordVisibility } = useTogglePasswordVisibility();
 
   const verificationToken = useVerificationStore((state) => state.verificationToken);
@@ -58,7 +59,7 @@ export default function RegistartionScreen() {
           <SubTitleText text={"Sign up to continue"} />
 
           <View style={registerStyles.profile}>
-            <DefaultAvatar userImage={image} />
+            <ProfileImage userImage={image} />
             <EditPicButton pickImage={pickImage} />
           </View>
 
