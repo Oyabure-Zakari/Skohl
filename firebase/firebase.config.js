@@ -5,17 +5,20 @@ import { getStorage } from "firebase/storage";
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCkFYV1zdnfHN1jEtk-vXQ-wz76D7DDDFs",
-  authDomain: "skohl-8e61e.firebaseapp.com",
-  projectId: "skohl-8e61e",
-  storageBucket: "skohl-8e61e.firebasestorage.app",
-  messagingSenderId: "348604548608",
-  appId: "1:348604548608:web:0d10f60302f866f475bae5",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_APIKEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTHDOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECTID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGEBUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGINGSENDERID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APPID,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app); // Initialize Firebase Authentication and get a reference to the service
-export const db = getFirestore(app); // Initialize Cloud Firestore and get a reference to the service
-export const storage = getStorage(app); // Initialize Cloud Storage and get a reference to the service
+const auth = getAuth(app); // Initialize Firebase Authentication and get a reference to the service
+const db = getFirestore(app); // Initialize Cloud Firestore and get a reference to the service
+const storage = getStorage(app); // Initialize Cloud Storage and get a reference to the service
+
+export { auth, db, storage };
+export default app;
