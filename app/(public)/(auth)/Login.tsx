@@ -17,7 +17,9 @@ import useTogglePasswordVisibility from "@/hooks/togglePasswordVisibility";
 
 import useReuseableStyles from "@/styles/reuable.styles";
 
+import { auth } from "@/firebase/firebase.config";
 import useVerificationStore from "@/store/verificatonStore";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -35,7 +37,62 @@ export default function LoginScreen() {
   // Redirect to verification screen if verification token is not present
   if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
 
-  const handleSignIn = async () => {};
+  const isFormValidated = (): boolean => {
+    if (!emailInputRef.current || !passwordInputRef.current) {
+      setError("All fields are required");
+      return false;
+    }
+
+    setError("");
+    return true;
+  };
+
+  const signInUser = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      // Create user with email and password
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        emailInputRef.current,
+        passwordInputRef.current
+      );
+      const user = userCredential.user;
+      console.log("Document written with ID: ", user.uid);
+      // On success, you might want to navigate to another screen
+      // For example: router.replace('/(private)/(tabs)');
+    } catch (error: any) {
+      switch (error.code) {
+        case "auth/invalid-credential":
+        case "auth/user-not-found":
+        case "auth/wrong-password":
+          setError("Invalid email or password. Please try again.");
+          break;
+        case "auth/invalid-email":
+          setError("Invalid email address");
+          break;
+        case "auth/too-many-requests":
+          setError("Too many requests");
+          break;
+        case "auth/network-request-failed":
+          setError("Network request failed");
+          break;
+        case "auth/internal-error":
+          setError("Internal error");
+          break;
+        default:
+          setError("Something went wrong");
+          break;
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignIn = async () => {
+    if (!isFormValidated()) return;
+    await signInUser();
+  };
 
   const navigateToRegister = () => {
     router.push("/(public)/(auth)/Register");

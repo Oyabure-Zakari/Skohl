@@ -3,6 +3,10 @@ import { TouchableOpacity, View } from "react-native";
 
 import { Redirect, useRouter } from "expo-router";
 
+import { auth, db } from "@/firebase/firebase.config";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+
 import EditPicButton from "@/components/registration/EditPicButton";
 import ProfileImage from "@/components/registration/ProfileImage";
 import RegisterImage from "@/components/registration/RegisterImage";
@@ -60,8 +64,63 @@ export default function RegistartionScreen() {
     return true;
   };
 
+  const signUpUser = async () => {
+    setIsLoading(true);
+    setError("");
+    try {
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        emailInputRef.current,
+        passwordInputRef.current
+      );
+      const user = userCredential.user;
+
+      // Create user document in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        firstname: studentInfo.firstname,
+        surname: studentInfo.surname,
+        faculty: studentInfo.faculty,
+        gender: studentInfo.gender,
+        religion: studentInfo.religion,
+      });
+
+      console.log("Document written with ID: ", user.uid);
+      // On success, you might want to navigate to another screen
+      // For example: router.replace('/(private)/(tabs)');
+    } catch (error: any) {
+      switch (error.code) {
+        case "auth/email-already-exists":
+          setError("Email already exists");
+          break;
+        case "auth/invalid-email":
+          setError("Invalid email address");
+          break;
+        case "auth/invalid-password":
+          setError("Password should be at least 6 characters");
+          break;
+        case "auth/too-many-requests":
+          setError("Too many requests");
+          break;
+        case "auth/network-request-failed":
+          setError("Network request failed");
+          break;
+        case "auth/internal-error":
+          setError("Internal error");
+          break;
+        default:
+          setError("Something went wrong");
+          break;
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSignUp = async () => {
     if (!isFormValidated()) return;
+    await signUpUser();
   };
 
   const navigateToLogin = () => {
