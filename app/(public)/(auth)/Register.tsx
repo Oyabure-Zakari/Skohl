@@ -30,7 +30,6 @@ export default function RegistartionScreen() {
 
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  console.log("Error:", error);
 
   const emailInputRef = useRef("");
   const passwordInputRef = useRef("");
