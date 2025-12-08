@@ -4,7 +4,7 @@ import CustomButton from "./CustomButton";
 
 type RegisterLoginButtonProps = {
   text: string;
-  handleSignUp: () => Promise<void>;
+  handleSignUp?: () => Promise<void>;
 };
 
 const RegisterLoginButton: React.FC<RegisterLoginButtonProps> = ({ text, handleSignUp }) => {
