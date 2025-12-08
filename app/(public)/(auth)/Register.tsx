@@ -109,7 +109,7 @@ export default function RegistartionScreen() {
             />
           </View>
 
-          <RegisterLoginButton handleSignUp={handleSignUp} />
+          <RegisterLoginButton text={"Sign Up"} handleSignUp={handleSignUp} />
 
           <FormFooter
             footerText1={"Already have an account?"}

@@ -3,13 +3,14 @@ import { TouchableOpacity } from "react-native";
 import CustomButton from "./CustomButton";
 
 type RegisterLoginButtonProps = {
+  text: string;
   handleSignUp: () => Promise<void>;
 };
 
-const RegisterLoginButton: React.FC<RegisterLoginButtonProps> = ({ handleSignUp }) => {
+const RegisterLoginButton: React.FC<RegisterLoginButtonProps> = ({ text, handleSignUp }) => {
   return (
     <TouchableOpacity onPress={handleSignUp}>
-      <CustomButton text={"Sign Up"} />
+      <CustomButton text={text} />
     </TouchableOpacity>
   );
 };
