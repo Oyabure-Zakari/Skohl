@@ -2,8 +2,8 @@ const isFormFilled = (
   email: string,
   password: string,
   setError: (error: string) => void,
-  image: string | null,  
-  confirmPassword: string
+  image?: string | null,  
+  confirmPassword?: string
 ): boolean => {
   if (!image) {
     setError("Select an image from your device");
