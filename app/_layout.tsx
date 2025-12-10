@@ -1,11 +1,18 @@
-import SafeScreen from "@/components/SafeScreen";
-import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { useFonts } from "expo-font";
+import { SplashScreen, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+
+import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
+import SafeScreen from "@/components/SafeScreen";
+
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+
+import useVerificationStore from "@/store/verificatonStore";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -17,33 +24,43 @@ export const unstable_settings = {
 };
 
 function AppLayout() {
-  const [loaded, error] = useFonts({
+  const [loaded] = useFonts({
     Segoe_UI: require("../assets/fonts/Segoe_UI.ttf"),
     Segoe_UI_Bold: require("../assets/fonts/Segoe_UI_Bold.ttf"),
     Segoe_UI_Italic: require("../assets/fonts/Segoe_UI_Italic.ttf"),
     Segoe_UI_Bold_Italic: require("../assets/fonts/Segoe_UI_Bold_Italic.ttf"),
   });
 
+  const verificationToken = useVerificationStore((state) => state.verificationToken);
+  const checkVerificationToken = useVerificationStore((state) => state.checkVerificationToken);
+
+  const { userUid, loading: authLoading } = useAuth();
+
   useEffect(() => {
-    if (loaded || error) {
+    checkVerificationToken();
+  }, []);
+
+  useEffect(() => {
+    if (loaded && !authLoading) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, error]);
+  }, [loaded, authLoading]);
 
-  if (!loaded && !error) {
-    return null;
+  // Show nothing (or loading screen) until auth is ready
+  if (!loaded || authLoading) {
+    return <OverlayLoadingIndicator />;
   }
 
-  const isAuthenticated = false;
+  const isVerifiedAndAuthenticated = !!verificationToken && !!userUid;
 
   return (
     <Stack>
-      <Stack.Protected guard={isAuthenticated}>
+      <Stack.Protected guard={isVerifiedAndAuthenticated}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(private)/(tabs)" options={{ headerShown: false }} />
       </Stack.Protected>
 
-      <Stack.Protected guard={!isAuthenticated}>
+      <Stack.Protected guard={!isVerifiedAndAuthenticated}>
         <Stack.Screen name="(public)/(auth)" options={{ headerShown: false }} />
       </Stack.Protected>
     </Stack>
@@ -52,13 +69,15 @@ function AppLayout() {
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <StatusBar style="auto" />
-      <SafeScreen>
-        <KeyboardProvider>
-          <AppLayout />
-        </KeyboardProvider>
-      </SafeScreen>
-    </SafeAreaProvider>
+    <AuthProvider>
+      <SafeAreaProvider>
+        <StatusBar style="auto" />
+        <SafeScreen>
+          <KeyboardProvider>
+            <AppLayout />
+          </KeyboardProvider>
+        </SafeScreen>
+      </SafeAreaProvider>
+    </AuthProvider>
   );
 }
