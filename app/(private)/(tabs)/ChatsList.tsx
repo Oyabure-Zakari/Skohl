@@ -1,3 +1,4 @@
+import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import COLORS from "@/constants/colors";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -5,6 +6,7 @@ export default function ChatListsScreen() {
   return (
     <View style={styles.container}>
       <Text>ChatLists Screen</Text>
+      <FloatingActionButton />
     </View>
   );
 }

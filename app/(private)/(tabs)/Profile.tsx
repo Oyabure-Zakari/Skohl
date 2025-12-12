@@ -1,4 +1,5 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
+import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import COLORS from "@/constants/colors";
 import { auth } from "@/firebase/firebase.config";
 import useVerificationStore from "@/store/verificatonStore";
@@ -21,6 +22,7 @@ export default function ProfileScreen() {
       <TouchableOpacity onPress={handleLogOut}>
         <CustomButton text={"Log Out"} />
       </TouchableOpacity>
+      <FloatingActionButton />
     </View>
   );
 }
