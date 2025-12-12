@@ -11,7 +11,7 @@ const useExpoImagePicker = () => {
 
     if (!permissionResult.granted) {
       Alert.alert("Permission required", "Permission to access the media library is required.", [
-        { text: "Go to Settings and grant permission", onPress: () => Linking.openSettings() },
+        { text: "Grant permission", onPress: () => Linking.openSettings() },
       ]);
       return;
     }
