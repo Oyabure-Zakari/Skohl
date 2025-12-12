@@ -20,9 +20,17 @@ const handleRegistration = async (
   try {
     setError("");
     setIsLoading(true);
+
     const uid = await signUpUser(emailInputRef, passwordInputRef, setError);
+    if (!uid) return;
+
     const uploadedImageUrl = await generateImageUrl(image, setError);
-    await createUser(uid!, uploadedImageUrl ?? defaultImage, studentInfo, setError);
+    if (!uploadedImageUrl) { 
+      setError("Error uploading image"); 
+      return;
+    }; 
+
+    await createUser(uid, uploadedImageUrl ?? defaultImage, studentInfo, setError);
   } catch (error: any) {
     setError(error.message);
   } finally {
