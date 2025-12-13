@@ -9,7 +9,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import StarRating from "react-native-star-rating-widget";
 
 export default function ProductsScreen() {
-  const [actionType, setActionType] = useState("Send Feedback");
+  const [actionType, setActionType] = useState("Create Post");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [rating, setRating] = useState(0);
 
