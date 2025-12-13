@@ -9,7 +9,9 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import StarRating from "react-native-star-rating-widget";
 
 export default function ProductsScreen() {
-  const [actionType, setActionType] = useState("Create Post");
+  const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
+    "Create Post"
+  );
   const [selectedCategory, setSelectedCategory] = useState("");
   const [rating, setRating] = useState(0);
 
@@ -24,7 +26,7 @@ export default function ProductsScreen() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <Text>Products Screen</Text>
-      {actionType === "Send Feedback" ? (
+      {activeBottomSheet === "Create Post" ? (
         <BottomSheet
           ref={sheetRef}
           snapPoints={snapPoints}
@@ -50,98 +52,7 @@ export default function ProductsScreen() {
           >
             {/* Action type */}
             <Text style={{ color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" }}>
-              {actionType}
-            </Text>
-
-            {/* Divider */}
-            <View
-              style={{ width: "100%", height: 2, backgroundColor: COLORS.lightGrey, marginTop: 20 }}
-            />
-
-            {/* Want to give us feedback? Text */}
-            <Text
-              style={{
-                color: COLORS.darkBlue,
-                fontFamily: "Segoe_UI_Bold",
-                fontSize: 16,
-                marginTop: 20,
-              }}
-            >
-              {"We'd love your feedback!"}
-            </Text>
-
-            {/* Text Input */}
-            <TextInput
-              placeholder="Feedback"
-              multiline={true}
-              numberOfLines={4}
-              textAlignVertical="top"
-              placeholderTextColor={COLORS.darkGrey}
-              style={{
-                width: "90%",
-                color: COLORS.darkGrey,
-                fontFamily: "Segoe_UI_Bold",
-                backgroundColor: COLORS.lightGrey,
-                borderRadius: 10,
-                paddingHorizontal: 16,
-                marginVertical: 10,
-              }}
-            />
-
-            {/* Rating */}
-            <View style={{ gap: 10, alignItems: "center", paddingVertical: 20 }}>
-              <Text
-                style={{
-                  color: COLORS.darkGrey,
-                  fontFamily: "Segoe_UI_Bold",
-                }}
-              >
-                Rate us
-              </Text>
-
-              <StarRating
-                maxStars={5}
-                starSize={30}
-                step={"full"}
-                rating={rating}
-                onChange={setRating}
-                color={COLORS.yellow}
-                emptyColor={COLORS.yellow}
-              />
-            </View>
-
-            <TouchableOpacity>
-              <CustomButton text={"Post"} />
-            </TouchableOpacity>
-          </BottomSheetView>
-        </BottomSheet>
-      ) : (
-        <BottomSheet
-          ref={sheetRef}
-          snapPoints={snapPoints}
-          enableDynamicSizing={false}
-          backgroundStyle={{
-            borderRadius: 10,
-            backgroundColor: COLORS.white,
-            shadowColor: COLORS.darkBlue,
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 20,
-          }}
-        >
-          <BottomSheetView
-            style={{
-              flex: 1,
-              alignItems: "center",
-            }}
-          >
-            {/* Action type */}
-            <Text style={{ color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" }}>
-              {actionType}
+              {activeBottomSheet}
             </Text>
 
             {/* Divider */}
@@ -350,9 +261,103 @@ export default function ProductsScreen() {
             </TouchableOpacity>
           </BottomSheetView>
         </BottomSheet>
+      ) : (
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={snapPoints}
+          enableDynamicSizing={false}
+          backgroundStyle={{
+            borderRadius: 10,
+            backgroundColor: COLORS.white,
+            shadowColor: COLORS.darkBlue,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 20,
+          }}
+        >
+          <BottomSheetView
+            style={{
+              flex: 1,
+              alignItems: "center",
+            }}
+          >
+            {/* Action type */}
+            <Text style={{ color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" }}>
+              {activeBottomSheet}
+            </Text>
+
+            {/* Divider */}
+            <View
+              style={{ width: "100%", height: 2, backgroundColor: COLORS.lightGrey, marginTop: 20 }}
+            />
+
+            {/* Want to give us feedback? Text */}
+            <Text
+              style={{
+                color: COLORS.darkBlue,
+                fontFamily: "Segoe_UI_Bold",
+                fontSize: 16,
+                marginTop: 20,
+              }}
+            >
+              {"We'd love your feedback!"}
+            </Text>
+
+            {/* Text Input */}
+            <TextInput
+              placeholder="Feedback"
+              multiline={true}
+              numberOfLines={4}
+              textAlignVertical="top"
+              placeholderTextColor={COLORS.darkGrey}
+              style={{
+                width: "90%",
+                color: COLORS.darkGrey,
+                fontFamily: "Segoe_UI_Bold",
+                backgroundColor: COLORS.lightGrey,
+                borderRadius: 10,
+                paddingHorizontal: 16,
+                marginVertical: 10,
+              }}
+            />
+
+            {/* Rating */}
+            <View style={{ gap: 10, alignItems: "center", paddingVertical: 20 }}>
+              <Text
+                style={{
+                  color: COLORS.darkGrey,
+                  fontFamily: "Segoe_UI_Bold",
+                }}
+              >
+                Rate us
+              </Text>
+
+              <StarRating
+                maxStars={5}
+                starSize={30}
+                step={"full"}
+                rating={rating}
+                onChange={setRating}
+                color={COLORS.yellow}
+                emptyColor={COLORS.yellow}
+              />
+            </View>
+
+            <TouchableOpacity>
+              <CustomButton text={"Post"} />
+            </TouchableOpacity>
+          </BottomSheetView>
+        </BottomSheet>
       )}
 
-      <FloatingActionButton setActionType={setActionType} handleSnapPress={handleSnapPress} />
+      <FloatingActionButton
+        setActiveBottomSheet={setActiveBottomSheet}
+        handleSnapPress={handleSnapPress}
+      />
     </GestureHandlerRootView>
   );
 }

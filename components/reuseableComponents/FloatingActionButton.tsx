@@ -4,22 +4,22 @@ import { Dispatch, SetStateAction } from "react";
 import { FloatingAction } from "react-native-floating-action";
 
 type FloatingActionButtonProps = {
-  setActionType: Dispatch<SetStateAction<string>>;
+  setActiveBottomSheet: Dispatch<SetStateAction<"Create Post" | "Send Feedback">>;
   handleSnapPress: (index: number) => void;
 };
 
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
-  setActionType,
+  setActiveBottomSheet,
   handleSnapPress,
 }) => {
   const openBottomSheet = (name: string | undefined) => {
     if (name === "bt_send_feedback") {
-      setActionType("Send Feedback");
+      setActiveBottomSheet("Send Feedback");
       console.log("Send Feedback");
       handleSnapPress(1);
     }
     if (name === "bt_create_post") {
-      setActionType("Create Post");
+      setActiveBottomSheet("Create Post");
       console.log("Create Post");
       handleSnapPress(1);
     }
