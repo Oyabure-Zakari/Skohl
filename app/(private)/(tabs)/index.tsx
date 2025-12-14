@@ -2,10 +2,10 @@ import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import COLORS from "@/constants/colors";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import StarRating from "react-native-star-rating-widget";
 
@@ -156,17 +156,17 @@ export default function ProductsScreen() {
                 </Picker>
               </View>
 
-              <TextInput
+              <BottomSheetTextInput
                 placeholder="Title"
                 placeholderTextColor={COLORS.darkGrey}
                 style={styles.postTextInput}
               />
-              <TextInput
+              <BottomSheetTextInput
                 placeholder="Price"
                 placeholderTextColor={COLORS.darkGrey}
                 style={styles.postTextInput}
               />
-              <TextInput
+              <BottomSheetTextInput
                 placeholder="Description"
                 multiline={true}
                 numberOfLines={4}
@@ -199,7 +199,7 @@ export default function ProductsScreen() {
             <Text style={styles.activeBottomSheetText2}>{"We'd love your feedback!"}</Text>
 
             {/* Text Input */}
-            <TextInput
+            <BottomSheetTextInput
               placeholder="Feedback"
               multiline={true}
               numberOfLines={4}
