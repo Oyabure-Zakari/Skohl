@@ -1,6 +1,7 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import COLORS from "@/constants/colors";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import React, { useCallback, useMemo, useRef, useState } from "react";
@@ -106,9 +107,18 @@ export default function ProductsScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* Image View */}
-            <View style={styles.imageContainer}>
-              <Text style={styles.imageContainerText}>Image</Text>
+            {/* Photo View */}
+            <View style={styles.photoContainer}>
+              <Text style={styles.photoContainerText}>Photo</Text>
+              <View style={styles.photoOptions}>
+                <TouchableOpacity style={styles.photoOption}>
+                  <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.photoOption}>
+                  <Entypo name="images" size={25} color={COLORS.darkGrey} />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* View for picker and input field */}
@@ -307,7 +317,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
 
-  imageContainer: {
+  photoContainer: {
     marginTop: 20,
     width: "45%",
     height: 150,
@@ -315,11 +325,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.lightGrey,
+    gap: 10,
   },
 
-  imageContainerText: {
+  photoContainerText: {
     color: COLORS.darkGrey,
     fontFamily: "Segoe_UI_Bold",
+  },
+
+  photoOptions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+
+  photoOption: {
+    backgroundColor: COLORS.whiteSecondary,
+    width: 40,
+    height: 40,
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   postFormContainer: {
