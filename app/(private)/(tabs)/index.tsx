@@ -63,7 +63,7 @@ export default function ProductsScreen() {
                       : styles.inActivePostTypeButtonText,
                   ]}
                 >
-                  Post a product
+                  Post a Product
                 </Text>
               </TouchableOpacity>
 
@@ -82,7 +82,7 @@ export default function ProductsScreen() {
                       : styles.inActivePostTypeButtonText,
                   ]}
                 >
-                  Post a service
+                  Post a Service
                 </Text>
               </TouchableOpacity>
 
@@ -101,7 +101,7 @@ export default function ProductsScreen() {
                       : styles.inActivePostTypeButtonText,
                   ]}
                 >
-                  Post an event
+                  Post an Event
                 </Text>
               </TouchableOpacity>
             </View>
