@@ -31,162 +31,44 @@ export default function ProductsScreen() {
           ref={sheetRef}
           snapPoints={snapPoints}
           enableDynamicSizing={false}
-          backgroundStyle={{
-            borderRadius: 10,
-            backgroundColor: COLORS.white,
-            shadowColor: COLORS.darkBlue,
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 20,
-          }}
+          backgroundStyle={styles.bottomSheetStyle}
         >
-          <BottomSheetView
-            style={{
-              flex: 1,
-              alignItems: "center",
-            }}
-          >
+          <BottomSheetView style={styles.bottomSheetViewStyle}>
             {/* Action type */}
-            <Text style={{ color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" }}>
-              {activeBottomSheet}
-            </Text>
+            <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
 
             {/* Divider */}
-            <View
-              style={{ width: "100%", height: 2, backgroundColor: COLORS.lightGrey, marginTop: 20 }}
-            />
+            <View style={styles.divider} />
 
             {/* What do you want to post? text */}
-            <Text
-              style={{
-                color: COLORS.darkBlue,
-                fontFamily: "Segoe_UI_Bold",
-                fontSize: 16,
-                marginTop: 10,
-              }}
-            >
-              What would you like to post?
-            </Text>
+            <Text style={styles.activeBottomSheetText2}>What would you like to post?</Text>
 
             {/* Post type */}
-            <View style={{ flexDirection: "row", gap: 10, marginTop: 10 }}>
-              <TouchableOpacity>
-                <View
-                  style={{
-                    backgroundColor: COLORS.purple,
-                    borderRadius: 5,
-                    padding: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: COLORS.white,
-                      fontFamily: "Segoe_UI_Bold",
-                      fontSize: 12,
-                      paddingHorizontal: 5,
-                    }}
-                  >
-                    Post a product
-                  </Text>
-                </View>
+            <View style={styles.postTypeContainer}>
+              <TouchableOpacity style={styles.activePostTypeButton}>
+                <Text style={styles.activePostTypeButtonText}>Post a product</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
-                <View
-                  style={{
-                    borderColor: COLORS.purple,
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    padding: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: COLORS.purple,
-                      fontFamily: "Segoe_UI_Bold",
-                      fontSize: 12,
-                      paddingHorizontal: 5,
-                    }}
-                  >
-                    Post a service
-                  </Text>
-                </View>
+
+              <TouchableOpacity style={styles.inActivePostTypeButton}>
+                <Text style={styles.inActivePostTypeButtonText}>Post a service</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
-                <View
-                  style={{
-                    borderColor: COLORS.purple,
-                    borderWidth: 1,
-                    borderRadius: 5,
-                    padding: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: COLORS.purple,
-                      fontFamily: "Segoe_UI_Bold",
-                      fontSize: 12,
-                      paddingHorizontal: 5,
-                    }}
-                  >
-                    Post an event
-                  </Text>
-                </View>
+
+              <TouchableOpacity style={styles.inActivePostTypeButton}>
+                <Text style={styles.inActivePostTypeButtonText}>Post an event</Text>
               </TouchableOpacity>
             </View>
 
             {/* Image View */}
-            <View
-              style={{
-                marginTop: 20,
-                width: "45%",
-                height: 150,
-                borderRadius: 10,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: COLORS.lightGrey,
-              }}
-            >
-              <Text
-                style={{
-                  color: COLORS.darkGrey,
-                  fontFamily: "Segoe_UI_Bold",
-                }}
-              >
-                Image
-              </Text>
+            <View style={styles.imageContainer}>
+              <Text style={styles.imageContainerText}>Image</Text>
             </View>
 
             {/* View for picker and input field */}
-            <View
-              style={{
-                margin: 20,
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 15,
-              }}
-            >
-              {/* Text input view */}
-              <View
-                style={{
-                  backgroundColor: COLORS.lightGrey,
-                  width: "90%",
-                  borderRadius: 10,
-                  alignItems: "center",
-                }}
-              >
+            <View style={styles.postFormContainer}>
+              {/* Picker Container */}
+              <View style={styles.pickerContainer}>
                 <Picker
-                  style={{
-                    backgroundColor: COLORS.lightGrey,
-                    width: "95%",
-                    color: COLORS.darkGrey,
-                    fontFamily: "Segoe_UI_Bold",
-                    borderRadius: 10,
-                  }}
+                  style={styles.pickerStyles}
                   selectedValue={selectedCategory}
                   onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
                 >
@@ -219,26 +101,12 @@ export default function ProductsScreen() {
               <TextInput
                 placeholder="Title"
                 placeholderTextColor={COLORS.darkGrey}
-                style={{
-                  width: "90%",
-                  color: COLORS.darkGrey,
-                  fontFamily: "Segoe_UI_Bold",
-                  backgroundColor: COLORS.lightGrey,
-                  borderRadius: 10,
-                  paddingHorizontal: 16,
-                }}
+                style={styles.postTextInput}
               />
               <TextInput
                 placeholder="Price"
                 placeholderTextColor={COLORS.darkGrey}
-                style={{
-                  width: "90%",
-                  color: COLORS.darkGrey,
-                  fontFamily: "Segoe_UI_Bold",
-                  backgroundColor: COLORS.lightGrey,
-                  borderRadius: 10,
-                  paddingHorizontal: 16,
-                }}
+                style={styles.postTextInput}
               />
               <TextInput
                 placeholder="Description"
@@ -246,16 +114,10 @@ export default function ProductsScreen() {
                 numberOfLines={4}
                 textAlignVertical="top"
                 placeholderTextColor={COLORS.darkGrey}
-                style={{
-                  width: "90%",
-                  color: COLORS.darkGrey,
-                  fontFamily: "Segoe_UI_Bold",
-                  backgroundColor: COLORS.lightGrey,
-                  borderRadius: 10,
-                  paddingHorizontal: 16,
-                }}
+                style={styles.postTextInput}
               />
             </View>
+
             <TouchableOpacity>
               <CustomButton text={"Post"} />
             </TouchableOpacity>
@@ -266,46 +128,17 @@ export default function ProductsScreen() {
           ref={sheetRef}
           snapPoints={snapPoints}
           enableDynamicSizing={false}
-          backgroundStyle={{
-            borderRadius: 10,
-            backgroundColor: COLORS.white,
-            shadowColor: COLORS.darkBlue,
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-            elevation: 20,
-          }}
+          backgroundStyle={styles.bottomSheetStyle}
         >
-          <BottomSheetView
-            style={{
-              flex: 1,
-              alignItems: "center",
-            }}
-          >
+          <BottomSheetView style={styles.bottomSheetViewStyle}>
             {/* Action type */}
-            <Text style={{ color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" }}>
-              {activeBottomSheet}
-            </Text>
+            <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
 
             {/* Divider */}
-            <View
-              style={{ width: "100%", height: 2, backgroundColor: COLORS.lightGrey, marginTop: 20 }}
-            />
+            <View style={styles.divider} />
 
             {/* Want to give us feedback? Text */}
-            <Text
-              style={{
-                color: COLORS.darkBlue,
-                fontFamily: "Segoe_UI_Bold",
-                fontSize: 16,
-                marginTop: 20,
-              }}
-            >
-              {"We'd love your feedback!"}
-            </Text>
+            <Text style={styles.activeBottomSheetText2}>{"We'd love your feedback!"}</Text>
 
             {/* Text Input */}
             <TextInput
@@ -314,28 +147,12 @@ export default function ProductsScreen() {
               numberOfLines={4}
               textAlignVertical="top"
               placeholderTextColor={COLORS.darkGrey}
-              style={{
-                width: "90%",
-                color: COLORS.darkGrey,
-                fontFamily: "Segoe_UI_Bold",
-                backgroundColor: COLORS.lightGrey,
-                borderRadius: 10,
-                paddingHorizontal: 16,
-                marginVertical: 10,
-              }}
+              style={styles.postTextInput2}
             />
 
             {/* Rating */}
-            <View style={{ gap: 10, alignItems: "center", paddingVertical: 20 }}>
-              <Text
-                style={{
-                  color: COLORS.darkGrey,
-                  fontFamily: "Segoe_UI_Bold",
-                }}
-              >
-                Rate us
-              </Text>
-
+            <View style={styles.ratingContainer}>
+              <Text style={styles.ratingText}>Rate us</Text>
               <StarRating
                 maxStars={5}
                 starSize={30}
@@ -368,5 +185,146 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  // Styles for both Create Post and Send Feedback
+  bottomSheetStyle: {
+    borderRadius: 10,
+    backgroundColor: COLORS.white,
+    shadowColor: COLORS.darkBlue,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 20,
+  },
+
+  bottomSheetViewStyle: {
+    flex: 1,
+    alignItems: "center",
+  },
+
+  divider: {
+    width: "100%",
+    height: 2,
+    backgroundColor: COLORS.lightGrey,
+    marginTop: 20,
+  },
+
+  // Styles for Create Post
+  activeBottomSheetText: {
+    color: COLORS.darkGrey,
+    fontFamily: "Segoe_UI_Bold",
+  },
+
+  activeBottomSheetText2: {
+    color: COLORS.darkBlue,
+    fontFamily: "Segoe_UI_Bold",
+    fontSize: 16,
+    marginTop: 10,
+  },
+
+  postTypeContainer: {
+    flexDirection: "row",
+    gap: 10,
+    marginTop: 10,
+  },
+
+  activePostTypeButton: {
+    backgroundColor: COLORS.purple,
+    borderRadius: 5,
+    padding: 5,
+  },
+
+  activePostTypeButtonText: {
+    color: COLORS.white,
+    fontFamily: "Segoe_UI_Bold",
+    fontSize: 12,
+    paddingHorizontal: 5,
+  },
+
+  inActivePostTypeButton: {
+    borderColor: COLORS.purple,
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+  },
+
+  inActivePostTypeButtonText: {
+    color: COLORS.purple,
+    fontFamily: "Segoe_UI_Bold",
+    fontSize: 12,
+    paddingHorizontal: 5,
+  },
+
+  imageContainer: {
+    marginTop: 20,
+    width: "45%",
+    height: 150,
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.lightGrey,
+  },
+
+  imageContainerText: {
+    color: COLORS.darkGrey,
+    fontFamily: "Segoe_UI_Bold",
+  },
+
+  postFormContainer: {
+    margin: 20,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 15,
+  },
+
+  pickerContainer: {
+    backgroundColor: COLORS.lightGrey,
+    width: "90%",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+
+  pickerStyles: {
+    backgroundColor: COLORS.lightGrey,
+    width: "95%",
+    color: COLORS.darkGrey,
+    fontFamily: "Segoe_UI_Bold",
+    borderRadius: 10,
+  },
+
+  postTextInput: {
+    width: "90%",
+    color: COLORS.darkGrey,
+    fontFamily: "Segoe_UI_Bold",
+    backgroundColor: COLORS.lightGrey,
+    borderRadius: 10,
+    paddingHorizontal: 16,
+  },
+
+  // Styles for Send Feedback
+  postTextInput2: {
+    width: "90%",
+    color: COLORS.darkGrey,
+    fontFamily: "Segoe_UI_Bold",
+    backgroundColor: COLORS.lightGrey,
+    borderRadius: 10,
+    paddingHorizontal: 16,
+    marginVertical: 10,
+  },
+
+  ratingContainer: {
+    gap: 10,
+    alignItems: "center",
+    paddingVertical: 20,
+  },
+
+  ratingText: {
+    color: COLORS.darkGrey,
+    fontFamily: "Segoe_UI_Bold",
   },
 });
