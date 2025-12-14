@@ -217,7 +217,7 @@ export default function ProductsScreen() {
             </View>
 
             <TouchableOpacity>
-              <CustomButton text={"Post"} />
+              <CustomButton text={"Send Feedback"} />
             </TouchableOpacity>
           </BottomSheetView>
         </BottomSheet>
