@@ -12,8 +12,8 @@ export default function ProductsScreen() {
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post"
   );
-  const [postType, setPostType] = useState<"Post a product" | "Post a service" | "Post an event">(
-    "Post a product"
+  const [postType, setPostType] = useState<"Post a Product" | "Post a Service" | "Post an Event">(
+    "Post a Product"
   );
   const [selectedCategory, setSelectedCategory] = useState("");
   const [rating, setRating] = useState(0);
@@ -25,10 +25,6 @@ export default function ProductsScreen() {
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
   }, []);
-
-  const selectedPostType = (param: "Post a product" | "Post a service" | "Post an event") => {
-    setPostType(param);
-  };
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -54,15 +50,15 @@ export default function ProductsScreen() {
             <View style={styles.postTypeContainer}>
               <TouchableOpacity
                 style={[
-                  postType === "Post a product"
+                  postType === "Post a Product"
                     ? styles.activePostTypeButton
                     : styles.inActivePostTypeButton,
                 ]}
-                onPress={() => selectedPostType("Post a product")}
+                onPress={() => setPostType("Post a Product")}
               >
                 <Text
                   style={[
-                    postType === "Post a product"
+                    postType === "Post a Product"
                       ? styles.activePostTypeButtonText
                       : styles.inActivePostTypeButtonText,
                   ]}
@@ -73,15 +69,15 @@ export default function ProductsScreen() {
 
               <TouchableOpacity
                 style={[
-                  postType === "Post a service"
+                  postType === "Post a Service"
                     ? styles.activePostTypeButton
                     : styles.inActivePostTypeButton,
                 ]}
-                onPress={() => selectedPostType("Post a service")}
+                onPress={() => setPostType("Post a Service")}
               >
                 <Text
                   style={[
-                    postType === "Post a service"
+                    postType === "Post a Service"
                       ? styles.activePostTypeButtonText
                       : styles.inActivePostTypeButtonText,
                   ]}
@@ -92,15 +88,15 @@ export default function ProductsScreen() {
 
               <TouchableOpacity
                 style={[
-                  postType === "Post an event"
+                  postType === "Post an Event"
                     ? styles.activePostTypeButton
                     : styles.inActivePostTypeButton,
                 ]}
-                onPress={() => selectedPostType("Post an event")}
+                onPress={() => setPostType("Post an Event")}
               >
                 <Text
                   style={[
-                    postType === "Post an event"
+                    postType === "Post an Event"
                       ? styles.activePostTypeButtonText
                       : styles.inActivePostTypeButtonText,
                   ]}
