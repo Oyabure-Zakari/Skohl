@@ -1,38 +1,32 @@
-import CategoryPicker from "@/components/home/CategoryPicker";
-import CustomButton from "@/components/reuseableComponents/CustomButton";
-import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
-import COLORS from "@/constants/colors";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import StarRating from "react-native-star-rating-widget";
+
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+
 import BottomSheet, {
   BottomSheetScrollView,
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import StarRating from "react-native-star-rating-widget";
+import COLORS from "@/constants/colors";
+
+import CategoryPicker from "@/components/home/CategoryPicker";
+import CustomButton from "@/components/reuseableComponents/CustomButton";
+import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 
 export default function ProductsScreen() {
+  const [rating, setRating] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedEventType, setSelectedEventType] = useState("");
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post"
   );
   const [postType, setPostType] = useState<"Post a Product" | "Post a Service" | "Post an Event">(
     "Post a Product"
   );
-  const placeHolderTitle = () => {
-    switch (postType) {
-      case "Post a Product":
-        return "Product Name";
-      case "Post a Service":
-        return "Job title";
-      case "Post an Event":
-        return "Event topic";
-    }
-  };
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [rating, setRating] = useState(0);
 
   const sheetRef = useRef<BottomSheet>(null);
   const titleRef = useRef("");
@@ -46,6 +40,19 @@ export default function ProductsScreen() {
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
   }, []);
+
+  const placeHolderTitle = () => {
+    switch (postType) {
+      case "Post a Product":
+        return "Product Name";
+      case "Post a Service":
+        return "Job title";
+      case "Post an Event":
+        return "Event topic";
+      default:
+        return "Product Name";
+    }
+  };
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -183,17 +190,15 @@ export default function ProductsScreen() {
               )}
 
               {postType === "Post an Event" && (
-                <>
-                  <BottomSheetTextInput
-                    placeholder="Venue"
-                    onChangeText={(text) => (venueRef.current = text)}
-                    multiline={true}
-                    numberOfLines={4}
-                    textAlignVertical="top"
-                    placeholderTextColor={COLORS.darkGrey}
-                    style={styles.postTextInput}
-                  />
-                </>
+                <BottomSheetTextInput
+                  placeholder="Venue"
+                  onChangeText={(text) => (venueRef.current = text)}
+                  multiline={true}
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                  placeholderTextColor={COLORS.darkGrey}
+                  style={styles.postTextInput}
+                />
               )}
 
               <BottomSheetTextInput
@@ -211,6 +216,8 @@ export default function ProductsScreen() {
                 postType={postType}
                 selectedCategory={selectedCategory}
                 setSelectedCategory={setSelectedCategory}
+                selectedEventType={selectedEventType}
+                setSelectedEventType={setSelectedEventType}
               />
             </View>
 
