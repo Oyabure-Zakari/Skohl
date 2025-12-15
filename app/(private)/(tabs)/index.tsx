@@ -33,7 +33,7 @@ export default function ProductsScreen() {
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <Text>Products Screen</Text>
+      <Text>Home Screen</Text>
       {activeBottomSheet === "Create Post" ? (
         <BottomSheet
           ref={sheetRef}
