@@ -47,7 +47,12 @@ export default function ProductsScreen() {
           <BottomSheetScrollView
             contentContainerStyle={styles.bottomSheetScrollViewContent}
             keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
+            keyboardDismissMode="on-drag" // Keyboard hides when user scrolls
+            bounces={true} // Enable bounce effect
+            alwaysBounceVertical={true} // Always allow vertical bounce
+            decelerationRate="fast" // Makes scrolling feel snappier
+            overScrollMode="always" // Android - shows overscroll effect
           >
             {/* Action type */}
             <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
