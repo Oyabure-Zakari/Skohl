@@ -1,5 +1,6 @@
 import React from "react";
 import EventCategoryPicker from "./EventCategoryPicker";
+import EventTypePicker from "./EventTypePicker";
 import ProductCategoryPicker from "./ProductCategoryPicker";
 import ServiceCategoryPicker from "./ServiceCategoryPicker";
 
@@ -27,10 +28,17 @@ const CategoryPicker: React.FC<Props> = ({ postType, selectedCategory, setSelect
       )}
 
       {postType === "Post an Event" && (
-        <EventCategoryPicker
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
+        <>
+          <EventTypePicker
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+
+          <EventCategoryPicker
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+          />
+        </>
       )}
     </>
   );

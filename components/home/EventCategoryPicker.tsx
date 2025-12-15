@@ -61,19 +61,19 @@ const EventCategoryPicker: React.FC<Props> = ({ selectedCategory, setSelectedCat
 };
 
 const styles = StyleSheet.create({
+  pickerContainer: {
+    backgroundColor: COLORS.lightGrey,
+    width: "90%",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+
   pickerStyles: {
     backgroundColor: COLORS.lightGrey,
     width: "95%",
     color: COLORS.darkGrey,
     fontFamily: "Segoe_UI_Bold",
     borderRadius: 10,
-  },
-
-  pickerContainer: {
-    backgroundColor: COLORS.lightGrey,
-    width: "90%",
-    borderRadius: 10,
-    alignItems: "center",
   },
 });
 
