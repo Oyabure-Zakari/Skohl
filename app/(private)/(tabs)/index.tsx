@@ -1,3 +1,4 @@
+import CategoryPicker from "@/components/home/CategoryPicker";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import COLORS from "@/constants/colors";
@@ -7,7 +8,7 @@ import BottomSheet, {
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { Picker } from "@react-native-picker/picker";
+
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -24,8 +25,11 @@ export default function ProductsScreen() {
   const [rating, setRating] = useState(0);
 
   const sheetRef = useRef<BottomSheet>(null);
+  const titleRef = useRef("");
+  const descriptionRef = useRef("");
+  const priceRef = useRef("");
 
-  const snapPoints = useMemo(() => ["1%", "50%", "95%"], []); // Changed from 50% to 60% and 100% to 95%
+  const snapPoints = useMemo(() => ["1%", "50%", "95%"], []);
 
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
@@ -140,56 +144,34 @@ export default function ProductsScreen() {
 
             {/* View for picker and input field */}
             <View style={styles.postFormContainer}>
-              {/* Picker Container */}
-              <View style={styles.pickerContainer}>
-                <Picker
-                  style={styles.pickerStyles}
-                  selectedValue={selectedCategory}
-                  onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
-                >
-                  <Picker.Item label="Category" value="none" enabled={false} />
-                  <Picker.Item
-                    label="📚 Books & Academic Materials"
-                    value="Books & Academic Materials"
-                  />
-                  <Picker.Item label="💻 Electronics & Gadgets" value="Electronics & Gadgets" />
-                  <Picker.Item label="🧰 Equipments" value="Equipments" />
-                  <Picker.Item label="👕 Fashion & Clothing" value="Fashion & Clothing" />
-                  <Picker.Item
-                    label="🪑 Hostel & Room Essentials"
-                    value="Hostel & Room Essentials"
-                  />
-                  <Picker.Item label="🍳 Kitchen & Food Items" value="Kitchen & Food Items" />
-                  <Picker.Item label="🧴 Personal Care & Beauty" value="Personal Care & Beauty" />
-                  <Picker.Item label="🏃‍♂️ Sportswear" value="Sportswear" />
-                  <Picker.Item
-                    label="✏️ Stationery & Office Supplies"
-                    value="Stationery & Office Supplies"
-                  />
-                  <Picker.Item
-                    label="🚲 Transportation & Mobility"
-                    value="Transportation & Mobility"
-                  />
-                </Picker>
-              </View>
-
               <BottomSheetTextInput
                 placeholder="Title"
+                onChangeText={(text) => (titleRef.current = text)}
                 placeholderTextColor={COLORS.darkGrey}
                 style={styles.postTextInput}
               />
               <BottomSheetTextInput
                 placeholder="Price"
+                onChangeText={(text) => (priceRef.current = text)}
+                keyboardType="numeric"
                 placeholderTextColor={COLORS.darkGrey}
                 style={styles.postTextInput}
               />
               <BottomSheetTextInput
                 placeholder="Description"
+                onChangeText={(text) => (descriptionRef.current = text)}
                 multiline={true}
                 numberOfLines={4}
                 textAlignVertical="top"
                 placeholderTextColor={COLORS.darkGrey}
                 style={styles.postTextInput}
+              />
+
+              {/* Picker */}
+              <CategoryPicker
+                postType={postType}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
               />
             </View>
 
@@ -373,21 +355,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 15,
-  },
-
-  pickerContainer: {
-    backgroundColor: COLORS.lightGrey,
-    width: "90%",
-    borderRadius: 10,
-    alignItems: "center",
-  },
-
-  pickerStyles: {
-    backgroundColor: COLORS.lightGrey,
-    width: "95%",
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-    borderRadius: 10,
   },
 
   postTextInput: {
