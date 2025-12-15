@@ -21,6 +21,16 @@ export default function ProductsScreen() {
   const [postType, setPostType] = useState<"Post a Product" | "Post a Service" | "Post an Event">(
     "Post a Product"
   );
+  const placeHolderTitle = () => {
+    switch (postType) {
+      case "Post a Product":
+        return "Product Name";
+      case "Post a Service":
+        return "Job title";
+      case "Post an Event":
+        return "Event topic";
+    }
+  };
   const [selectedCategory, setSelectedCategory] = useState("");
   const [rating, setRating] = useState(0);
 
@@ -145,7 +155,7 @@ export default function ProductsScreen() {
             {/* View for picker and input field */}
             <View style={styles.postFormContainer}>
               <BottomSheetTextInput
-                placeholder="Title"
+                placeholder={placeHolderTitle()}
                 onChangeText={(text) => (titleRef.current = text)}
                 placeholderTextColor={COLORS.darkGrey}
                 style={styles.postTextInput}
