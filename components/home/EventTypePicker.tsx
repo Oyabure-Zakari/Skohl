@@ -4,17 +4,17 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 
 type Props = {
-  selectedCategory: string;
-  setSelectedCategory: (category: string) => void;
+  selectedEventType: string;
+  setSelectedEventType: (category: string) => void;
 };
 
-const EventTypePicker: React.FC<Props> = ({ selectedCategory, setSelectedCategory }) => {
+const EventTypePicker: React.FC<Props> = ({ selectedEventType, setSelectedEventType }) => {
   return (
     <View style={styles.pickerContainer}>
       <Picker
         style={styles.pickerStyles}
-        selectedValue={selectedCategory}
-        onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
+        selectedValue={selectedEventType}
+        onValueChange={(itemValue, itemIndex) => setSelectedEventType(itemValue)}
       >
         <Picker.Item label="Event Type" value="none" enabled={false} />
         <Picker.Item label="🏛️ On-Campus Event" value="On-Campus Event" />

@@ -8,9 +8,17 @@ type Props = {
   postType: "Post a Product" | "Post a Service" | "Post an Event";
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
+  selectedEventType: string;
+  setSelectedEventType: (category: string) => void;
 };
 
-const CategoryPicker: React.FC<Props> = ({ postType, selectedCategory, setSelectedCategory }) => {
+const CategoryPicker: React.FC<Props> = ({
+  postType,
+  selectedCategory,
+  setSelectedCategory,
+  selectedEventType,
+  setSelectedEventType,
+}) => {
   return (
     <>
       {postType === "Post a Product" && (
@@ -30,8 +38,8 @@ const CategoryPicker: React.FC<Props> = ({ postType, selectedCategory, setSelect
       {postType === "Post an Event" && (
         <>
           <EventTypePicker
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            selectedEventType={selectedEventType}
+            setSelectedEventType={setSelectedEventType}
           />
 
           <EventCategoryPicker
