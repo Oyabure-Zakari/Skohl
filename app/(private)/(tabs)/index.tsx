@@ -2,7 +2,11 @@ import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import COLORS from "@/constants/colors";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetScrollView,
+  BottomSheetTextInput,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -21,7 +25,7 @@ export default function ProductsScreen() {
 
   const sheetRef = useRef<BottomSheet>(null);
 
-  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
+  const snapPoints = useMemo(() => ["1%", "50%", "95%"], []); // Changed from 50% to 60% and 100% to 95%
 
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
@@ -36,8 +40,15 @@ export default function ProductsScreen() {
           snapPoints={snapPoints}
           enableDynamicSizing={false}
           backgroundStyle={styles.bottomSheetStyle}
+          keyboardBehavior="fillParent"
+          keyboardBlurBehavior="restore"
+          android_keyboardInputMode="adjustResize"
         >
-          <BottomSheetView style={styles.bottomSheetViewStyle}>
+          <BottomSheetScrollView
+            contentContainerStyle={styles.bottomSheetScrollViewContent}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
             {/* Action type */}
             <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
 
@@ -179,7 +190,7 @@ export default function ProductsScreen() {
             <TouchableOpacity>
               <CustomButton text={"Post"} />
             </TouchableOpacity>
-          </BottomSheetView>
+          </BottomSheetScrollView>
         </BottomSheet>
       ) : (
         <BottomSheet
@@ -187,8 +198,11 @@ export default function ProductsScreen() {
           snapPoints={snapPoints}
           enableDynamicSizing={false}
           backgroundStyle={styles.bottomSheetStyle}
+          keyboardBehavior="fillParent"
+          keyboardBlurBehavior="restore"
+          android_keyboardInputMode="adjustResize"
         >
-          <BottomSheetView style={styles.bottomSheetViewStyle}>
+          <BottomSheetView style={styles.bottomSheetViewContent}>
             {/* Action type */}
             <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
 
@@ -259,11 +273,6 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
 
-  bottomSheetViewStyle: {
-    flex: 1,
-    alignItems: "center",
-  },
-
   divider: {
     width: "100%",
     height: 2,
@@ -272,6 +281,11 @@ const styles = StyleSheet.create({
   },
 
   // Styles for Create Post
+  bottomSheetScrollViewContent: {
+    alignItems: "center",
+    paddingBottom: 200, // This is what makes the contents  scrollable
+  },
+
   activeBottomSheetText: {
     color: COLORS.darkGrey,
     fontFamily: "Segoe_UI_Bold",
@@ -380,6 +394,11 @@ const styles = StyleSheet.create({
   },
 
   // Styles for Send Feedback
+  bottomSheetViewContent: {
+    flex: 1,
+    alignItems: "center",
+  },
+
   postTextInput2: {
     width: "90%",
     color: COLORS.darkGrey,
