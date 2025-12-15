@@ -36,10 +36,12 @@ export default function ProductsScreen() {
 
   const sheetRef = useRef<BottomSheet>(null);
   const titleRef = useRef("");
+  const scheduleRef = useRef("");
   const descriptionRef = useRef("");
+  const venueRef = useRef("");
   const priceRef = useRef("");
 
-  const snapPoints = useMemo(() => ["1%", "50%", "95%"], []);
+  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
 
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
@@ -167,6 +169,33 @@ export default function ProductsScreen() {
                 placeholderTextColor={COLORS.darkGrey}
                 style={styles.postTextInput}
               />
+
+              {postType === "Post a Service" && (
+                <BottomSheetTextInput
+                  placeholder="Schedule"
+                  onChangeText={(text) => (scheduleRef.current = text)}
+                  multiline={true}
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                  placeholderTextColor={COLORS.darkGrey}
+                  style={styles.postTextInput}
+                />
+              )}
+
+              {postType === "Post an Event" && (
+                <>
+                  <BottomSheetTextInput
+                    placeholder="Venue"
+                    onChangeText={(text) => (venueRef.current = text)}
+                    multiline={true}
+                    numberOfLines={4}
+                    textAlignVertical="top"
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+                </>
+              )}
+
               <BottomSheetTextInput
                 placeholder="Description"
                 onChangeText={(text) => (descriptionRef.current = text)}
