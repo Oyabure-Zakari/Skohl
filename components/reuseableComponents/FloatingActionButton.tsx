@@ -15,12 +15,10 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   const openBottomSheet = (name: string | undefined) => {
     if (name === "bt_send_feedback") {
       setActiveBottomSheet("Send Feedback");
-      console.log("Send Feedback");
       handleSnapPress(1);
     }
     if (name === "bt_create_post") {
       setActiveBottomSheet("Create Post");
-      console.log("Create Post");
       handleSnapPress(1);
     }
   };
