@@ -48,9 +48,10 @@ export default function ProductsScreen() {
             contentContainerStyle={styles.bottomSheetScrollViewContent}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={true}
-            keyboardDismissMode="on-drag" // Keyboard hides when user scrolls
+            keyboardDismissMode="none" // Enables users to scroll while typing
             bounces={true} // Enable bounce effect
             alwaysBounceVertical={true} // Always allow vertical bounce
+            nestedScrollEnabled={true} // Add this - helps with scroll detection
             decelerationRate="fast" // Makes scrolling feel snappier
             overScrollMode="always" // Android - shows overscroll effect
           >
@@ -396,6 +397,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightGrey,
     borderRadius: 10,
     paddingHorizontal: 16,
+    paddingVertical: 12, // Add this
+    minHeight: 48, // Add this - ensures good touch target
   },
 
   // Styles for Send Feedback
