@@ -13,46 +13,51 @@ import BottomSheet, {
 
 import COLORS from "@/constants/colors";
 
-import CategoryPicker from "@/components/home/CategoryPicker";
+import EventCategoryPicker from "@/components/home/EventCategoryPicker";
+import EventTypePicker from "@/components/home/EventTypePicker";
+import ProductCategoryPicker from "@/components/home/ProductCategoryPicker";
+import ServiceCategoryPicker from "@/components/home/ServiceCategoryPicker";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
+import useExpoImagePicker from "@/hooks/expoImagePicker";
 
 export default function ProductsScreen() {
   const [rating, setRating] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedEventType, setSelectedEventType] = useState("");
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post"
   );
   const [postType, setPostType] = useState<"Post a Product" | "Post a Service" | "Post an Event">(
     "Post a Product"
   );
-
   const sheetRef = useRef<BottomSheet>(null);
-  const titleRef = useRef("");
-  const scheduleRef = useRef("");
-  const descriptionRef = useRef("");
-  const venueRef = useRef("");
-  const priceRef = useRef("");
+  const { image, pickImage } = useExpoImagePicker();
+
+  // Products
+  const productNameRef = useRef("");
+  const productPriceRef = useRef("");
+  const productDescriptionRef = useRef("");
+  const [selectedProductCategory, setSelectedProductCategory] = useState("");
+  const [productPhoto, setProductPhoto] = useState(image);
+
+  // Services
+  const jobTitleRef = useRef("");
+  const servicePriceRef = useRef("");
+  const serviceDescriptionRef = useRef("");
+  const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
+  const [servicePhoto, setServicePhoto] = useState(image);
+
+  // Events
+  const eventTopicRef = useRef("");
+  const eventDescriptionRef = useRef("");
+  const [selectedEventCategory, setSelectedEventCategory] = useState("");
+  const [selectedEventType, setSelectedEventType] = useState("");
+  const [eventPhoto, setEventPhoto] = useState(image);
 
   const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
 
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
   }, []);
-
-  const placeHolderTitle = () => {
-    switch (postType) {
-      case "Post a Product":
-        return "Product Name";
-      case "Post a Service":
-        return "Job title";
-      case "Post an Event":
-        return "Event topic";
-      default:
-        return "Product Name";
-    }
-  };
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -148,77 +153,140 @@ export default function ProductsScreen() {
             </View>
 
             {/* Photo View */}
-            <View style={styles.photoContainer}>
-              <Text style={styles.photoContainerText}>Photo</Text>
-              <View style={styles.photoOptions}>
-                <TouchableOpacity style={styles.photoOption}>
-                  <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
-                </TouchableOpacity>
+            {postType === "Post a Product" && (
+              <View style={styles.photoContainer}>
+                <Text style={styles.photoContainerText}>Photo</Text>
+                <View style={styles.photoOptions}>
+                  <TouchableOpacity style={styles.photoOption}>
+                    <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
+                  </TouchableOpacity>
 
-                <TouchableOpacity style={styles.photoOption}>
-                  <Entypo name="images" size={25} color={COLORS.darkGrey} />
-                </TouchableOpacity>
+                  <TouchableOpacity style={styles.photoOption}>
+                    <Entypo name="images" size={25} color={COLORS.darkGrey} />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
+            )}
+
+            {postType === "Post a Service" && (
+              <View style={styles.photoContainer}>
+                <Text style={styles.photoContainerText}>Photo</Text>
+                <View style={styles.photoOptions}>
+                  <TouchableOpacity style={styles.photoOption}>
+                    <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.photoOption}>
+                    <Entypo name="images" size={25} color={COLORS.darkGrey} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+
+            {postType === "Post an Event" && (
+              <View style={styles.photoContainer}>
+                <Text style={styles.photoContainerText}>Photo</Text>
+                <View style={styles.photoOptions}>
+                  <TouchableOpacity style={styles.photoOption}>
+                    <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.photoOption}>
+                    <Entypo name="images" size={25} color={COLORS.darkGrey} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
 
             {/* View for picker and input field */}
             <View style={styles.postFormContainer}>
-              <BottomSheetTextInput
-                placeholder={placeHolderTitle()}
-                onChangeText={(text) => (titleRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-              <BottomSheetTextInput
-                placeholder="Price"
-                onChangeText={(text) => (priceRef.current = text)}
-                keyboardType="numeric"
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
+              {postType === "Post a Product" && (
+                <>
+                  <BottomSheetTextInput
+                    placeholder="Post Name"
+                    onChangeText={(text) => (productNameRef.current = text)}
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+                  <BottomSheetTextInput
+                    placeholder="Price"
+                    onChangeText={(text) => (productPriceRef.current = text)}
+                    keyboardType="numeric"
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+
+                  <BottomSheetTextInput
+                    placeholder="Description"
+                    onChangeText={(text) => (productDescriptionRef.current = text)}
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+
+                  <ProductCategoryPicker
+                    selectedCategory={selectedProductCategory}
+                    setSelectedCategory={setSelectedProductCategory}
+                  />
+                </>
+              )}
 
               {postType === "Post a Service" && (
-                <BottomSheetTextInput
-                  placeholder="Schedule"
-                  onChangeText={(text) => (scheduleRef.current = text)}
-                  multiline={true}
-                  numberOfLines={4}
-                  textAlignVertical="top"
-                  placeholderTextColor={COLORS.darkGrey}
-                  style={styles.postTextInput}
-                />
+                <>
+                  <BottomSheetTextInput
+                    placeholder="Job Tite"
+                    onChangeText={(text) => (jobTitleRef.current = text)}
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+                  <BottomSheetTextInput
+                    placeholder="Price"
+                    onChangeText={(text) => (servicePriceRef.current = text)}
+                    keyboardType="numeric"
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+
+                  <BottomSheetTextInput
+                    placeholder="Description"
+                    onChangeText={(text) => (serviceDescriptionRef.current = text)}
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+
+                  <ServiceCategoryPicker
+                    selectedCategory={selectedServiceCategory}
+                    setSelectedCategory={setSelectedServiceCategory}
+                  />
+                </>
               )}
 
               {postType === "Post an Event" && (
-                <BottomSheetTextInput
-                  placeholder="Venue"
-                  onChangeText={(text) => (venueRef.current = text)}
-                  multiline={true}
-                  numberOfLines={4}
-                  textAlignVertical="top"
-                  placeholderTextColor={COLORS.darkGrey}
-                  style={styles.postTextInput}
-                />
+                <>
+                  <BottomSheetTextInput
+                    placeholder="Event Topic"
+                    onChangeText={(text) => (eventTopicRef.current = text)}
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+
+                  <BottomSheetTextInput
+                    placeholder="Description"
+                    onChangeText={(text) => (eventDescriptionRef.current = text)}
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+
+                  <EventTypePicker
+                    selectedEventType={selectedEventType}
+                    setSelectedEventType={setSelectedEventType}
+                  />
+
+                  <EventCategoryPicker
+                    selectedCategory={selectedEventCategory}
+                    setSelectedCategory={setSelectedEventCategory}
+                  />
+                </>
               )}
-
-              <BottomSheetTextInput
-                placeholder="Description"
-                onChangeText={(text) => (descriptionRef.current = text)}
-                multiline={true}
-                numberOfLines={4}
-                textAlignVertical="top"
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              {/* Picker */}
-              <CategoryPicker
-                postType={postType}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-                selectedEventType={selectedEventType}
-                setSelectedEventType={setSelectedEventType}
-              />
             </View>
 
             <TouchableOpacity>
