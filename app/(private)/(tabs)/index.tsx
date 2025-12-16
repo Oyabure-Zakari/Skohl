@@ -19,41 +19,118 @@ import ProductCategoryPicker from "@/components/home/ProductCategoryPicker";
 import ServiceCategoryPicker from "@/components/home/ServiceCategoryPicker";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
+import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import useExpoImagePicker from "@/hooks/expoImagePicker";
 
 export default function ProductsScreen() {
   const [rating, setRating] = useState(0);
+  const [error, setError] = useState("");
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post"
   );
   const [postType, setPostType] = useState<"Post a Product" | "Post a Service" | "Post an Event">(
     "Post a Product"
   );
+
+  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
+
+  const { image: photo, pickImage } = useExpoImagePicker();
+
   const sheetRef = useRef<BottomSheet>(null);
-  const { image, pickImage } = useExpoImagePicker();
 
   // Products
   const productNameRef = useRef("");
   const productPriceRef = useRef("");
   const productDescriptionRef = useRef("");
   const [selectedProductCategory, setSelectedProductCategory] = useState("");
-  const [productPhoto, setProductPhoto] = useState(image);
+
+  const handleCreateProductPost = () => {
+    if (!photo) {
+      setError("Photo is required");
+      return;
+    }
+    if (
+      !productNameRef.current ||
+      !productPriceRef.current ||
+      !productDescriptionRef.current ||
+      !selectedProductCategory
+    ) {
+      setError("All fields are required");
+      return;
+    }
+    console.log("Product post created");
+    setError("");
+    productNameRef.current = "";
+    productPriceRef.current = "";
+    productDescriptionRef.current = "";
+    setSelectedProductCategory("");
+  };
 
   // Services
   const jobTitleRef = useRef("");
   const servicePriceRef = useRef("");
   const serviceDescriptionRef = useRef("");
   const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
-  const [servicePhoto, setServicePhoto] = useState(image);
+  const handleCreateServicePost = () => {
+    if (!photo) {
+      setError("Photo is required");
+      return;
+    }
+    if (
+      !jobTitleRef.current ||
+      !servicePriceRef.current ||
+      !serviceDescriptionRef.current ||
+      !selectedServiceCategory
+    ) {
+      setError("All fields are required");
+      return;
+    }
+    console.log("Service post created");
+    setError("");
+    jobTitleRef.current = "";
+    servicePriceRef.current = "";
+    serviceDescriptionRef.current = "";
+    setSelectedServiceCategory("");
+  };
 
   // Events
   const eventTopicRef = useRef("");
   const eventDescriptionRef = useRef("");
   const [selectedEventCategory, setSelectedEventCategory] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
-  const [eventPhoto, setEventPhoto] = useState(image);
+  const handleCreateEventPost = () => {
+    if (!photo) {
+      setError("Photo is required");
+      return;
+    }
+    if (
+      !eventTopicRef.current ||
+      !eventDescriptionRef.current ||
+      !selectedEventCategory ||
+      !selectedEventType
+    ) {
+      setError("All fields are required");
+      return;
+    }
+    console.log("Event post created");
+    setError("");
+    eventTopicRef.current = "";
+    eventDescriptionRef.current = "";
+    setSelectedEventCategory("");
+    setSelectedEventType("");
+  };
 
-  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
+  const handlePost = () => {
+    if (postType === "Post a Product") {
+      handleCreateProductPost();
+    } else if (postType === "Post a Service") {
+      handleCreateServicePost();
+    } else if (postType === "Post an Event") {
+      handleCreateEventPost();
+    } else {
+      console.log("Invalid post type");
+    }
+  };
 
   const handleSnapPress = useCallback((index: number) => {
     sheetRef.current?.snapToIndex(index);
@@ -161,7 +238,7 @@ export default function ProductsScreen() {
                     <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.photoOption}>
+                  <TouchableOpacity style={styles.photoOption} onPress={pickImage}>
                     <Entypo name="images" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
                 </View>
@@ -176,7 +253,7 @@ export default function ProductsScreen() {
                     <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.photoOption}>
+                  <TouchableOpacity style={styles.photoOption} onPress={pickImage}>
                     <Entypo name="images" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
                 </View>
@@ -191,7 +268,7 @@ export default function ProductsScreen() {
                     <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.photoOption}>
+                  <TouchableOpacity style={styles.photoOption} onPress={pickImage}>
                     <Entypo name="images" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
                 </View>
@@ -200,6 +277,7 @@ export default function ProductsScreen() {
 
             {/* View for picker and input field */}
             <View style={styles.postFormContainer}>
+              <FormErrorText error={error} />
               {postType === "Post a Product" && (
                 <>
                   <BottomSheetTextInput
@@ -289,7 +367,7 @@ export default function ProductsScreen() {
               )}
             </View>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handlePost}>
               <CustomButton text={"Post"} />
             </TouchableOpacity>
           </BottomSheetScrollView>
