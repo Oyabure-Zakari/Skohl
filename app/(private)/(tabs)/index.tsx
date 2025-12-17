@@ -69,6 +69,7 @@ export default function ProductsScreen() {
   // Services
   const jobTitleRef = useRef("");
   const servicePriceRef = useRef("");
+  const serviceScheduleRef = useRef("");
   const serviceDescriptionRef = useRef("");
   const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
   const handleCreateServicePost = () => {
@@ -79,6 +80,7 @@ export default function ProductsScreen() {
     if (
       !jobTitleRef.current ||
       !servicePriceRef.current ||
+      !serviceScheduleRef.current ||
       !serviceDescriptionRef.current ||
       !selectedServiceCategory
     ) {
@@ -89,6 +91,7 @@ export default function ProductsScreen() {
     setError("");
     jobTitleRef.current = "";
     servicePriceRef.current = "";
+    serviceScheduleRef.current = "";
     serviceDescriptionRef.current = "";
     setSelectedServiceCategory("");
   };
@@ -323,6 +326,13 @@ export default function ProductsScreen() {
                     placeholder="Price"
                     onChangeText={(text) => (servicePriceRef.current = text)}
                     keyboardType="numeric"
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+
+                  <BottomSheetTextInput
+                    placeholder="Schedule"
+                    onChangeText={(text) => (serviceScheduleRef.current = text)}
                     placeholderTextColor={COLORS.darkGrey}
                     style={styles.postTextInput}
                   />
