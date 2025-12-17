@@ -269,6 +269,12 @@ export default function ProductsScreen() {
                   <Image
                     source={{ uri: photo }}
                     placeholder={{ blurhash }}
+                    style={{
+                      //backgroundColor: "red",
+                      width: "100%",
+                      height: "65%",
+                      resizeMode: "stretch",
+                    }}
                     contentFit="contain"
                     transition={1000}
                     alt="Product Image"
