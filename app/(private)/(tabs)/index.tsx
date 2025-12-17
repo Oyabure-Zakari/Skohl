@@ -20,7 +20,9 @@ import ServiceCategoryPicker from "@/components/home/ServiceCategoryPicker";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
+import blurhash from "@/constants/expoBlurImage";
 import useExpoImagePicker from "@/hooks/expoImagePicker";
+import { Image } from "expo-image";
 
 export default function ProductsScreen() {
   const [rating, setRating] = useState(0);
@@ -44,10 +46,10 @@ export default function ProductsScreen() {
   const productDescriptionRef = useRef("");
   const [selectedProductCategory, setSelectedProductCategory] = useState("");
 
-  const handleCreateProductPost = () => {
+  const isProductFormValid = () => {
     if (!photo) {
       setError("Photo is required");
-      return;
+      return false;
     }
     if (
       !productNameRef.current ||
@@ -56,14 +58,22 @@ export default function ProductsScreen() {
       !selectedProductCategory
     ) {
       setError("All fields are required");
-      return;
+      return false;
     }
-    console.log("Product post created");
+
     setError("");
     productNameRef.current = "";
     productPriceRef.current = "";
     productDescriptionRef.current = "";
     setSelectedProductCategory("");
+    return true;
+  };
+
+  const handleCreateProductPost = () => {
+    if (!isProductFormValid()) {
+      return;
+    }
+    console.log("Product post created");
   };
 
   // Services
@@ -72,10 +82,11 @@ export default function ProductsScreen() {
   const serviceScheduleRef = useRef("");
   const serviceDescriptionRef = useRef("");
   const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
-  const handleCreateServicePost = () => {
+
+  const isServiceFormValid = () => {
     if (!photo) {
       setError("Photo is required");
-      return;
+      return false;
     }
     if (
       !jobTitleRef.current ||
@@ -85,15 +96,22 @@ export default function ProductsScreen() {
       !selectedServiceCategory
     ) {
       setError("All fields are required");
-      return;
+      return false;
     }
-    console.log("Service post created");
     setError("");
     jobTitleRef.current = "";
     servicePriceRef.current = "";
     serviceScheduleRef.current = "";
     serviceDescriptionRef.current = "";
     setSelectedServiceCategory("");
+    return true;
+  };
+
+  const handleCreateServicePost = () => {
+    if (!isServiceFormValid()) {
+      return;
+    }
+    console.log("Service post created");
   };
 
   // Events
@@ -102,10 +120,11 @@ export default function ProductsScreen() {
   const eventDescriptionRef = useRef("");
   const [selectedEventCategory, setSelectedEventCategory] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
-  const handleCreateEventPost = () => {
+
+  const isEventFormValid = () => {
     if (!photo) {
       setError("Photo is required");
-      return;
+      return false;
     }
     if (
       !eventTopicRef.current ||
@@ -115,15 +134,21 @@ export default function ProductsScreen() {
       !selectedEventType
     ) {
       setError("All fields are required");
-      return;
+      return false;
     }
-    console.log("Event post created");
     setError("");
     eventTopicRef.current = "";
     eventVenueRef.current = "";
     eventDescriptionRef.current = "";
     setSelectedEventCategory("");
     setSelectedEventType("");
+    return true;
+  };
+  const handleCreateEventPost = () => {
+    if (!isEventFormValid()) {
+      return;
+    }
+    console.log("Event post created");
   };
 
   const handlePost = () => {
@@ -238,7 +263,17 @@ export default function ProductsScreen() {
             {/* Photo View */}
             {postType === "Post a Product" && (
               <View style={styles.photoContainer}>
-                <Text style={styles.photoContainerText}>Photo</Text>
+                {!photo ? (
+                  <Text style={styles.photoContainerText}>Photo</Text>
+                ) : (
+                  <Image
+                    source={{ uri: photo }}
+                    placeholder={{ blurhash }}
+                    contentFit="contain"
+                    transition={1000}
+                    alt="Product Image"
+                  />
+                )}
                 <View style={styles.photoOptions}>
                   <TouchableOpacity style={styles.photoOption}>
                     <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
@@ -356,6 +391,13 @@ export default function ProductsScreen() {
                   <BottomSheetTextInput
                     placeholder="Event Topic"
                     onChangeText={(text) => (eventTopicRef.current = text)}
+                    placeholderTextColor={COLORS.darkGrey}
+                    style={styles.postTextInput}
+                  />
+
+                  <BottomSheetTextInput
+                    placeholder="Venue"
+                    onChangeText={(text) => (eventVenueRef.current = text)}
                     placeholderTextColor={COLORS.darkGrey}
                     style={styles.postTextInput}
                   />
