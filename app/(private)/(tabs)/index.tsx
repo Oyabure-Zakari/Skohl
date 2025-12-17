@@ -95,6 +95,7 @@ export default function ProductsScreen() {
 
   // Events
   const eventTopicRef = useRef("");
+  const eventVenueRef = useRef("");
   const eventDescriptionRef = useRef("");
   const [selectedEventCategory, setSelectedEventCategory] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
@@ -105,6 +106,7 @@ export default function ProductsScreen() {
     }
     if (
       !eventTopicRef.current ||
+      !eventVenueRef.current ||
       !eventDescriptionRef.current ||
       !selectedEventCategory ||
       !selectedEventType
@@ -115,6 +117,7 @@ export default function ProductsScreen() {
     console.log("Event post created");
     setError("");
     eventTopicRef.current = "";
+    eventVenueRef.current = "";
     eventDescriptionRef.current = "";
     setSelectedEventCategory("");
     setSelectedEventType("");
