@@ -26,7 +26,7 @@ const SendFeedbackBottomSheet: React.FC<SendFeedbackBottomSheetProps> = ({
       android_keyboardInputMode="adjustResize"
     >
       <BottomSheetView style={styles.bottomSheetViewContent}>
-        {/* Action type */}
+        {/* Send Feedback */}
         <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
 
         {/* Divider */}
@@ -60,6 +60,7 @@ const SendFeedbackBottomSheet: React.FC<SendFeedbackBottomSheetProps> = ({
           />
         </View>
 
+        {/* Send Feedback Button */}
         <TouchableOpacity onPress={handleSendFeedback}>
           <CustomButton text={"Send Feedback"} />
         </TouchableOpacity>

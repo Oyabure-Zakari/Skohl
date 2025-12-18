@@ -63,7 +63,7 @@ const CreatePostBottomSheet: React.FC<CreatePostBottomSheetProps> = ({
         decelerationRate="fast" // Makes scrolling feel snappier
         overScrollMode="always" // Android - shows overscroll effect
       >
-        {/* Action type */}
+        {/* Create Post */}
         <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
 
         {/* Divider */}
@@ -175,7 +175,7 @@ const CreatePostBottomSheet: React.FC<CreatePostBottomSheetProps> = ({
                 placeholder={{ blurhash }}
                 contentFit="contain"
                 transition={1000}
-                alt="Product Photo"
+                alt="Job Photo"
               />
             )}
 
@@ -204,7 +204,7 @@ const CreatePostBottomSheet: React.FC<CreatePostBottomSheetProps> = ({
                 placeholder={{ blurhash }}
                 contentFit="contain"
                 transition={1000}
-                alt="Product Photo"
+                alt="Event Photo"
               />
             )}
 
@@ -326,6 +326,7 @@ const CreatePostBottomSheet: React.FC<CreatePostBottomSheetProps> = ({
           )}
         </View>
 
+        {/* Post Button */}
         <TouchableOpacity onPress={handlePost}>
           <CustomButton text={"Post"} />
         </TouchableOpacity>
