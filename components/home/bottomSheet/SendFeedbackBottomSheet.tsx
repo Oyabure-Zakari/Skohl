@@ -12,6 +12,8 @@ type SendFeedbackBottomSheetProps = {
   activeBottomSheet: "Send Feedback";
   rating: number;
   setRating: React.Dispatch<React.SetStateAction<number>>;
+  feedbackTextRef: React.RefObject<string>;
+  handleSendFeedback: () => void;
 };
 
 const SendFeedbackBottomSheet: React.FC<SendFeedbackBottomSheetProps> = ({
@@ -20,6 +22,8 @@ const SendFeedbackBottomSheet: React.FC<SendFeedbackBottomSheetProps> = ({
   activeBottomSheet,
   rating,
   setRating,
+  feedbackTextRef,
+  handleSendFeedback,
 }) => {
   return (
     <BottomSheet
@@ -49,6 +53,7 @@ const SendFeedbackBottomSheet: React.FC<SendFeedbackBottomSheetProps> = ({
           textAlignVertical="top"
           placeholderTextColor={COLORS.darkGrey}
           style={styles.postTextInput2}
+          onChangeText={(text) => (feedbackTextRef.current = text)}
         />
 
         {/* Rating */}
@@ -65,7 +70,7 @@ const SendFeedbackBottomSheet: React.FC<SendFeedbackBottomSheetProps> = ({
           />
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleSendFeedback}>
           <CustomButton text={"Send Feedback"} />
         </TouchableOpacity>
       </BottomSheetView>
