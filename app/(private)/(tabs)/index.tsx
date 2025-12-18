@@ -262,24 +262,22 @@ export default function ProductsScreen() {
 
             {/* Photo View */}
             {postType === "Post a Product" && (
-              <View style={styles.photoContainer}>
+              <>
                 {!photo ? (
-                  <Text style={styles.photoContainerText}>Photo</Text>
+                  <View style={styles.photoPlaceholder}>
+                    <Text style={styles.photoContainerText}>Photo</Text>
+                  </View>
                 ) : (
                   <Image
                     source={{ uri: photo }}
+                    style={styles.postPhoto}
                     placeholder={{ blurhash }}
-                    style={{
-                      //backgroundColor: "red",
-                      width: "100%",
-                      height: "65%",
-                      resizeMode: "stretch",
-                    }}
                     contentFit="contain"
                     transition={1000}
-                    alt="Product Image"
+                    alt="Product Photo"
                   />
                 )}
+
                 <View style={styles.photoOptions}>
                   <TouchableOpacity style={styles.photoOption}>
                     <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
@@ -289,12 +287,26 @@ export default function ProductsScreen() {
                     <Entypo name="images" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
                 </View>
-              </View>
+              </>
             )}
 
             {postType === "Post a Service" && (
-              <View style={styles.photoContainer}>
-                <Text style={styles.photoContainerText}>Photo</Text>
+              <>
+                {!photo ? (
+                  <View style={styles.photoPlaceholder}>
+                    <Text style={styles.photoContainerText}>Photo</Text>
+                  </View>
+                ) : (
+                  <Image
+                    source={{ uri: photo }}
+                    style={styles.postPhoto}
+                    placeholder={{ blurhash }}
+                    contentFit="contain"
+                    transition={1000}
+                    alt="Product Photo"
+                  />
+                )}
+
                 <View style={styles.photoOptions}>
                   <TouchableOpacity style={styles.photoOption}>
                     <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
@@ -304,12 +316,26 @@ export default function ProductsScreen() {
                     <Entypo name="images" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
                 </View>
-              </View>
+              </>
             )}
 
             {postType === "Post an Event" && (
-              <View style={styles.photoContainer}>
-                <Text style={styles.photoContainerText}>Photo</Text>
+              <>
+                {!photo ? (
+                  <View style={styles.photoPlaceholder}>
+                    <Text style={styles.photoContainerText}>Photo</Text>
+                  </View>
+                ) : (
+                  <Image
+                    source={{ uri: photo }}
+                    style={styles.postPhoto}
+                    placeholder={{ blurhash }}
+                    contentFit="contain"
+                    transition={1000}
+                    alt="Product Photo"
+                  />
+                )}
+
                 <View style={styles.photoOptions}>
                   <TouchableOpacity style={styles.photoOption}>
                     <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
@@ -319,7 +345,7 @@ export default function ProductsScreen() {
                     <Entypo name="images" size={25} color={COLORS.darkGrey} />
                   </TouchableOpacity>
                 </View>
-              </View>
+              </>
             )}
 
             {/* View for picker and input field */}
@@ -572,7 +598,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
 
-  photoContainer: {
+  photoPlaceholder: {
     marginTop: 20,
     width: "45%",
     height: 150,
@@ -582,6 +608,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightGrey,
     gap: 10,
   },
+
+  postPhoto: { width: 150, height: 150, borderRadius: 10, marginTop: 20 },
 
   photoContainerText: {
     color: COLORS.darkGrey,
@@ -594,7 +622,7 @@ const styles = StyleSheet.create({
   },
 
   photoOption: {
-    backgroundColor: COLORS.whiteSecondary,
+    backgroundColor: COLORS.lightGrey,
     width: 40,
     height: 40,
     borderRadius: 5,
