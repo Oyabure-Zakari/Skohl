@@ -1,20 +1,10 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import COLORS from "@/constants/colors";
+import SendFeedbackBottomSheetProps from "@/types/SendFeedbackBottomSheetProps";
 import BottomSheet, { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
-import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import StarRating from "react-native-star-rating-widget";
-
-type SendFeedbackBottomSheetProps = {
-  sheetRef: React.RefObject<BottomSheetMethods | null>;
-  snapPoints: string[];
-  activeBottomSheet: "Send Feedback";
-  rating: number;
-  setRating: React.Dispatch<React.SetStateAction<number>>;
-  feedbackTextRef: React.RefObject<string>;
-  handleSendFeedback: () => void;
-};
 
 const SendFeedbackBottomSheet: React.FC<SendFeedbackBottomSheetProps> = ({
   sheetRef,
