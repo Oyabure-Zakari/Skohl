@@ -1,18 +1,14 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import StarRating from "react-native-star-rating-widget";
 
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import BottomSheet, {
-  BottomSheetScrollView,
-  BottomSheetTextInput,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
 
 import COLORS from "@/constants/colors";
 
+import SendFeedbackBottomSheet from "@/components/home/bottomSheet/SendFeedbackBottomSheet";
 import EventCategoryPicker from "@/components/home/EventCategoryPicker";
 import EventTypePicker from "@/components/home/EventTypePicker";
 import ProductCategoryPicker from "@/components/home/ProductCategoryPicker";
@@ -34,7 +30,7 @@ export default function ProductsScreen() {
     "Post a Product"
   );
 
-  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
+  const snapPoints = useMemo(() => ["8%", "50%", "100%"], []);
 
   const { image: photo, pickImage } = useExpoImagePicker();
 
@@ -460,54 +456,13 @@ export default function ProductsScreen() {
           </BottomSheetScrollView>
         </BottomSheet>
       ) : (
-        <BottomSheet
-          ref={sheetRef}
+        <SendFeedbackBottomSheet
+          sheetRef={sheetRef}
           snapPoints={snapPoints}
-          enableDynamicSizing={false}
-          backgroundStyle={styles.bottomSheetStyle}
-          keyboardBehavior="fillParent"
-          keyboardBlurBehavior="restore"
-          android_keyboardInputMode="adjustResize"
-        >
-          <BottomSheetView style={styles.bottomSheetViewContent}>
-            {/* Action type */}
-            <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
-
-            {/* Divider */}
-            <View style={styles.divider} />
-
-            {/* Want to give us feedback? Text */}
-            <Text style={styles.activeBottomSheetText2}>{"We'd love your feedback!"}</Text>
-
-            {/* Text Input */}
-            <BottomSheetTextInput
-              placeholder="Feedback"
-              multiline={true}
-              numberOfLines={4}
-              textAlignVertical="top"
-              placeholderTextColor={COLORS.darkGrey}
-              style={styles.postTextInput2}
-            />
-
-            {/* Rating */}
-            <View style={styles.ratingContainer}>
-              <Text style={styles.ratingText}>Rate us</Text>
-              <StarRating
-                maxStars={5}
-                starSize={30}
-                step={"full"}
-                rating={rating}
-                onChange={setRating}
-                color={COLORS.yellow}
-                emptyColor={COLORS.yellow}
-              />
-            </View>
-
-            <TouchableOpacity>
-              <CustomButton text={"Send Feedback"} />
-            </TouchableOpacity>
-          </BottomSheetView>
-        </BottomSheet>
+          activeBottomSheet={activeBottomSheet}
+          rating={rating}
+          setRating={setRating}
+        />
       )}
 
       <FloatingActionButton
