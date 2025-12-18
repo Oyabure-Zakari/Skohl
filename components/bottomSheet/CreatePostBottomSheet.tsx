@@ -1,420 +1,276 @@
+import { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
-import CreatePostBottomSheetProps from "@/types/CreatePostBottomSheetProps";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import useExpoImagePicker from "@/hooks/expoImagePicker";
 import EventCategoryPicker from "./EventCategoryPicker";
 import EventTypePicker from "./EventTypePicker";
 import ProductCategoryPicker from "./ProductCategoryPicker";
 import ServiceCategoryPicker from "./ServiceCategoryPicker";
 
-const CreatePostBottomSheet: React.FC<CreatePostBottomSheetProps> = ({
-  sheetRef,
-  snapPoints,
-  activeBottomSheet,
-  postType,
-  setPostType,
-  photo,
-  pickImage,
-  error,
-  productNameRef,
-  productPriceRef,
-  productDescriptionRef,
-  selectedProductCategory,
-  setSelectedProductCategory,
-  jobTitleRef,
-  servicePriceRef,
-  serviceScheduleRef,
-  serviceDescriptionRef,
-  selectedServiceCategory,
-  setSelectedServiceCategory,
-  eventTopicRef,
-  eventVenueRef,
-  eventDescriptionRef,
-  selectedEventType,
-  setSelectedEventType,
-  selectedEventCategory,
-  setSelectedEventCategory,
-  handlePost,
-}) => {
+const CreatePostBottomSheet: React.FC = () => {
+  const [postType, setPostType] = React.useState<
+    "Post a Product" | "Post a Service" | "Post an Event"
+  >("Post a Product");
+  const [error, setError] = React.useState("");
+  const { image: photo, pickImage } = useExpoImagePicker();
+
+  // Refs for form values
+  const productNameRef = React.useRef("");
+  const productPriceRef = React.useRef("");
+  const productDescriptionRef = React.useRef("");
+  const [selectedProductCategory, setSelectedProductCategory] = React.useState("");
+
+  const jobTitleRef = React.useRef("");
+  const servicePriceRef = React.useRef("");
+  const serviceScheduleRef = React.useRef("");
+  const serviceDescriptionRef = React.useRef("");
+  const [selectedServiceCategory, setSelectedServiceCategory] = React.useState("");
+
+  const eventTopicRef = React.useRef("");
+  const eventVenueRef = React.useRef("");
+  const eventDescriptionRef = React.useRef("");
+  const [selectedEventCategory, setSelectedEventCategory] = React.useState("");
+  const [selectedEventType, setSelectedEventType] = React.useState("");
+
+  const isProductFormValid = () => {
+    if (!photo) return setError("Photo is required"), false;
+    if (
+      !productNameRef.current ||
+      !productPriceRef.current ||
+      !productDescriptionRef.current ||
+      !selectedProductCategory
+    )
+      return setError("All fields are required"), false;
+    setError("");
+    return true;
+  };
+
+  const isServiceFormValid = () => {
+    if (!photo) return setError("Photo is required"), false;
+    if (
+      !jobTitleRef.current ||
+      !servicePriceRef.current ||
+      !serviceScheduleRef.current ||
+      !serviceDescriptionRef.current ||
+      !selectedServiceCategory
+    )
+      return setError("All fields are required"), false;
+    setError("");
+    return true;
+  };
+
+  const isEventFormValid = () => {
+    if (!photo) return setError("Photo is required"), false;
+    if (
+      !eventTopicRef.current ||
+      !eventVenueRef.current ||
+      !eventDescriptionRef.current ||
+      !selectedEventCategory ||
+      !selectedEventType
+    )
+      return setError("All fields are required"), false;
+    setError("");
+    return true;
+  };
+
+  const handlePost = () => {
+    if (postType === "Post a Product" && !isProductFormValid()) return;
+    if (postType === "Post a Service" && !isServiceFormValid()) return;
+    if (postType === "Post an Event" && !isEventFormValid()) return;
+
+    // Your actual post logic here
+    console.log("Post submitted!", { postType, photo });
+  };
+
   return (
-    <BottomSheet
-      ref={sheetRef}
-      snapPoints={snapPoints}
-      enableDynamicSizing={false}
-      backgroundStyle={styles.bottomSheetStyle}
-      keyboardBehavior="fillParent"
-      keyboardBlurBehavior="restore"
-      android_keyboardInputMode="adjustResize"
+    <BottomSheetScrollView
+      contentContainerStyle={styles.content}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={true}
+      bounces={true}
+      alwaysBounceVertical={true}
+      nestedScrollEnabled={true}
+      decelerationRate="fast"
+      overScrollMode="always"
     >
-      <BottomSheetScrollView
-        contentContainerStyle={styles.bottomSheetScrollViewContent}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={true}
-        keyboardDismissMode="none" // Enables users to scroll while typing
-        bounces={true} // Enable bounce effect
-        alwaysBounceVertical={true} // Always allow vertical bounce
-        nestedScrollEnabled={true} // Add this - helps with scroll detection
-        decelerationRate="fast" // Makes scrolling feel snappier
-        overScrollMode="always" // Android - shows overscroll effect
-      >
-        {/* Create Post */}
-        <Text style={styles.activeBottomSheetText}>{activeBottomSheet}</Text>
+      <Text style={styles.title}>Create Post</Text>
+      <View style={styles.divider} />
 
-        {/* Divider */}
-        <View style={styles.divider} />
+      <Text style={styles.subtitle}>What would you like to post?</Text>
 
-        {/* What do you want to post? text */}
-        <Text style={styles.activeBottomSheetText2}>What would you like to post?</Text>
-
-        {/* Post type */}
-        <View style={styles.postTypeContainer}>
+      <View style={styles.postTypeContainer}>
+        {(["Post a Product", "Post a Service", "Post an Event"] as const).map((type) => (
           <TouchableOpacity
-            style={[
-              postType === "Post a Product"
-                ? styles.activePostTypeButton
-                : styles.inActivePostTypeButton,
-            ]}
-            onPress={() => setPostType("Post a Product")}
+            key={type}
+            style={[postType === type ? styles.activeButton : styles.inactiveButton]}
+            onPress={() => setPostType(type)}
           >
-            <Text
-              style={[
-                postType === "Post a Product"
-                  ? styles.activePostTypeButtonText
-                  : styles.inActivePostTypeButtonText,
-              ]}
-            >
-              Post a Product
+            <Text style={[postType === type ? styles.activeText : styles.inactiveText]}>
+              {type}
             </Text>
           </TouchableOpacity>
+        ))}
+      </View>
 
-          <TouchableOpacity
-            style={[
-              postType === "Post a Service"
-                ? styles.activePostTypeButton
-                : styles.inActivePostTypeButton,
-            ]}
-            onPress={() => setPostType("Post a Service")}
-          >
-            <Text
-              style={[
-                postType === "Post a Service"
-                  ? styles.activePostTypeButtonText
-                  : styles.inActivePostTypeButtonText,
-              ]}
-            >
-              Post a Service
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              postType === "Post an Event"
-                ? styles.activePostTypeButton
-                : styles.inActivePostTypeButton,
-            ]}
-            onPress={() => setPostType("Post an Event")}
-          >
-            <Text
-              style={[
-                postType === "Post an Event"
-                  ? styles.activePostTypeButtonText
-                  : styles.inActivePostTypeButtonText,
-              ]}
-            >
-              Post an Event
-            </Text>
-          </TouchableOpacity>
+      {/* Photo Section */}
+      {!photo ? (
+        <View style={styles.photoPlaceholder}>
+          <Text style={styles.photoText}>Photo</Text>
         </View>
+      ) : (
+        <Image
+          source={{ uri: photo }}
+          style={styles.postPhoto}
+          placeholder={{ blurhash }}
+          contentFit="contain"
+          transition={1000}
+        />
+      )}
 
-        {/* Photo View */}
+      <View style={styles.photoOptions}>
+        <TouchableOpacity style={styles.photoOption}>
+          <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.photoOption} onPress={pickImage}>
+          <Entypo name="images" size={25} color={COLORS.darkGrey} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.formContainer}>
+        <FormErrorText error={error} />
+
+        {/* Product Fields */}
         {postType === "Post a Product" && (
           <>
-            {!photo ? (
-              <View style={styles.photoPlaceholder}>
-                <Text style={styles.photoContainerText}>Photo</Text>
-              </View>
-            ) : (
-              <Image
-                source={{ uri: photo }}
-                style={styles.postPhoto}
-                placeholder={{ blurhash }}
-                contentFit="contain"
-                transition={1000}
-                alt="Product Photo"
-              />
-            )}
-
-            <View style={styles.photoOptions}>
-              <TouchableOpacity style={styles.photoOption}>
-                <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.photoOption} onPress={pickImage}>
-                <Entypo name="images" size={25} color={COLORS.darkGrey} />
-              </TouchableOpacity>
-            </View>
+            <BottomSheetTextInput
+              placeholder="Post Name"
+              onChangeText={(text) => (productNameRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <BottomSheetTextInput
+              placeholder="Price"
+              keyboardType="numeric"
+              onChangeText={(text) => (productPriceRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <BottomSheetTextInput
+              placeholder="Description"
+              onChangeText={(text) => (productDescriptionRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <ProductCategoryPicker
+              selectedCategory={selectedProductCategory}
+              setSelectedCategory={setSelectedProductCategory}
+            />
           </>
         )}
 
+        {/* Service Fields */}
         {postType === "Post a Service" && (
           <>
-            {!photo ? (
-              <View style={styles.photoPlaceholder}>
-                <Text style={styles.photoContainerText}>Photo</Text>
-              </View>
-            ) : (
-              <Image
-                source={{ uri: photo }}
-                style={styles.postPhoto}
-                placeholder={{ blurhash }}
-                contentFit="contain"
-                transition={1000}
-                alt="Job Photo"
-              />
-            )}
-
-            <View style={styles.photoOptions}>
-              <TouchableOpacity style={styles.photoOption}>
-                <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.photoOption} onPress={pickImage}>
-                <Entypo name="images" size={25} color={COLORS.darkGrey} />
-              </TouchableOpacity>
-            </View>
+            <BottomSheetTextInput
+              placeholder="Job Title"
+              onChangeText={(text) => (jobTitleRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <BottomSheetTextInput
+              placeholder="Price"
+              keyboardType="numeric"
+              onChangeText={(text) => (servicePriceRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <BottomSheetTextInput
+              placeholder="Schedule"
+              onChangeText={(text) => (serviceScheduleRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <BottomSheetTextInput
+              placeholder="Description"
+              onChangeText={(text) => (serviceDescriptionRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <ServiceCategoryPicker
+              selectedCategory={selectedServiceCategory}
+              setSelectedCategory={setSelectedServiceCategory}
+            />
           </>
         )}
 
+        {/* Event Fields */}
         {postType === "Post an Event" && (
           <>
-            {!photo ? (
-              <View style={styles.photoPlaceholder}>
-                <Text style={styles.photoContainerText}>Photo</Text>
-              </View>
-            ) : (
-              <Image
-                source={{ uri: photo }}
-                style={styles.postPhoto}
-                placeholder={{ blurhash }}
-                contentFit="contain"
-                transition={1000}
-                alt="Event Photo"
-              />
-            )}
-
-            <View style={styles.photoOptions}>
-              <TouchableOpacity style={styles.photoOption}>
-                <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.photoOption} onPress={pickImage}>
-                <Entypo name="images" size={25} color={COLORS.darkGrey} />
-              </TouchableOpacity>
-            </View>
+            <BottomSheetTextInput
+              placeholder="Event Topic"
+              onChangeText={(text) => (eventTopicRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <BottomSheetTextInput
+              placeholder="Venue"
+              onChangeText={(text) => (eventVenueRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <BottomSheetTextInput
+              placeholder="Description"
+              onChangeText={(text) => (eventDescriptionRef.current = text)}
+              style={styles.input}
+              placeholderTextColor={COLORS.darkGrey}
+            />
+            <EventTypePicker
+              selectedEventType={selectedEventType}
+              setSelectedEventType={setSelectedEventType}
+            />
+            <EventCategoryPicker
+              selectedCategory={selectedEventCategory}
+              setSelectedCategory={setSelectedEventCategory}
+            />
           </>
         )}
+      </View>
 
-        {/* View for picker and input field */}
-        <View style={styles.postFormContainer}>
-          <FormErrorText error={error} />
-          {postType === "Post a Product" && (
-            <>
-              <BottomSheetTextInput
-                placeholder="Post Name"
-                onChangeText={(text) => (productNameRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-              <BottomSheetTextInput
-                placeholder="Price"
-                onChangeText={(text) => (productPriceRef.current = text)}
-                keyboardType="numeric"
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              <BottomSheetTextInput
-                placeholder="Description"
-                onChangeText={(text) => (productDescriptionRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              <ProductCategoryPicker
-                selectedCategory={selectedProductCategory}
-                setSelectedCategory={setSelectedProductCategory}
-              />
-            </>
-          )}
-
-          {postType === "Post a Service" && (
-            <>
-              <BottomSheetTextInput
-                placeholder="Job Tite"
-                onChangeText={(text) => (jobTitleRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-              <BottomSheetTextInput
-                placeholder="Price"
-                onChangeText={(text) => (servicePriceRef.current = text)}
-                keyboardType="numeric"
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              <BottomSheetTextInput
-                placeholder="Schedule"
-                onChangeText={(text) => (serviceScheduleRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              <BottomSheetTextInput
-                placeholder="Description"
-                onChangeText={(text) => (serviceDescriptionRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              <ServiceCategoryPicker
-                selectedCategory={selectedServiceCategory}
-                setSelectedCategory={setSelectedServiceCategory}
-              />
-            </>
-          )}
-
-          {postType === "Post an Event" && (
-            <>
-              <BottomSheetTextInput
-                placeholder="Event Topic"
-                onChangeText={(text) => (eventTopicRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              <BottomSheetTextInput
-                placeholder="Venue"
-                onChangeText={(text) => (eventVenueRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              <BottomSheetTextInput
-                placeholder="Description"
-                onChangeText={(text) => (eventDescriptionRef.current = text)}
-                placeholderTextColor={COLORS.darkGrey}
-                style={styles.postTextInput}
-              />
-
-              <EventTypePicker
-                selectedEventType={selectedEventType}
-                setSelectedEventType={setSelectedEventType}
-              />
-
-              <EventCategoryPicker
-                selectedCategory={selectedEventCategory}
-                setSelectedCategory={setSelectedEventCategory}
-              />
-            </>
-          )}
-        </View>
-
-        {/* Post Button */}
-        <TouchableOpacity onPress={handlePost}>
-          <CustomButton text={"Post"} />
-        </TouchableOpacity>
-      </BottomSheetScrollView>
-    </BottomSheet>
+      <TouchableOpacity onPress={handlePost}>
+        <CustomButton text="Post" />
+      </TouchableOpacity>
+    </BottomSheetScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  // Styles for both Create Post and Send Feedback
-  bottomSheetStyle: {
-    borderRadius: 10,
-    backgroundColor: COLORS.white,
-    shadowColor: COLORS.darkBlue,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 20,
-  },
-
-  divider: {
-    width: "100%",
-    height: 2,
-    backgroundColor: COLORS.lightGrey,
-    marginTop: 20,
-  },
-
-  // Styles for Create Post
-  bottomSheetScrollViewContent: {
-    alignItems: "center",
-    paddingBottom: 200, // This is what makes the contents  scrollable
-  },
-
-  activeBottomSheetText: {
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-  },
-
-  activeBottomSheetText2: {
-    color: COLORS.darkBlue,
-    fontFamily: "Segoe_UI_Bold",
-    fontSize: 16,
-    marginTop: 10,
-  },
-
-  postTypeContainer: {
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 10,
-  },
-
-  activePostTypeButton: {
-    backgroundColor: COLORS.purple,
-    borderRadius: 5,
-    padding: 5,
-  },
-
-  activePostTypeButtonText: {
+  content: { alignItems: "center", paddingBottom: 200 },
+  title: { color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" },
+  divider: { width: "100%", height: 2, backgroundColor: COLORS.lightGrey, marginTop: 20 },
+  subtitle: { color: COLORS.darkBlue, fontFamily: "Segoe_UI_Bold", fontSize: 16, marginTop: 10 },
+  postTypeContainer: { flexDirection: "row", gap: 10, marginTop: 10 },
+  activeButton: { backgroundColor: COLORS.purple, borderRadius: 5, padding: 5 },
+  activeText: {
     color: COLORS.white,
     fontFamily: "Segoe_UI_Bold",
     fontSize: 12,
     paddingHorizontal: 5,
   },
-
-  inActivePostTypeButton: {
-    borderColor: COLORS.purple,
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 5,
-  },
-
-  inActivePostTypeButtonText: {
+  inactiveButton: { borderColor: COLORS.purple, borderWidth: 1, borderRadius: 5, padding: 5 },
+  inactiveText: {
     color: COLORS.purple,
     fontFamily: "Segoe_UI_Bold",
     fontSize: 12,
     paddingHorizontal: 5,
   },
-
   photoPlaceholder: {
     marginTop: 20,
     width: "45%",
@@ -423,21 +279,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.lightGrey,
-    gap: 10,
   },
-
+  photoText: { color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" },
   postPhoto: { width: 150, height: 150, borderRadius: 10, marginTop: 20 },
-
-  photoContainerText: {
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-  },
-
-  photoOptions: {
-    flexDirection: "row",
-    gap: 12,
-  },
-
+  photoOptions: { flexDirection: "row", gap: 12, marginTop: 10 },
   photoOption: {
     backgroundColor: COLORS.lightGrey,
     width: 40,
@@ -446,24 +291,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
-  postFormContainer: {
-    margin: 20,
-    width: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 15,
-  },
-
-  postTextInput: {
+  formContainer: { margin: 20, width: "100%", alignItems: "center", gap: 15 },
+  input: {
     width: "90%",
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
     backgroundColor: COLORS.lightGrey,
     borderRadius: 10,
     paddingHorizontal: 16,
-    paddingVertical: 12, // Add this
-    minHeight: 48, // Add this - ensures good touch target
+    paddingVertical: 12,
+    color: COLORS.darkGrey,
+    fontFamily: "Segoe_UI_Bold",
+    minHeight: 48,
   },
 });
 
