@@ -54,7 +54,7 @@ const SendFeedbackBottomSheet: React.FC = () => {
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         // console.log(doc.id, " => ", doc.data());
-        fullName = `${doc.data().firstname} ${doc.data().surname}`;
+        fullName = `${doc.data().surname} ${doc.data().firstname}`;
       });
 
       // Add a new feedback document with a generated id.
