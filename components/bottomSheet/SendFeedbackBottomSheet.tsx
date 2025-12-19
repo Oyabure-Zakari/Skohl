@@ -1,18 +1,108 @@
 import { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
-import React from "react";
+import React, { useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import StarRating from "react-native-star-rating-widget";
 
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import COLORS from "@/constants/colors";
+import { useAuth } from "@/contexts/AuthContext";
+import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
+import { db } from "@/firebase/firebase.config";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import FormErrorText from "../reuseableComponents/FormErrorText";
+import OverlayLoadingIndicator from "../reuseableComponents/OverlayLoadingIndicator";
+
+type UserType = {
+  uid: string;
+  image: string;
+  firstname: string;
+  surname: string;
+  faculty: string;
+  gender: string;
+  religion: string;
+};
 
 const SendFeedbackBottomSheet: React.FC = () => {
-  const [rating, setRating] = React.useState(0);
-  const feedbackTextRef = React.useRef("");
+  // Current user
+  const { userUid } = useAuth();
 
-  const handleSendFeedback = () => {
-    console.log("Feedback sent", { rating, text: feedbackTextRef.current });
+  const [error, setError] = useState("");
+  const [rating, setRating] = useState(0);
+  const [user, setUser] = useState<UserType>();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const feedbackTextRef = useRef("");
+  const bottomSheetTextInputRef = useRef<any>(null);
+
+  const isFeedbackValid = () => {
+    if (!feedbackTextRef.current.trim() && rating === 0) {
+      setError("Please provide feedback or rating.");
+      return false;
+    }
+    setError("");
+    return true;
   };
+
+  const submitFeedback = async () => {
+    try {
+      setIsLoading(true);
+      // A query to find the user document with the matching uid field (i.e the current user)
+      const q = query(usersCollectionRef, where("uid", "==", userUid));
+
+      // Execute the query
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        // console.log(doc.id, " => ", doc.data());
+        setUser(doc.data() as UserType);
+      });
+
+      // Add a new feedback document with a generated id.
+      const docRef = await addDoc(collection(db, "feedbacks"), {
+        docId: "",
+        feedback: feedbackTextRef.current,
+        rating,
+        postedBy: {
+          uid: userUid,
+          name: `${user?.firstname} ${user?.surname}`,
+        },
+        createdAt: serverTimestamp(),
+      });
+
+      // Update the newly created document with the generated id
+      await updateDoc(doc(db, "feedbacks", docRef.id), {
+        docId: docRef.id,
+      });
+
+      // Clear the text input on screen
+      bottomSheetTextInputRef.current?.clear();
+      // Also clear the saved text and rating
+      feedbackTextRef.current = "";
+      setRating(0);
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendFeedback = async () => {
+    if (isFeedbackValid()) {
+      await submitFeedback();
+    }
+  };
+
+  if (isLoading) {
+    return <OverlayLoadingIndicator />;
+  }
 
   return (
     <BottomSheetView style={styles.content}>
@@ -20,19 +110,26 @@ const SendFeedbackBottomSheet: React.FC = () => {
       <View style={styles.divider} />
       <Text style={styles.subtitle}>{"We'd love your feedback!"}</Text>
 
+      <FormErrorText error={error} />
+
       <BottomSheetTextInput
+        ref={bottomSheetTextInputRef}
         placeholder="Feedback"
         multiline
         numberOfLines={4}
         textAlignVertical="top"
         placeholderTextColor={COLORS.darkGrey}
         style={styles.input}
-        onChangeText={(text) => (feedbackTextRef.current = text)}
+        onChangeText={(text) => {
+          feedbackTextRef.current = text;
+          if (error) setError("");
+        }}
       />
 
       <View style={styles.ratingContainer}>
         <Text style={styles.ratingText}>Rate us</Text>
         <StarRating
+          step="full"
           rating={rating}
           onChange={setRating}
           starSize={30}
