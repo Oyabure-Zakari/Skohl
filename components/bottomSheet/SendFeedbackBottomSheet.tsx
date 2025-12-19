@@ -21,23 +21,12 @@ import {
 import FormErrorText from "../reuseableComponents/FormErrorText";
 import OverlayLoadingIndicator from "../reuseableComponents/OverlayLoadingIndicator";
 
-type UserType = {
-  uid: string;
-  image: string;
-  firstname: string;
-  surname: string;
-  faculty: string;
-  gender: string;
-  religion: string;
-};
-
 const SendFeedbackBottomSheet: React.FC = () => {
   // Current user
   const { userUid } = useAuth();
 
   const [error, setError] = useState("");
   const [rating, setRating] = useState(0);
-  const [user, setUser] = useState<UserType>();
   const [isLoading, setIsLoading] = useState(false);
 
   const feedbackTextRef = useRef("");
@@ -55,6 +44,9 @@ const SendFeedbackBottomSheet: React.FC = () => {
   const submitFeedback = async () => {
     try {
       setIsLoading(true);
+      // Get the user's full name
+      let fullName;
+
       // A query to find the user document with the matching uid field (i.e the current user)
       const q = query(usersCollectionRef, where("uid", "==", userUid));
 
@@ -62,7 +54,7 @@ const SendFeedbackBottomSheet: React.FC = () => {
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         // console.log(doc.id, " => ", doc.data());
-        setUser(doc.data() as UserType);
+        fullName = `${doc.data().firstname} ${doc.data().surname}`;
       });
 
       // Add a new feedback document with a generated id.
@@ -72,7 +64,7 @@ const SendFeedbackBottomSheet: React.FC = () => {
         rating,
         postedBy: {
           uid: userUid,
-          name: `${user?.firstname} ${user?.surname}`,
+          fullName,
         },
         createdAt: serverTimestamp(),
       });
