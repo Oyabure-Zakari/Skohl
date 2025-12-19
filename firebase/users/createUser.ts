@@ -1,6 +1,6 @@
 import { db } from '@/firebase/firebase.config';
 import StudentInfoType from '@/types/StudentInfoType';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 
   const createUser = async (
     uid: string,
@@ -17,8 +17,8 @@ import { doc, setDoc } from 'firebase/firestore';
         faculty: studentInfo.faculty,
         gender: studentInfo.gender,
         religion: studentInfo.religion,
+        joinedAt: serverTimestamp(),
       });
-      // TODO: Save uid in zustand
     } catch (error: any) {
       setError(`Error creating user ${error.message}`);
     }
