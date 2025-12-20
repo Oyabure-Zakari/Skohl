@@ -19,7 +19,7 @@ export default function HomeScreen() {
   const sheetRef = useRef<BottomSheet>(null);
 
   const handleSnapPress = useCallback(() => {
-    sheetRef.current?.snapToIndex(1);
+    sheetRef.current?.snapToIndex(2);
   }, []);
 
   return (
