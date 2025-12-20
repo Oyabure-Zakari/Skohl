@@ -1,24 +1,23 @@
 import React, { useRef, useState } from "react";
 
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import StarRating from "react-native-star-rating-widget";
 import Toast from "react-native-toast-message";
 
 import { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
 import { useMutation } from "@tanstack/react-query";
 
+import { useAuth } from "@/contexts/AuthContext";
+
 import COLORS from "@/constants/colors";
 
 import CustomButton from "@/components/reuseableComponents/CustomButton";
-import FormErrorText from "../reuseableComponents/FormErrorText";
 import OverlayLoadingIndicator from "../reuseableComponents/OverlayLoadingIndicator";
-
-import { useAuth } from "@/contexts/AuthContext";
 
 import submitFeedback from "@/firebase/feedbacks/sendFeedback";
 
 const SendFeedbackBottomSheet: React.FC = () => {
-  const [error, setError] = useState("");
   const [rating, setRating] = useState(0);
 
   const feedbackTextRef = useRef("");
@@ -26,15 +25,6 @@ const SendFeedbackBottomSheet: React.FC = () => {
 
   // Current user uid from auth context
   const { userUid } = useAuth();
-
-  const isFeedbackValid = () => {
-    if (!feedbackTextRef.current.trim() && rating === 0) {
-      setError("Please provide feedback or rating.");
-      return false;
-    }
-    setError("");
-    return true;
-  };
 
   const { mutate: submitFeedbackMutation, isPending: isLoading } = useMutation({
     mutationFn: () => submitFeedback(userUid!, feedbackTextRef.current, rating),
@@ -57,16 +47,10 @@ const SendFeedbackBottomSheet: React.FC = () => {
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: `Error submitting feedback: ${error.message}. Please try again later.`,
+        text2: error.message,
       });
     },
   });
-
-  const handleSendFeedback = async () => {
-    if (isFeedbackValid()) {
-      submitFeedbackMutation();
-    }
-  };
 
   return (
     <BottomSheetView style={styles.content}>
@@ -78,8 +62,6 @@ const SendFeedbackBottomSheet: React.FC = () => {
           <View style={styles.divider} />
           <Text style={styles.subtitle}>{"We'd love your feedback!"}</Text>
 
-          <FormErrorText error={error} />
-
           <BottomSheetTextInput
             ref={bottomSheetTextInputRef}
             placeholder="Feedback"
@@ -90,7 +72,7 @@ const SendFeedbackBottomSheet: React.FC = () => {
             style={styles.input}
             onChangeText={(text) => {
               feedbackTextRef.current = text;
-              if (error) setError("");
+              // if (error) setError("");
             }}
           />
 
@@ -106,7 +88,7 @@ const SendFeedbackBottomSheet: React.FC = () => {
             />
           </View>
 
-          <TouchableOpacity onPress={handleSendFeedback}>
+          <TouchableOpacity onPress={() => submitFeedbackMutation()}>
             <CustomButton text="Send Feedback" />
           </TouchableOpacity>
         </>
