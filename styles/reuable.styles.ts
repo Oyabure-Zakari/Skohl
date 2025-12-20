@@ -45,7 +45,7 @@ export default function useReuseableStyles() {
       paddingHorizontal: 20,
       marginTop: 10,
       marginBottom: 30,
-      gap: 20
+      gap: 20,
     },
 
     customButton: {
@@ -93,6 +93,26 @@ export default function useReuseableStyles() {
       flexGrow: 1, // allows scrolling when content grows
       justifyContent: "center",
       paddingBottom: 50,
+    },
+
+// Styles specific to CreatePostBottomSheet and SendFeedbackBottomSheet component
+    bottomSheetTitle: { 
+      color: COLORS.darkGrey, 
+      fontFamily: "Segoe_UI_Bold" 
+    },
+
+    bottomSheetDivider: { 
+      width: "100%", 
+      height: 2, 
+      backgroundColor: COLORS.lightGrey, 
+      marginTop: 20 
+    },
+
+    bottomSheetSubTitle: { 
+      color: COLORS.darkBlue, 
+      fontFamily: "Segoe_UI_Bold", 
+      fontSize: fontScale *16, 
+      marginTop: 10 
     },
   });
 }
