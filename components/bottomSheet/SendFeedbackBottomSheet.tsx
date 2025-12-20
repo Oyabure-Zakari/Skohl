@@ -1,38 +1,31 @@
-import { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
 import React, { useRef, useState } from "react";
+
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import StarRating from "react-native-star-rating-widget";
+import Toast from "react-native-toast-message";
+
+import { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
+import { useMutation } from "@tanstack/react-query";
+
+import COLORS from "@/constants/colors";
 
 import CustomButton from "@/components/reuseableComponents/CustomButton";
-import COLORS from "@/constants/colors";
-import { useAuth } from "@/contexts/AuthContext";
-import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
-import { db } from "@/firebase/firebase.config";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
 import FormErrorText from "../reuseableComponents/FormErrorText";
 import OverlayLoadingIndicator from "../reuseableComponents/OverlayLoadingIndicator";
 
-import Toast from "react-native-toast-message";
+import { useAuth } from "@/contexts/AuthContext";
+
+import submitFeedback from "@/firebase/feedbacks/sendFeedback";
 
 const SendFeedbackBottomSheet: React.FC = () => {
-  // Current user
-  const { userUid } = useAuth();
-
   const [error, setError] = useState("");
   const [rating, setRating] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
 
   const feedbackTextRef = useRef("");
   const bottomSheetTextInputRef = useRef<any>(null);
+
+  // Current user uid from auth context
+  const { userUid } = useAuth();
 
   const isFeedbackValid = () => {
     if (!feedbackTextRef.current.trim() && rating === 0) {
@@ -43,68 +36,35 @@ const SendFeedbackBottomSheet: React.FC = () => {
     return true;
   };
 
-  const submitFeedback = async () => {
-    try {
-      setIsLoading(true);
-      // Get the user's full name
-      let fullName;
-
-      // A query to find the user document with the matching uid field (i.e the current user)
-      const q = query(usersCollectionRef, where("uid", "==", userUid));
-
-      // Execute the query
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        // console.log(doc.id, " => ", doc.data());
-        fullName = `${doc.data().surname} ${doc.data().firstname}`;
-      });
-
-      // Add a new feedback document with a generated id.
-      const docRef = await addDoc(collection(db, "feedbacks"), {
-        docId: "",
-        feedback: feedbackTextRef.current,
-        rating,
-        postedBy: {
-          uid: userUid,
-          fullName,
-        },
-        createdAt: serverTimestamp(),
-      });
-
-      // Update the newly created document with the generated id
-      await updateDoc(doc(db, "feedbacks", docRef.id), {
-        docId: docRef.id,
-      });
-
+  const { mutate: submitFeedbackMutation, isPending: isLoading } = useMutation({
+    mutationFn: () => submitFeedback(userUid!, feedbackTextRef.current, rating),
+    onSuccess: () => {
       // Toast message to show feedback was sent successfully
       Toast.show({
         type: "success",
         text1: "Feedback Sent",
         text2: "Thank you for your feedback!",
       });
-
       // Clear the text input on screen
       bottomSheetTextInputRef.current?.clear();
       // Also clear the saved text and rating
       feedbackTextRef.current = "";
       setRating(0);
-    } catch (error: any) {
+    },
+
+    onError: (error: any) => {
       // Toast message to show error occurred while sending feedback
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: "An error occurred while sending your feedback. Please try again later.",
+        text2: `Error submitting feedback: ${error.message}. Please try again later.`,
       });
-      console.log(error.message);
-      setError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+  });
 
   const handleSendFeedback = async () => {
     if (isFeedbackValid()) {
-      await submitFeedback();
+      submitFeedbackMutation();
     }
   };
 
