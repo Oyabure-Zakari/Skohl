@@ -77,7 +77,7 @@ export default function RootLayout() {
           <KeyboardProvider>
             <AppLayout />
             {/* ←←← ADD THIS AT THE VERY BOTTOM ←←← */}
-            <Toast visibilityTime={4000} />
+            <Toast position="top" visibilityTime={4000} />
           </KeyboardProvider>
         </SafeScreen>
       </SafeAreaProvider>

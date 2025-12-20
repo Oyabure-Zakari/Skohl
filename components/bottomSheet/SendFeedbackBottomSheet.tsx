@@ -81,7 +81,6 @@ const SendFeedbackBottomSheet: React.FC = () => {
         type: "success",
         text1: "Feedback Sent",
         text2: "Thank you for your feedback!",
-        position: "top",
       });
 
       // Clear the text input on screen
@@ -95,7 +94,6 @@ const SendFeedbackBottomSheet: React.FC = () => {
         type: "error",
         text1: "Error",
         text2: "An error occurred while sending your feedback. Please try again later.",
-        position: "top",
       });
       console.log(error.message);
       setError(error.message);
