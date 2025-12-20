@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 import StarRating from "react-native-star-rating-widget";
 import Toast from "react-native-toast-message";
@@ -16,12 +16,18 @@ import CustomButton from "@/components/reuseableComponents/CustomButton";
 import OverlayLoadingIndicator from "../reuseableComponents/OverlayLoadingIndicator";
 
 import submitFeedback from "@/firebase/feedbacks/sendFeedback";
+import useReuseableStyles from "@/styles/reuable.styles";
+import useSendFeedBottomSheetStyles from "@/styles/sendFeedBottomSheetStyles";
 
 const SendFeedbackBottomSheet: React.FC = () => {
   const [rating, setRating] = useState(0);
 
   const feedbackTextRef = useRef("");
   const bottomSheetTextInputRef = useRef<any>(null);
+
+  // Styles
+  const reusableStyles = useReuseableStyles();
+  const styles = useSendFeedBottomSheetStyles();
 
   // Current user uid from auth context
   const { userUid } = useAuth();
@@ -58,9 +64,9 @@ const SendFeedbackBottomSheet: React.FC = () => {
         <OverlayLoadingIndicator />
       ) : (
         <>
-          <Text style={styles.title}>Send Feedback</Text>
-          <View style={styles.divider} />
-          <Text style={styles.subtitle}>{"We'd love your feedback!"}</Text>
+          <Text style={reusableStyles.bottomSheetTitle}>Send Feedback</Text>
+          <View style={reusableStyles.bottomSheetDivider} />
+          <Text style={reusableStyles.bottomSheetSubTitle}>{"We'd love your feedback!"}</Text>
 
           <BottomSheetTextInput
             ref={bottomSheetTextInputRef}
@@ -96,24 +102,5 @@ const SendFeedbackBottomSheet: React.FC = () => {
     </BottomSheetView>
   );
 };
-
-const styles = StyleSheet.create({
-  content: { flex: 1, alignItems: "center", paddingBottom: 100 },
-  title: { color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" },
-  divider: { width: "100%", height: 2, backgroundColor: COLORS.lightGrey, marginTop: 20 },
-  subtitle: { color: COLORS.darkBlue, fontFamily: "Segoe_UI_Bold", fontSize: 16, marginTop: 10 },
-  input: {
-    width: "90%",
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginVertical: 20,
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-  },
-  ratingContainer: { gap: 10, alignItems: "center", paddingVertical: 20 },
-  ratingText: { color: COLORS.darkGrey, fontFamily: "Segoe_UI_Bold" },
-});
 
 export default SendFeedbackBottomSheet;
