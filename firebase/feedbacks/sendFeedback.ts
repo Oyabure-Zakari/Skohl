@@ -12,6 +12,7 @@ import usersCollectionRef from "../collectionRef/usersCollectionRef";
 import { db } from "../firebase.config";
 
 const submitFeedback = async (userUid: string, feedback: string, rating: number) => {
+  if (!feedback.trim() && rating === 0) throw new Error("Please provide feedback or rating.");
   try {
     // Get the user's full name
     let fullName;
@@ -22,7 +23,6 @@ const submitFeedback = async (userUid: string, feedback: string, rating: number)
     // Execute the query
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      // console.log(doc.id, " => ", doc.data());
       fullName = `${doc.data().surname} ${doc.data().firstname}`;
     });
 
@@ -32,7 +32,7 @@ const submitFeedback = async (userUid: string, feedback: string, rating: number)
       feedback,
       rating,
       postedBy: {
-        uid: userUid,
+        userUid,
         fullName,
       },
       createdAt: serverTimestamp(),
