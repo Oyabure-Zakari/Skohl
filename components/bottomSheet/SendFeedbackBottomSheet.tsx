@@ -21,6 +21,8 @@ import {
 import FormErrorText from "../reuseableComponents/FormErrorText";
 import OverlayLoadingIndicator from "../reuseableComponents/OverlayLoadingIndicator";
 
+import Toast from "react-native-toast-message";
+
 const SendFeedbackBottomSheet: React.FC = () => {
   // Current user
   const { userUid } = useAuth();
@@ -74,12 +76,28 @@ const SendFeedbackBottomSheet: React.FC = () => {
         docId: docRef.id,
       });
 
+      // Toast message to show feedback was sent successfully
+      Toast.show({
+        type: "success",
+        text1: "Feedback Sent",
+        text2: "Thank you for your feedback!",
+        position: "top",
+      });
+
       // Clear the text input on screen
       bottomSheetTextInputRef.current?.clear();
       // Also clear the saved text and rating
       feedbackTextRef.current = "";
       setRating(0);
     } catch (error: any) {
+      // Toast message to show error occurred while sending feedback
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "An error occurred while sending your feedback. Please try again later.",
+        position: "top",
+      });
+      console.log(error.message);
       setError(error.message);
     } finally {
       setIsLoading(false);

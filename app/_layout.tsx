@@ -13,6 +13,7 @@ import SafeScreen from "@/components/SafeScreen";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 
 import useVerificationStore from "@/store/verificatonStore";
+import Toast from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -75,6 +76,8 @@ export default function RootLayout() {
         <SafeScreen>
           <KeyboardProvider>
             <AppLayout />
+            {/* ←←← ADD THIS AT THE VERY BOTTOM ←←← */}
+            <Toast visibilityTime={4000} />
           </KeyboardProvider>
         </SafeScreen>
       </SafeAreaProvider>
