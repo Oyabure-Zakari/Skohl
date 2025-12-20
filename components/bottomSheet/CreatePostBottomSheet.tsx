@@ -41,53 +41,91 @@ const CreatePostBottomSheet: React.FC = () => {
   const [selectedEventType, setSelectedEventType] = React.useState("");
 
   const isProductFormValid = () => {
-    if (!photo) return setError("Photo is required"), false;
+    if (!photo) {
+      setError("Please add a photo");
+      return false;
+    }
     if (
-      !productNameRef.current ||
-      !productPriceRef.current ||
-      !productDescriptionRef.current ||
+      !productNameRef.current.trim() ||
+      !productPriceRef.current.trim() ||
+      !productDescriptionRef.current.trim() ||
       !selectedProductCategory
-    )
-      return setError("All fields are required"), false;
+    ) {
+      setError("All fields are required");
+      return false;
+    }
+
     setError("");
     return true;
   };
 
   const isServiceFormValid = () => {
-    if (!photo) return setError("Photo is required"), false;
+    if (!photo) {
+      setError("Please add a photo");
+      return false;
+    }
     if (
-      !jobTitleRef.current ||
-      !servicePriceRef.current ||
-      !serviceScheduleRef.current ||
-      !serviceDescriptionRef.current ||
+      !jobTitleRef.current.trim() ||
+      !servicePriceRef.current.trim() ||
+      !serviceScheduleRef.current.trim() ||
+      !serviceDescriptionRef.current.trim() ||
       !selectedServiceCategory
-    )
-      return setError("All fields are required"), false;
+    ) {
+      setError("All fields are required");
+      return false;
+    }
+
     setError("");
     return true;
   };
 
   const isEventFormValid = () => {
-    if (!photo) return setError("Photo is required"), false;
+    if (!photo) {
+      setError("Please add a photo");
+      return false;
+    }
     if (
-      !eventTopicRef.current ||
-      !eventVenueRef.current ||
-      !eventDescriptionRef.current ||
+      !eventTopicRef.current.trim() ||
+      !eventVenueRef.current.trim() ||
+      !eventDescriptionRef.current.trim() ||
       !selectedEventCategory ||
       !selectedEventType
-    )
-      return setError("All fields are required"), false;
+    ) {
+      setError("All fields are required");
+      return false;
+    }
+
     setError("");
     return true;
   };
 
   const handlePost = () => {
-    if (postType === "Post a Product" && !isProductFormValid()) return;
-    if (postType === "Post a Service" && !isServiceFormValid()) return;
-    if (postType === "Post an Event" && !isEventFormValid()) return;
+    switch (postType) {
+      case "Post a Product":
+        if (isProductFormValid()) {
+          console.log("Product posted!");
+          // After posting either failed or successful, reset, photo, and form fields
+        }
+        break;
 
-    // Your actual post logic here
-    console.log("Post submitted!", { postType, photo });
+      case "Post a Service":
+        if (isServiceFormValid()) {
+          console.log("Service posted!");
+          // After posting either failed or successful, reset, photo, and form fields
+        }
+        break;
+
+      case "Post an Event":
+        if (isEventFormValid()) {
+          console.log("Event posted!");
+          // After posting either failed or successful, reset, photo, and form fields
+        }
+        break;
+
+      default:
+        setError("Something went wrong");
+        break;
+    }
   };
 
   return (
@@ -144,28 +182,37 @@ const CreatePostBottomSheet: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.formContainer}>
-        <FormErrorText error={error} />
+      <FormErrorText error={error} />
 
+      <View style={styles.formContainer}>
         {/* Product Fields */}
         {postType === "Post a Product" && (
           <>
             <BottomSheetTextInput
               placeholder="Post Name"
-              onChangeText={(text) => (productNameRef.current = text)}
+              onChangeText={(text) => {
+                productNameRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
             <BottomSheetTextInput
               placeholder="Price"
               keyboardType="numeric"
-              onChangeText={(text) => (productPriceRef.current = text)}
+              onChangeText={(text) => {
+                productPriceRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
             <BottomSheetTextInput
               placeholder="Description"
-              onChangeText={(text) => (productDescriptionRef.current = text)}
+              onChangeText={(text) => {
+                productDescriptionRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
@@ -181,26 +228,38 @@ const CreatePostBottomSheet: React.FC = () => {
           <>
             <BottomSheetTextInput
               placeholder="Job Title"
-              onChangeText={(text) => (jobTitleRef.current = text)}
+              onChangeText={(text) => {
+                jobTitleRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
             <BottomSheetTextInput
               placeholder="Price"
               keyboardType="numeric"
-              onChangeText={(text) => (servicePriceRef.current = text)}
+              onChangeText={(text) => {
+                servicePriceRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
             <BottomSheetTextInput
               placeholder="Schedule"
-              onChangeText={(text) => (serviceScheduleRef.current = text)}
+              onChangeText={(text) => {
+                serviceScheduleRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
             <BottomSheetTextInput
               placeholder="Description"
-              onChangeText={(text) => (serviceDescriptionRef.current = text)}
+              onChangeText={(text) => {
+                serviceDescriptionRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
@@ -216,19 +275,28 @@ const CreatePostBottomSheet: React.FC = () => {
           <>
             <BottomSheetTextInput
               placeholder="Event Topic"
-              onChangeText={(text) => (eventTopicRef.current = text)}
+              onChangeText={(text) => {
+                eventTopicRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
             <BottomSheetTextInput
               placeholder="Venue"
-              onChangeText={(text) => (eventVenueRef.current = text)}
+              onChangeText={(text) => {
+                eventVenueRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
             <BottomSheetTextInput
               placeholder="Description"
-              onChangeText={(text) => (eventDescriptionRef.current = text)}
+              onChangeText={(text) => {
+                eventDescriptionRef.current = text;
+                if (error) setError("");
+              }}
               style={styles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
@@ -291,7 +359,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  formContainer: { margin: 20, width: "100%", alignItems: "center", gap: 15 },
+  formContainer: { marginBottom: 20, width: "100%", alignItems: "center", gap: 15 },
   input: {
     width: "90%",
     backgroundColor: COLORS.lightGrey,
