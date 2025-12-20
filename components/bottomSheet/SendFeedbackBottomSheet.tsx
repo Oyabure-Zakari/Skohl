@@ -108,47 +108,49 @@ const SendFeedbackBottomSheet: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return <OverlayLoadingIndicator />;
-  }
-
   return (
     <BottomSheetView style={styles.content}>
-      <Text style={styles.title}>Send Feedback</Text>
-      <View style={styles.divider} />
-      <Text style={styles.subtitle}>{"We'd love your feedback!"}</Text>
+      {isLoading ? (
+        <OverlayLoadingIndicator />
+      ) : (
+        <>
+          <Text style={styles.title}>Send Feedback</Text>
+          <View style={styles.divider} />
+          <Text style={styles.subtitle}>{"We'd love your feedback!"}</Text>
 
-      <FormErrorText error={error} />
+          <FormErrorText error={error} />
 
-      <BottomSheetTextInput
-        ref={bottomSheetTextInputRef}
-        placeholder="Feedback"
-        multiline
-        numberOfLines={4}
-        textAlignVertical="top"
-        placeholderTextColor={COLORS.darkGrey}
-        style={styles.input}
-        onChangeText={(text) => {
-          feedbackTextRef.current = text;
-          if (error) setError("");
-        }}
-      />
+          <BottomSheetTextInput
+            ref={bottomSheetTextInputRef}
+            placeholder="Feedback"
+            multiline
+            numberOfLines={4}
+            textAlignVertical="top"
+            placeholderTextColor={COLORS.darkGrey}
+            style={styles.input}
+            onChangeText={(text) => {
+              feedbackTextRef.current = text;
+              if (error) setError("");
+            }}
+          />
 
-      <View style={styles.ratingContainer}>
-        <Text style={styles.ratingText}>Rate us</Text>
-        <StarRating
-          step="full"
-          rating={rating}
-          onChange={setRating}
-          starSize={30}
-          color={COLORS.yellow}
-          emptyColor={COLORS.yellow}
-        />
-      </View>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.ratingText}>Rate us</Text>
+            <StarRating
+              step="full"
+              rating={rating}
+              onChange={setRating}
+              starSize={30}
+              color={COLORS.yellow}
+              emptyColor={COLORS.yellow}
+            />
+          </View>
 
-      <TouchableOpacity onPress={handleSendFeedback}>
-        <CustomButton text="Send Feedback" />
-      </TouchableOpacity>
+          <TouchableOpacity onPress={handleSendFeedback}>
+            <CustomButton text="Send Feedback" />
+          </TouchableOpacity>
+        </>
+      )}
     </BottomSheetView>
   );
 };
