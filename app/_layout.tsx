@@ -1,11 +1,15 @@
 import { useEffect } from "react";
+
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import SafeScreen from "@/components/SafeScreen";
@@ -13,7 +17,6 @@ import SafeScreen from "@/components/SafeScreen";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 
 import useVerificationStore from "@/store/verificatonStore";
-import Toast from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -68,19 +71,23 @@ function AppLayout() {
   );
 }
 
+const queryClient = new QueryClient();
+
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <SafeAreaProvider>
-        <StatusBar style="auto" />
-        <SafeScreen>
-          <KeyboardProvider>
-            <AppLayout />
-            {/* ←←← ADD THIS AT THE VERY BOTTOM ←←← */}
-            <Toast position="top" visibilityTime={4000} />
-          </KeyboardProvider>
-        </SafeScreen>
-      </SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaProvider>
+          <StatusBar style="auto" />
+          <SafeScreen>
+            <KeyboardProvider>
+              <AppLayout />
+              {/* ←←← ADD THIS AT THE VERY BOTTOM ←←← */}
+              <Toast position="top" visibilityTime={4000} />
+            </KeyboardProvider>
+          </SafeScreen>
+        </SafeAreaProvider>
+      </QueryClientProvider>
     </AuthProvider>
   );
 }
