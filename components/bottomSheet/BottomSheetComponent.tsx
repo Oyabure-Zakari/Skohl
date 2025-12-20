@@ -22,8 +22,10 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
       snapPoints={snapPoints}
       enablePanDownToClose={true}
       backgroundStyle={bottomSheeBackgroundStyle.backgroundStyle}
-      keyboardBehavior="interactive"
-      android_keyboardInputMode="adjustResize"
+      // Keyboard handling (optimized for forms): Sheet expands to stay above keyboard
+      keyboardBehavior="fillParent"
+      keyboardBlurBehavior="restore" // Returns to original snap point when keyboard closes
+      android_keyboardInputMode="adjustResize" // Android: Resizes window for proper keyboard layout
     >
       {activeBottomSheet === "Create Post" && <CreatePostBottomSheet />}
       {activeBottomSheet === "Send Feedback" && <SendFeedbackBottomSheet />}
