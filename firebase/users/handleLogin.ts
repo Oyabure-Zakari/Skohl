@@ -1,3 +1,4 @@
+import isFormFilled from "@/utils/regiserAndLoginFormValidation";
 import { TextInput } from "react-native";
 import signInUser from "./signIn";
 
@@ -8,22 +9,19 @@ const handleLogin = async (
   setError: (error: string) => void,
   setIsLoading: (isLoading: boolean) => void
 ) => {
-  (() => {
-    if (!emailInputRef.current || !passwordInputRef.current) {
-      setError("All fields are required");
-      return false;
-    }
-
-    setError("");
-    return true;
-  })();
+  // Define the current screen for validation
+  const authScreen = "Login Screen";
+  // Validate form inputs
+  if (!isFormFilled(emailInputRef.current, passwordInputRef.current, setError, authScreen)) return;
   try {
     setIsLoading(true);
+    // Attempt to sign in the user
     await signInUser(emailInputRef.current, passwordInputRef.current, setError);
   } catch (error: any) {
     setError(error.message);
   } finally {
     setIsLoading(false);
+    // Clear input fields
     if (textInputRef?.current) textInputRef.current.clear();
     emailInputRef.current = "";
     passwordInputRef.current = "";

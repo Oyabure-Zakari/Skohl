@@ -3,8 +3,11 @@ const isFormFilled = (
   password: string,
   setError: (error: string) => void,
   image?: string | null,  
-  confirmPassword?: string
+  confirmPassword?: string,
+  authScreen?: string,
 ): boolean => {
+  // Registration form validation
+  if (authScreen === "Registration Screen") {
   if (!image) {
     setError("Select an image from your device");
     return false;
@@ -22,6 +25,15 @@ const isFormFilled = (
 
   setError("");
   return true;
+  } else {
+    // Login form validation
+    if (!email || !password) {
+      setError("Email and password are required");
+      return false;
+    }
+    setError("");
+    return true;
+  }
 };
 
 export default isFormFilled;

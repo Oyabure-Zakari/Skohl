@@ -18,33 +18,37 @@ const handleRegistration = async (
   setError: (error: string) => void,
   setIsLoading: (isLoading: boolean) => void
 ) => {
+  // Extract current values from refs
   const email = emailInputRef.current;
   const password = passwordInputRef.current;
   const confirmPassword = confirmPasswordInputRef.current;
-  if (!isFormFilled(email, password, setError, image, confirmPassword)) return;
+  // Define the current screen for validation
+  const authScreen = "Registration Screen";
+  // Validate form inputs
+  if (!isFormFilled(email, password, setError, image, confirmPassword, authScreen)) return;
   try {
     setError("");
     setIsLoading(true);
-
+    // Sign up user and get uid
     const uid = await signUpUser(emailInputRef.current, passwordInputRef.current, setError);
     if (!uid) return;
-
+    // Upload image and get URL
     const uploadedImageUrl = await generateImageUrl(image, setError);
     if (!uploadedImageUrl) {
       setError("Error uploading image");
       return;
     }
-
+    // Create user document in Firestore
     await createUser(uid, uploadedImageUrl ?? defaultImage, studentInfo, setError);
   } catch (error: any) {
     setError(error.message);
   } finally {
     setIsLoading(false);
+    // Clear input fields
     if (textInputRef?.current) textInputRef.current.clear();
     emailInputRef.current = "";
     passwordInputRef.current = "";
     confirmPasswordInputRef.current = "";
-    image = "";
   }
 };
 
