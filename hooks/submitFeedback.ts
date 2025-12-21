@@ -52,15 +52,15 @@ export const useSubmitFeedback = ({
 
       // Add document
       const docRef = await addDoc(collection(db, "feedbacks"), {
-        docId: "",
+        id: "",
         feedback: feedbackText,
         rating,
-        postedBy: { uid: userUid, fullName },
+        postedBy: { userUid, fullName },
         createdAt: serverTimestamp(),
       });
 
       // Update document with its own ID
-      await updateDoc(doc(db, "feedbacks", docRef.id), { docId: docRef.id });
+      await updateDoc(doc(db, "feedbacks", docRef.id), { id: docRef.id });
     },
 
     onSuccess: () => {
