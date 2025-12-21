@@ -1,15 +1,14 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import COLORS from "@/constants/colors";
+import useExpoImagePicker from "@/hooks/expoImagePicker";
+import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import React, { useRef, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import ProductCategoryPicker from "../ProductCategoryPicker";
+import PhotoSection from "./ImageSection";
 
-type PostProductFormProps = {
-  photo: string;
-};
-
-const PostProductForm: React.FC<PostProductFormProps> = ({ photo }) => {
+const PostProductForm: React.FC = () => {
   // Refs for form values
   const productNameRef = useRef("");
   const productPriceRef = useRef("");
@@ -17,6 +16,12 @@ const PostProductForm: React.FC<PostProductFormProps> = ({ photo }) => {
   // State
   const [error, setError] = useState("");
   const [selectedProductCategory, setSelectedProductCategory] = useState("");
+
+  // Styles
+  const createPostStyles = useCreatePostBottomSheetStyles();
+
+  // Custom Hooks
+  const { image: photo, pickImage } = useExpoImagePicker();
 
   const isProductFormValid = () => {
     if (!photo) {
@@ -46,16 +51,21 @@ const PostProductForm: React.FC<PostProductFormProps> = ({ photo }) => {
 
   return (
     <>
-      <View style={styles.formContainer}>
+      {/* Photo Section */}
+      <PhotoSection photoText={"Product Photo"} photo={photo} pickImage={pickImage} />
+
+      {/* Form Section */}
+      <View style={createPostStyles.formContainer}>
         <BottomSheetTextInput
           placeholder="Post Name"
           onChangeText={(text) => {
             productNameRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <BottomSheetTextInput
           placeholder="Price"
           keyboardType="numeric"
@@ -63,24 +73,27 @@ const PostProductForm: React.FC<PostProductFormProps> = ({ photo }) => {
             productPriceRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <BottomSheetTextInput
           placeholder="Description"
           onChangeText={(text) => {
             productDescriptionRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <ProductCategoryPicker
           selectedCategory={selectedProductCategory}
           setSelectedCategory={setSelectedProductCategory}
         />
       </View>
 
+      {/* Post Button Section */}
       <TouchableOpacity onPress={handlePostProduct}>
         <CustomButton text="Post" />
       </TouchableOpacity>
@@ -89,23 +102,3 @@ const PostProductForm: React.FC<PostProductFormProps> = ({ photo }) => {
 };
 
 export default PostProductForm;
-
-const styles = StyleSheet.create({
-  formContainer: {
-    marginBottom: 20,
-    width: "100%",
-    alignItems: "center",
-    gap: 15,
-  },
-
-  input: {
-    width: "90%",
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-    minHeight: 48,
-  },
-});

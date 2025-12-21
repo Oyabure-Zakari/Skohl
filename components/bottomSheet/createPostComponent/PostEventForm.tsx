@@ -1,16 +1,17 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import COLORS from "@/constants/colors";
+import useExpoImagePicker from "@/hooks/expoImagePicker";
+import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import React, { useRef, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import EventCategoryPicker from "../EventCategoryPicker";
 import EventTypePicker from "../EventTypePicker";
+import PhotoSection from "./ImageSection";
 
-type PostEventFormProps = {
-  photo: string;
-};
-
-const PostEventForm: React.FC<PostEventFormProps> = ({ photo }) => {
+const PostEventForm = () => {
+  // Custom Hooks
+  const { image: photo, pickImage } = useExpoImagePicker();
   // Refs
   const eventTopicRef = useRef("");
   const eventVenueRef = useRef("");
@@ -19,6 +20,9 @@ const PostEventForm: React.FC<PostEventFormProps> = ({ photo }) => {
   const [error, setError] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
   const [selectedEventCategory, setSelectedEventCategory] = useState("");
+
+  // Styles
+  const createPostStyles = useCreatePostBottomSheetStyles();
 
   const isEventFormValid = () => {
     if (!photo) {
@@ -49,44 +53,53 @@ const PostEventForm: React.FC<PostEventFormProps> = ({ photo }) => {
 
   return (
     <>
-      <View style={styles.formContainer}>
+      {/* Photo Section */}
+      <PhotoSection photoText={"Event Photo"} photo={photo} pickImage={pickImage} />
+
+      {/* Form Section */}
+      <View style={createPostStyles.formContainer}>
         <BottomSheetTextInput
           placeholder="Event Topic"
           onChangeText={(text) => {
             eventTopicRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <BottomSheetTextInput
           placeholder="Venue"
           onChangeText={(text) => {
             eventVenueRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <BottomSheetTextInput
           placeholder="Description"
           onChangeText={(text) => {
             eventDescriptionRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <EventTypePicker
           selectedEventType={selectedEventType}
           setSelectedEventType={setSelectedEventType}
         />
+
         <EventCategoryPicker
           selectedCategory={selectedEventCategory}
           setSelectedCategory={setSelectedEventCategory}
         />
       </View>
 
+      {/* Post Button Section */}
       <TouchableOpacity onPress={handlePostEvent}>
         <CustomButton text="Post" />
       </TouchableOpacity>
@@ -95,23 +108,3 @@ const PostEventForm: React.FC<PostEventFormProps> = ({ photo }) => {
 };
 
 export default PostEventForm;
-
-const styles = StyleSheet.create({
-  formContainer: {
-    marginBottom: 20,
-    width: "100%",
-    alignItems: "center",
-    gap: 15,
-  },
-
-  input: {
-    width: "90%",
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-    minHeight: 48,
-  },
-});

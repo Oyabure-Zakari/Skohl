@@ -1,15 +1,16 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import COLORS from "@/constants/colors";
+import useExpoImagePicker from "@/hooks/expoImagePicker";
+import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import React, { useRef, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import ServiceCategoryPicker from "../ServiceCategoryPicker";
+import PhotoSection from "./ImageSection";
 
-type PostServiceFormProps = {
-  photo: string;
-};
-
-const PostServiceForm: React.FC<PostServiceFormProps> = ({ photo }) => {
+const PostServiceForm = () => {
+  // Custom Hooks
+  const { image: photo, pickImage } = useExpoImagePicker();
   // Refs
   const jobTitleRef = useRef("");
   const servicePriceRef = useRef("");
@@ -18,6 +19,9 @@ const PostServiceForm: React.FC<PostServiceFormProps> = ({ photo }) => {
   // States
   const [error, setError] = useState("");
   const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
+
+  // Styles
+  const createPostStyles = useCreatePostBottomSheetStyles();
 
   const isServiceFormValid = () => {
     if (!photo) {
@@ -48,16 +52,21 @@ const PostServiceForm: React.FC<PostServiceFormProps> = ({ photo }) => {
 
   return (
     <>
-      <View style={styles.formContainer}>
+      {/* Photo Section */}
+      <PhotoSection photoText={"Service Photo"} photo={photo} pickImage={pickImage} />
+
+      {/* Form Section */}
+      <View style={createPostStyles.formContainer}>
         <BottomSheetTextInput
           placeholder="Job Title"
           onChangeText={(text) => {
             jobTitleRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <BottomSheetTextInput
           placeholder="Price"
           keyboardType="numeric"
@@ -65,33 +74,37 @@ const PostServiceForm: React.FC<PostServiceFormProps> = ({ photo }) => {
             servicePriceRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <BottomSheetTextInput
           placeholder="Schedule"
           onChangeText={(text) => {
             serviceScheduleRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <BottomSheetTextInput
           placeholder="Description"
           onChangeText={(text) => {
             serviceDescriptionRef.current = text;
             if (error) setError("");
           }}
-          style={styles.input}
+          style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
+
         <ServiceCategoryPicker
           selectedCategory={selectedServiceCategory}
           setSelectedCategory={setSelectedServiceCategory}
         />
       </View>
 
+      {/* Post Button Section */}
       <TouchableOpacity onPress={handlePostService}>
         <CustomButton text="Post" />
       </TouchableOpacity>
@@ -100,23 +113,3 @@ const PostServiceForm: React.FC<PostServiceFormProps> = ({ photo }) => {
 };
 
 export default PostServiceForm;
-
-const styles = StyleSheet.create({
-  formContainer: {
-    marginBottom: 20,
-    width: "100%",
-    alignItems: "center",
-    gap: 15,
-  },
-
-  input: {
-    width: "90%",
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-    minHeight: 48,
-  },
-});
