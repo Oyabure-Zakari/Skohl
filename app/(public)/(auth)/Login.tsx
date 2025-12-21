@@ -56,14 +56,15 @@ export default function LoginScreen() {
         <OverlayLoadingIndicator />
       ) : (
         <CustomKeyboard>
+          {/* Login Header */}
           <LoginImage />
-
           <TitleText text={"Login Account"} />
-
           <SubTitleText text={"Welcome Back!"} />
 
+          {/* Error message */}
           {error && <FormErrorText error={error} />}
 
+          {/* Form */}
           <View style={reuableStyles.textInputContainer}>
             <InputField
               textInputRef={textInputRef}
@@ -83,8 +84,10 @@ export default function LoginScreen() {
             />
           </View>
 
+          {/* Login Button */}
           <RegisterLoginButton text={"Sign In"} handleSignUp={handleSignIn} />
 
+          {/* Footer */}
           <FormFooter
             footerText1={"Don't have an account?"}
             footerText2={"Sign Up"}
