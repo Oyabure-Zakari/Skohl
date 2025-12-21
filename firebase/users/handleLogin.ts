@@ -1,8 +1,10 @@
+import { TextInput } from "react-native";
 import signInUser from "./signIn";
 
 const handleLogin = async (
   emailInputRef: string,
   passwordInputRef: string,
+  textInputRef: React.RefObject<TextInput | null>,
   setError: (error: string) => void,
   setIsLoading: (isLoading: boolean) => void
 ) => {
@@ -22,6 +24,9 @@ const handleLogin = async (
     setError(error.message);
   } finally {
     setIsLoading(false);
+    if (textInputRef?.current) textInputRef.current.clear();
+    emailInputRef = "";
+    passwordInputRef = "";
   }
 };
 

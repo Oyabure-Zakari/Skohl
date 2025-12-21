@@ -1,7 +1,7 @@
 // React
 import React, { useRef, useState } from "react";
 // React Native
-import { View } from "react-native";
+import { TextInput, View } from "react-native";
 // Packages
 import { WebView } from "react-native-webview";
 // Expo
@@ -39,6 +39,7 @@ export default function VerificationScreen() {
   // Refs
   const firstnameInputRef = useRef("");
   const surnameInputRef = useRef("");
+  const textInputRef = useRef<TextInput>(null);
   const webViewRef = useRef<WebView>(null);
 
   // Hooks
@@ -58,6 +59,7 @@ export default function VerificationScreen() {
   const { handleWebViewMessage } = useWebViewHandleMessage({
     firstnameInputRef,
     surnameInputRef,
+    textInputRef,
     selectedFaculty,
     setError,
     setIsWebViewOpen,
@@ -97,12 +99,14 @@ export default function VerificationScreen() {
 
             <View style={reuableStyles.textInputContainer}>
               <InputField
+                textInputRef={textInputRef}
                 onChangeText={(text) => (firstnameInputRef.current = text)}
                 placeholder="Firstname"
                 iconType={"person"}
               />
 
               <InputField
+                textInputRef={textInputRef}
                 onChangeText={(text) => (surnameInputRef.current = text)}
                 placeholder="Surname"
                 iconType={"person"}

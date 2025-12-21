@@ -6,6 +6,7 @@ import { WebViewMessageEvent } from "react-native-webview";
 const useWebViewHandleMessage = ({
   firstnameInputRef,
   surnameInputRef,
+  textInputRef,
   selectedFaculty,
   setError,
   setIsWebViewOpen,
@@ -49,6 +50,11 @@ const useWebViewHandleMessage = ({
       }
     } catch (error: any) {
       setError(error.message || "Verification failed");
+    } finally {
+      if (textInputRef?.current) textInputRef.current.clear();
+      if (firstnameInputRef?.current) firstnameInputRef.current = "";
+      if (surnameInputRef?.current) surnameInputRef.current = "";
+      selectedFaculty = "none";
     }
   };
 

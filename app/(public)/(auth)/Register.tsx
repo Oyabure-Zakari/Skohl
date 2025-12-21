@@ -1,7 +1,7 @@
 // React
 import React, { useRef, useState } from "react";
 // React Native
-import { View } from "react-native";
+import { TextInput, View } from "react-native";
 // Expo
 import { Redirect, useRouter } from "expo-router";
 // Components
@@ -37,6 +37,7 @@ export default function RegistartionScreen() {
   const emailInputRef = useRef("");
   const passwordInputRef = useRef("");
   const confirmPasswordInputRef = useRef("");
+  const textInputRef = useRef<TextInput>(null);
   // Styles
   const reuableStyles = useReuseableStyles();
   const registerStyles = useRegisterScreenStyles();
@@ -57,6 +58,7 @@ export default function RegistartionScreen() {
       emailInputRef.current,
       passwordInputRef.current,
       confirmPasswordInputRef.current,
+      textInputRef,
       setError,
       setIsLoading
     );
@@ -87,6 +89,7 @@ export default function RegistartionScreen() {
 
           <View style={reuableStyles.textInputContainer}>
             <InputField
+              textInputRef={textInputRef}
               onChangeText={(text) => (emailInputRef.current = text)}
               placeholder="Email"
               iconType={"person"}
@@ -94,6 +97,7 @@ export default function RegistartionScreen() {
             />
 
             <InputField
+              textInputRef={textInputRef}
               onChangeText={(text) => (passwordInputRef.current = text)}
               placeholder="Password"
               secureTextEntry={isPasswordHidden}
@@ -102,6 +106,7 @@ export default function RegistartionScreen() {
             />
 
             <InputField
+              textInputRef={textInputRef}
               onChangeText={(text) => (confirmPasswordInputRef.current = text)}
               placeholder="Confirm Password"
               secureTextEntry={isPasswordHidden}

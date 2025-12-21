@@ -1,6 +1,7 @@
 import StudentInfoType from "@/types/StudentInfoType";
 import generateImageUrl from "@/utils/cloudinary/generateImageUrl";
 import isFormFilled from "@/utils/regiserAndLoginFormValidation";
+import { TextInput } from "react-native";
 import createUser from "./createUser";
 import signUpUser from "./signUp";
 
@@ -12,6 +13,7 @@ const handleRegistration = async (
   emailInputRef: string,
   passwordInputRef: string,
   confirmPasswordInputRef: string,
+  textInputRef: React.RefObject<TextInput | null>,
   setError: (error: string) => void,
   setIsLoading: (isLoading: boolean) => void
 ) => {
@@ -35,6 +37,11 @@ const handleRegistration = async (
     setError(error.message);
   } finally {
     setIsLoading(false);
+    if (textInputRef?.current) textInputRef.current.clear();
+    emailInputRef = "";
+    passwordInputRef = "";
+    confirmPasswordInputRef = "";
+    image = "";
   }
 };
 

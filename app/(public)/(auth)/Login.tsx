@@ -1,7 +1,7 @@
 // React
 import React, { useRef, useState } from "react";
 // React Native
-import { View } from "react-native";
+import { TextInput, View } from "react-native";
 // Expo
 import { Redirect, useRouter } from "expo-router";
 // Components
@@ -31,6 +31,7 @@ export default function LoginScreen() {
   // Refs
   const emailInputRef = useRef("");
   const passwordInputRef = useRef("");
+  const textInputRef = useRef<TextInput>(null);
   // State
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +43,13 @@ export default function LoginScreen() {
   if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
 
   const handleSignIn = async () => {
-    await handleLogin(emailInputRef.current, passwordInputRef.current, setError, setIsLoading);
+    await handleLogin(
+      emailInputRef.current,
+      passwordInputRef.current,
+      textInputRef,
+      setError,
+      setIsLoading
+    );
   };
 
   const navigateToRegister = () => {
@@ -65,6 +72,7 @@ export default function LoginScreen() {
 
           <View style={reuableStyles.textInputContainer}>
             <InputField
+              textInputRef={textInputRef}
               onChangeText={(text) => (emailInputRef.current = text)}
               placeholder="Email"
               iconType={"person"}
@@ -72,6 +80,7 @@ export default function LoginScreen() {
             />
 
             <InputField
+              textInputRef={textInputRef}
               onChangeText={(text) => (passwordInputRef.current = text)}
               placeholder="Password"
               secureTextEntry={isPasswordHidden}

@@ -7,6 +7,7 @@ import React from "react";
 import { TextInput, TouchableOpacity, View } from "react-native";
 
 const InputField: React.FC<InputFieldProps> = ({
+  textInputRef,
   iconType,
   placeholder,
   autoCapitalize,
@@ -48,6 +49,7 @@ const InputField: React.FC<InputFieldProps> = ({
       )}
 
       <TextInput
+        ref={textInputRef}
         autoCapitalize={autoCapitalize}
         onChangeText={onChangeText}
         placeholder={placeholder}
