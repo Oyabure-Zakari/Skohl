@@ -43,13 +43,7 @@ export default function LoginScreen() {
   if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
 
   const handleSignIn = async () => {
-    await handleLogin(
-      emailInputRef.current,
-      passwordInputRef.current,
-      textInputRef,
-      setError,
-      setIsLoading
-    );
+    await handleLogin(emailInputRef, passwordInputRef, textInputRef, setError, setIsLoading);
   };
 
   const navigateToRegister = () => {

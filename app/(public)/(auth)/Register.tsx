@@ -55,9 +55,9 @@ export default function RegistartionScreen() {
     await handleRegistration(
       image,
       studentInfo,
-      emailInputRef.current,
-      passwordInputRef.current,
-      confirmPasswordInputRef.current,
+      emailInputRef,
+      passwordInputRef,
+      confirmPasswordInputRef,
       textInputRef,
       setError,
       setIsLoading

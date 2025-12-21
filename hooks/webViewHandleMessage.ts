@@ -52,8 +52,8 @@ const useWebViewHandleMessage = ({
       setError(error.message || "Verification failed");
     } finally {
       if (textInputRef?.current) textInputRef.current.clear();
-      if (firstnameInputRef?.current) firstnameInputRef.current = "";
-      if (surnameInputRef?.current) surnameInputRef.current = "";
+      firstnameInputRef.current = "";
+      surnameInputRef.current = "";
       selectedFaculty = "none";
     }
   };
