@@ -1,26 +1,28 @@
+// React
 import React, { useRef, useState } from "react";
-
+// React Native
 import { Text, TouchableOpacity, View } from "react-native";
-
-import StarRating from "react-native-star-rating-widget";
-
+// Packages
 import { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
-
+import StarRating from "react-native-star-rating-widget";
+// Context
 import { useAuth } from "@/contexts/AuthContext";
-
+// Constants
 import COLORS from "@/constants/colors";
-
+// Components
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import OverlayLoadingIndicator from "../reuseableComponents/OverlayLoadingIndicator";
-
+// Styles
 import useReuseableStyles from "@/styles/reuable.styles";
 import useSendFeedBottomSheetStyles from "@/styles/sendFeedBottomSheetStyles";
-
+// Hook
 import { useSubmitFeedback } from "@/hooks/submitFeedback";
 
 const SendFeedbackBottomSheet: React.FC = () => {
+  // State
   const [rating, setRating] = useState(0);
 
+  // Refs
   const feedbackTextRef = useRef("");
   const bottomSheetTextInputRef = useRef<any>(null);
 
