@@ -1,132 +1,24 @@
-import { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import React from "react";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import CustomButton from "@/components/reuseableComponents/CustomButton";
-import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 
 import useExpoImagePicker from "@/hooks/expoImagePicker";
-import EventCategoryPicker from "./EventCategoryPicker";
-import EventTypePicker from "./EventTypePicker";
-import ProductCategoryPicker from "./ProductCategoryPicker";
-import ServiceCategoryPicker from "./ServiceCategoryPicker";
-
+import PostEventForm from "./createPostComponent/PostEventForm";
+import PostProductForm from "./createPostComponent/PostProductForm";
+import PostServiceForm from "./createPostComponent/PostServicefForm";
 const CreatePostBottomSheet: React.FC = () => {
-  const [postType, setPostType] = React.useState<
-    "Post a Product" | "Post a Service" | "Post an Event"
-  >("Post a Product");
-  const [error, setError] = React.useState("");
+  // State
+  const [postType, setPostType] = useState<"Post a Product" | "Post a Service" | "Post an Event">(
+    "Post a Product"
+  );
+
+  // Custom Hooks
   const { image: photo, pickImage } = useExpoImagePicker();
-
-  // Refs for form values
-  const productNameRef = React.useRef("");
-  const productPriceRef = React.useRef("");
-  const productDescriptionRef = React.useRef("");
-  const [selectedProductCategory, setSelectedProductCategory] = React.useState("");
-
-  const jobTitleRef = React.useRef("");
-  const servicePriceRef = React.useRef("");
-  const serviceScheduleRef = React.useRef("");
-  const serviceDescriptionRef = React.useRef("");
-  const [selectedServiceCategory, setSelectedServiceCategory] = React.useState("");
-
-  const eventTopicRef = React.useRef("");
-  const eventVenueRef = React.useRef("");
-  const eventDescriptionRef = React.useRef("");
-  const [selectedEventCategory, setSelectedEventCategory] = React.useState("");
-  const [selectedEventType, setSelectedEventType] = React.useState("");
-
-  const isProductFormValid = () => {
-    if (!photo) {
-      setError("Please add a photo");
-      return false;
-    }
-    if (
-      !productNameRef.current.trim() ||
-      !productPriceRef.current.trim() ||
-      !productDescriptionRef.current.trim() ||
-      !selectedProductCategory
-    ) {
-      setError("All fields are required");
-      return false;
-    }
-
-    setError("");
-    return true;
-  };
-
-  const isServiceFormValid = () => {
-    if (!photo) {
-      setError("Please add a photo");
-      return false;
-    }
-    if (
-      !jobTitleRef.current.trim() ||
-      !servicePriceRef.current.trim() ||
-      !serviceScheduleRef.current.trim() ||
-      !serviceDescriptionRef.current.trim() ||
-      !selectedServiceCategory
-    ) {
-      setError("All fields are required");
-      return false;
-    }
-
-    setError("");
-    return true;
-  };
-
-  const isEventFormValid = () => {
-    if (!photo) {
-      setError("Please add a photo");
-      return false;
-    }
-    if (
-      !eventTopicRef.current.trim() ||
-      !eventVenueRef.current.trim() ||
-      !eventDescriptionRef.current.trim() ||
-      !selectedEventCategory ||
-      !selectedEventType
-    ) {
-      setError("All fields are required");
-      return false;
-    }
-
-    setError("");
-    return true;
-  };
-
-  const handlePost = () => {
-    switch (postType) {
-      case "Post a Product":
-        if (isProductFormValid()) {
-          console.log("Product posted!");
-          // After posting either failed or successful, reset, photo, and form fields
-        }
-        break;
-
-      case "Post a Service":
-        if (isServiceFormValid()) {
-          console.log("Service posted!");
-          // After posting either failed or successful, reset, photo, and form fields
-        }
-        break;
-
-      case "Post an Event":
-        if (isEventFormValid()) {
-          console.log("Event posted!");
-          // After posting either failed or successful, reset, photo, and form fields
-        }
-        break;
-
-      default:
-        setError("Something went wrong");
-        break;
-    }
-  };
 
   return (
     <BottomSheetScrollView
@@ -141,7 +33,6 @@ const CreatePostBottomSheet: React.FC = () => {
     >
       <Text style={styles.title}>Create Post</Text>
       <View style={styles.divider} />
-
       <Text style={styles.subtitle}>What would you like to post?</Text>
 
       <View style={styles.postTypeContainer}>
@@ -182,139 +73,9 @@ const CreatePostBottomSheet: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      <FormErrorText error={error} />
-
-      <View style={styles.formContainer}>
-        {/* Product Fields */}
-        {postType === "Post a Product" && (
-          <>
-            <BottomSheetTextInput
-              placeholder="Post Name"
-              onChangeText={(text) => {
-                productNameRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <BottomSheetTextInput
-              placeholder="Price"
-              keyboardType="numeric"
-              onChangeText={(text) => {
-                productPriceRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <BottomSheetTextInput
-              placeholder="Description"
-              onChangeText={(text) => {
-                productDescriptionRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <ProductCategoryPicker
-              selectedCategory={selectedProductCategory}
-              setSelectedCategory={setSelectedProductCategory}
-            />
-          </>
-        )}
-
-        {/* Service Fields */}
-        {postType === "Post a Service" && (
-          <>
-            <BottomSheetTextInput
-              placeholder="Job Title"
-              onChangeText={(text) => {
-                jobTitleRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <BottomSheetTextInput
-              placeholder="Price"
-              keyboardType="numeric"
-              onChangeText={(text) => {
-                servicePriceRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <BottomSheetTextInput
-              placeholder="Schedule"
-              onChangeText={(text) => {
-                serviceScheduleRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <BottomSheetTextInput
-              placeholder="Description"
-              onChangeText={(text) => {
-                serviceDescriptionRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <ServiceCategoryPicker
-              selectedCategory={selectedServiceCategory}
-              setSelectedCategory={setSelectedServiceCategory}
-            />
-          </>
-        )}
-
-        {/* Event Fields */}
-        {postType === "Post an Event" && (
-          <>
-            <BottomSheetTextInput
-              placeholder="Event Topic"
-              onChangeText={(text) => {
-                eventTopicRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <BottomSheetTextInput
-              placeholder="Venue"
-              onChangeText={(text) => {
-                eventVenueRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <BottomSheetTextInput
-              placeholder="Description"
-              onChangeText={(text) => {
-                eventDescriptionRef.current = text;
-                if (error) setError("");
-              }}
-              style={styles.input}
-              placeholderTextColor={COLORS.darkGrey}
-            />
-            <EventTypePicker
-              selectedEventType={selectedEventType}
-              setSelectedEventType={setSelectedEventType}
-            />
-            <EventCategoryPicker
-              selectedCategory={selectedEventCategory}
-              setSelectedCategory={setSelectedEventCategory}
-            />
-          </>
-        )}
-      </View>
-
-      <TouchableOpacity onPress={handlePost}>
-        <CustomButton text="Post" />
-      </TouchableOpacity>
+      {postType === "Post a Product" && <PostProductForm photo={photo} />}
+      {postType === "Post a Service" && <PostServiceForm photo={photo} />}
+      {postType === "Post an Event" && <PostEventForm photo={photo} />}
     </BottomSheetScrollView>
   );
 };
@@ -358,17 +119,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
-  },
-  formContainer: { marginBottom: 20, width: "100%", alignItems: "center", gap: 15 },
-  input: {
-    width: "90%",
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-    minHeight: 48,
   },
 });
 
