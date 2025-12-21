@@ -1,6 +1,9 @@
+// Styles
 import bottomSheeBackgroundStyle from "@/styles/bottomSheetBackGround.styles";
+// Packages
 import BottomSheet from "@gorhom/bottom-sheet";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+// Components
 import CreatePostBottomSheet from "./CreatePostBottomSheet";
 import SendFeedbackBottomSheet from "./SendFeedbackBottomSheet";
 

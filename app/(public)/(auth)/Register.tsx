@@ -74,19 +74,21 @@ export default function RegistartionScreen() {
         <OverlayLoadingIndicator />
       ) : (
         <CustomKeyboard>
+          {/* Registration Header */}
           <RegisterImage />
-
           <TitleText text={"Create Account"} />
-
           <SubTitleText text={"Sign up to continue"} />
 
+          {/* Form */}
           <View style={registerStyles.profile}>
             <ProfileImage userImage={image} />
             <EditPicButton pickImage={pickImage} />
           </View>
 
+          {/* Error message */}
           {error && <FormErrorText error={error} />}
 
+          {/* Form */}
           <View style={reuableStyles.textInputContainer}>
             <InputField
               textInputRef={textInputRef}
@@ -115,8 +117,10 @@ export default function RegistartionScreen() {
             />
           </View>
 
+          {/* Register Button */}
           <RegisterLoginButton text={"Sign Up"} handleSignUp={handleSignUp} />
 
+          {/* Footer */}
           <FormFooter
             footerText1={"Already have an account?"}
             footerText2={"Sign In"}

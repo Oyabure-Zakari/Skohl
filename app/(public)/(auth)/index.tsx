@@ -78,6 +78,7 @@ export default function VerificationScreen() {
 
   return (
     <>
+      {/* Verification Component */}
       {VerificationStatus !== "" && (
         <VerificationLogic
           VerificationStatus={VerificationStatus}
@@ -89,14 +90,15 @@ export default function VerificationScreen() {
       <CustomKeyboard>
         {!isWebViewOpen && (
           <>
+            {/* Verification Header */}
             <VerifyImage />
-
             <TitleText text={"Verify Account"} />
-
             <SubTitleText text={"Let's confirm you're a student"} />
 
+            {/* Error message */}
             {error && <FormErrorText error={error} />}
 
+            {/* Form */}
             <View style={reuableStyles.textInputContainer}>
               <InputField
                 textInputRef={textInputRef}
