@@ -1,35 +1,40 @@
+// React
 import React, { useRef, useState } from "react";
+// React Native
 import { View } from "react-native";
-
+// Expo
 import { Redirect, useRouter } from "expo-router";
-
+// Components
 import LoginImage from "@/components/login/LoginImage";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import FormFooter from "@/components/reuseableComponents/FormFooter";
 import InputField from "@/components/reuseableComponents/InputField";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
+import RegisterLoginButton from "@/components/reuseableComponents/RegisterLoginButton";
 import SubTitleText from "@/components/reuseableComponents/SubTitleText";
 import TitleText from "@/components/reuseableComponents/TitleText";
-
+// Custom Hooks
 import useTogglePasswordVisibility from "@/hooks/togglePasswordVisibility";
-
+// Styles
 import useReuseableStyles from "@/styles/reuable.styles";
-
-import RegisterLoginButton from "@/components/reuseableComponents/RegisterLoginButton";
+// Firebase
 import handleLogin from "@/firebase/users/handleLogin";
+// Store
 import useVerificationStore from "@/store/verificatonStore";
 
 export default function LoginScreen() {
+  // Hooks
   const router = useRouter();
+  // Styles
   const reuableStyles = useReuseableStyles();
-
+  // Refs
   const emailInputRef = useRef("");
   const passwordInputRef = useRef("");
-
+  // State
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  // Hooks from  zustand store
   const verificationToken = useVerificationStore((state) => state.verificationToken);
   const { isPasswordHidden, togglePasswordVisibility } = useTogglePasswordVisibility();
 

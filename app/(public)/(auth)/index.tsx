@@ -1,10 +1,13 @@
+// React
 import React, { useRef, useState } from "react";
+// React Native
 import { View } from "react-native";
-
+// Packages
 import { WebView } from "react-native-webview";
-
+// Expo
 import Constants from "expo-constants";
-
+import { useRouter } from "expo-router";
+// Components
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import InputField from "@/components/reuseableComponents/InputField";
@@ -15,28 +18,30 @@ import VerificationLogic from "@/components/reuseableComponents/VerificationLogi
 import SelectFacultyPicker from "@/components/verification/SelectFacultyPicker";
 import VerificationButton from "@/components/verification/VerificationButton";
 import VerifyImage from "@/components/verification/VerifyImage";
-
+// Hooks
 import useWebViewHandleMessage from "@/hooks/webViewHandleMessage";
 import useWebViewRedirect from "@/hooks/webViewRedirect";
-
+// URLs
 import { abuLoginPortalUrl, abuStudentDashboardUrl, abuStudentProfileUrl } from "@/urls/ABU";
-
+// Styles
 import useReuseableStyles from "@/styles/reuable.styles";
-
+// Utils
 import injectedJS from "@/utils/webViewUtils/webViewInjectedJS";
-import { useRouter } from "expo-router";
 
 export default function VerificationScreen() {
+  // State
   const [error, setError] = useState("");
   const [selectedFaculty, setSelectedFaculty] = useState("none");
   const [VerificationStatus, setVerificationStatus] = useState("");
   const [isloading, setIsLoading] = useState(false);
   const [isWebViewOpen, setIsWebViewOpen] = useState(false);
 
+  // Refs
   const firstnameInputRef = useRef("");
   const surnameInputRef = useRef("");
   const webViewRef = useRef<WebView>(null);
 
+  // Hooks
   const router = useRouter();
 
   // Custom hook to apply resuseable style on component
@@ -59,10 +64,12 @@ export default function VerificationScreen() {
     setVerificationStatus,
   });
 
+  // Function to close verification component
   function closeVerificationComponent() {
     setVerificationStatus("");
   }
 
+  // Function to navigate user to registration screen
   function goToRegistrationScreen() {
     router.replace("/(public)/(auth)/Register");
   }

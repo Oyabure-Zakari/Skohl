@@ -1,8 +1,10 @@
+// React
 import React, { useRef, useState } from "react";
+// React Native
 import { View } from "react-native";
-
+// Expo
 import { Redirect, useRouter } from "expo-router";
-
+// Components
 import EditPicButton from "@/components/registration/EditPicButton";
 import ProfileImage from "@/components/registration/ProfileImage";
 import RegisterImage from "@/components/registration/RegisterImage";
@@ -11,37 +13,36 @@ import FormErrorText from "@/components/reuseableComponents/FormErrorText";
 import FormFooter from "@/components/reuseableComponents/FormFooter";
 import InputField from "@/components/reuseableComponents/InputField";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
+import RegisterLoginButton from "@/components/reuseableComponents/RegisterLoginButton";
 import SubTitleText from "@/components/reuseableComponents/SubTitleText";
 import TitleText from "@/components/reuseableComponents/TitleText";
-
+// Custom Hooks
 import useExpoImagePicker from "@/hooks/expoImagePicker";
 import useTogglePasswordVisibility from "@/hooks/togglePasswordVisibility";
-
+// Store
 import useVerificationStore from "@/store/verificatonStore";
-
+// Styles
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
-
-import RegisterLoginButton from "@/components/reuseableComponents/RegisterLoginButton";
+// Firebase
 import handleRegistration from "@/firebase/users/handleRegistration";
 
 export default function RegistartionScreen() {
+  // Hooks
   const router = useRouter();
-
+  // States
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  // Refs
   const emailInputRef = useRef("");
   const passwordInputRef = useRef("");
   const confirmPasswordInputRef = useRef("");
-
+  // Styles
   const reuableStyles = useReuseableStyles();
   const registerStyles = useRegisterScreenStyles();
-
   // Custom hook
   const { image, pickImage } = useExpoImagePicker();
   const { isPasswordHidden, togglePasswordVisibility } = useTogglePasswordVisibility();
-
   // Zustand store
   const studentInfo = useVerificationStore((state) => state.studentInfo);
   const verificationToken = useVerificationStore((state) => state.verificationToken);
