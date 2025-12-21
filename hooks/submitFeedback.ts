@@ -11,6 +11,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
 type UseSubmitFeedbackParams = {
@@ -28,6 +29,8 @@ export const useSubmitFeedback = ({
   setRating,
   inputRef,
 }: UseSubmitFeedbackParams) => {
+  // Get font scale for responsive toast text sizing
+  const { fontScale } = useWindowDimensions();
   // useMutation gives us methods and states which is saved in mutation variable
   const mutation = useMutation({
     mutationFn: async () => {
@@ -67,6 +70,8 @@ export const useSubmitFeedback = ({
         type: "success",
         text1: "Feedback Sent",
         text2: "Thank you for your feedback!",
+        text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
       });
 
       // Clear form
@@ -80,6 +85,8 @@ export const useSubmitFeedback = ({
         type: "error",
         text1: "Error",
         text2: error.message || "Failed to send feedback.",
+        text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
       });
     },
   });
