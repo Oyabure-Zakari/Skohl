@@ -28,7 +28,7 @@ const SendFeedbackBottomSheet: React.FC = () => {
 
   // Styles
   const reusableStyles = useReuseableStyles();
-  const styles = useSendFeedBottomSheetStyles();
+  const feedbackStyles = useSendFeedBottomSheetStyles();
 
   // Current user uid from auth context
   const { userUid } = useAuth();
@@ -43,15 +43,17 @@ const SendFeedbackBottomSheet: React.FC = () => {
   });
 
   return (
-    <BottomSheetView style={styles.content}>
+    <BottomSheetView style={feedbackStyles.content}>
       {isLoading ? (
         <OverlayLoadingIndicator />
       ) : (
         <>
+          {/* Bottom Sheet Header */}
           <Text style={reusableStyles.bottomSheetTitle}>Send Feedback</Text>
           <View style={reusableStyles.bottomSheetDivider} />
           <Text style={reusableStyles.bottomSheetSubTitle}>{"We'd love your feedback!"}</Text>
 
+          {/* Feedback Form */}
           <BottomSheetTextInput
             ref={bottomSheetTextInputRef}
             placeholder="Feedback"
@@ -59,12 +61,13 @@ const SendFeedbackBottomSheet: React.FC = () => {
             numberOfLines={4}
             textAlignVertical="top"
             placeholderTextColor={COLORS.darkGrey}
-            style={styles.input}
+            style={feedbackStyles.input}
             onChangeText={(text) => (feedbackTextRef.current = text)}
           />
 
-          <View style={styles.ratingContainer}>
-            <Text style={styles.ratingText}>Rate us</Text>
+          {/* Rating */}
+          <View style={feedbackStyles.ratingContainer}>
+            <Text style={feedbackStyles.ratingText}>Rate us</Text>
             <StarRating
               step="full"
               rating={rating}
@@ -75,6 +78,7 @@ const SendFeedbackBottomSheet: React.FC = () => {
             />
           </View>
 
+          {/* Submit Button */}
           <TouchableOpacity onPress={submitFeedback} disabled={isLoading}>
             <CustomButton text="Send Feedback" />
           </TouchableOpacity>
