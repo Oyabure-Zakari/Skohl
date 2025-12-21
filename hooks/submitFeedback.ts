@@ -1,4 +1,3 @@
-// hooks/useSubmitFeedback.ts
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { db } from "@/firebase/firebase.config";
 import { useMutation } from "@tanstack/react-query";
