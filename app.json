@@ -45,6 +45,14 @@
           "photosPermission": "Allow Skohl to access your photos"
         }
       ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Skohl to access your camera",
+          "microphonePermission": "Allow Skohl to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
       "expo-web-browser"
     ],
     "experiments": {

@@ -8,14 +8,20 @@ import { TouchableOpacity, View } from "react-native";
 import ProductCategoryPicker from "../ProductCategoryPicker";
 import PhotoSection from "./ImageSection";
 
+import DeviceCamera from "./Camera";
+
 const PostProductForm: React.FC = () => {
   // Refs for form values
   const productNameRef = useRef("");
   const productPriceRef = useRef("");
   const productDescriptionRef = useRef("");
-  // State
+  // States
   const [error, setError] = useState("");
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [selectedProductCategory, setSelectedProductCategory] = useState("");
+
+  // Camera
+  const [cameraImage, setCameraImage] = useState<string | null>(null);
 
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
@@ -24,7 +30,7 @@ const PostProductForm: React.FC = () => {
   const { image: photo, pickImage } = useExpoImagePicker();
 
   const isProductFormValid = () => {
-    if (!photo) {
+    if (!photo || !cameraImage) {
       setError("Please add a photo");
       return false;
     }
@@ -49,10 +55,22 @@ const PostProductForm: React.FC = () => {
     }
   };
 
+  console.log("Camera Image :", cameraImage);
+
+  if (isCameraOpen) {
+    return <DeviceCamera setIsCameraOpen={setIsCameraOpen} setCameraImage={setCameraImage} />;
+  }
+
   return (
     <>
       {/* Photo Section */}
-      <PhotoSection photoText={"Product Photo"} photo={photo} pickImage={pickImage} />
+      <PhotoSection
+        photoText={"Product Photo"}
+        photo={photo}
+        cameraImage={cameraImage}
+        pickImage={pickImage}
+        openCamera={() => setIsCameraOpen(true)}
+      />
 
       {/* Form Section */}
       <View style={createPostStyles.formContainer}>
