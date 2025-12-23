@@ -9,22 +9,30 @@ import { Text, TouchableOpacity, View } from "react-native";
 type PhotoSectionProps = {
   photoText: string;
   photo: string;
+  cameraImage: string | null;
   pickImage: () => Promise<void>;
+  openCamera: () => void;
 };
 
-const PhotoSection: React.FC<PhotoSectionProps> = ({ photoText, photo, pickImage }) => {
+const PhotoSection: React.FC<PhotoSectionProps> = ({
+  photoText,
+  photo,
+  cameraImage,
+  pickImage,
+  openCamera,
+}) => {
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
 
   return (
     <>
-      {!photo ? (
+      {!photo && !cameraImage ? (
         <View style={createPostStyles.photoPlaceholder}>
           <Text style={createPostStyles.photoText}>{photoText}</Text>
         </View>
       ) : (
         <Image
-          source={{ uri: photo }}
+          source={{ uri: photo || cameraImage! }}
           style={createPostStyles.postPhoto}
           placeholder={{ blurhash }}
           contentFit="contain"
@@ -35,7 +43,12 @@ const PhotoSection: React.FC<PhotoSectionProps> = ({ photoText, photo, pickImage
       {/* Photo Options */}
       <View style={createPostStyles.photoOptions}>
         <TouchableOpacity style={createPostStyles.photoOption}>
-          <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
+          <MaterialCommunityIcons
+            name="camera"
+            size={25}
+            color={COLORS.darkGrey}
+            onPress={openCamera}
+          />
         </TouchableOpacity>
 
         <TouchableOpacity style={createPostStyles.photoOption} onPress={pickImage}>
