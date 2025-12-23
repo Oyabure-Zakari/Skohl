@@ -58,9 +58,9 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
       {/* Shutter Container */}
       <View style={styles.shutterContainer}>
         {/* Close Camera */}
-        <Pressable onPress={closeCamera}>
+        <TouchableOpacity onPress={closeCamera}>
           <MaterialCommunityIcons name="camera-off" size={30} color="white" />
-        </Pressable>
+        </TouchableOpacity>
 
         {/* Shutter Button */}
         <Pressable onPress={takePicture}>
@@ -86,9 +86,9 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
         </Pressable>
 
         {/* Switch Camera */}
-        <Pressable onPress={toggleFacing}>
+        <TouchableOpacity onPress={toggleFacing}>
           <MaterialIcons name="cameraswitch" size={30} color="white" />
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );
