@@ -2,7 +2,7 @@ import CustomButton from "@/components/reuseableComponents/CustomButton";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type DeviceCameraProps = {
   setIsCameraOpen: Dispatch<SetStateAction<boolean>>;
@@ -63,27 +63,18 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
         </TouchableOpacity>
 
         {/* Shutter Button */}
-        <Pressable onPress={takePicture}>
-          {({ pressed }) => (
+        <TouchableOpacity onPress={takePicture}>
+          <View style={styles.shutterBtn}>
             <View
               style={[
-                styles.shutterBtn,
+                styles.shutterBtnInner,
                 {
-                  opacity: pressed ? 0.5 : 1,
+                  backgroundColor: "white",
                 },
               ]}
-            >
-              <View
-                style={[
-                  styles.shutterBtnInner,
-                  {
-                    backgroundColor: "white",
-                  },
-                ]}
-              />
-            </View>
-          )}
-        </Pressable>
+            />
+          </View>
+        </TouchableOpacity>
 
         {/* Switch Camera */}
         <TouchableOpacity onPress={toggleFacing}>
