@@ -1,8 +1,9 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
+import cameraStyles from "@/styles/camera.styles";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 type DeviceCameraProps = {
   setIsCameraOpen: Dispatch<SetStateAction<boolean>>;
@@ -20,7 +21,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
+      <View style={cameraStyles.grantPermissionContainer}>
         <Text style={{ textAlign: "center" }}>We need your permission to use the camera</Text>
         <TouchableOpacity onPress={requestPermission}>
           <CustomButton text={"Grant Permission"} />
@@ -46,9 +47,9 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
   };
 
   return (
-    <View style={styles.cameraContainer}>
+    <View style={cameraStyles.cameraContainer}>
       <CameraView
-        style={styles.camera}
+        style={cameraStyles.camera}
         ref={cameraRef}
         mode={"picture"}
         facing={facing}
@@ -56,7 +57,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
       />
 
       {/* Shutter Container */}
-      <View style={styles.shutterContainer}>
+      <View style={cameraStyles.shutterContainer}>
         {/* Close Camera */}
         <TouchableOpacity onPress={closeCamera}>
           <MaterialCommunityIcons name="camera-off" size={30} color="white" />
@@ -64,10 +65,10 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
 
         {/* Shutter Button */}
         <TouchableOpacity onPress={takePicture}>
-          <View style={styles.shutterBtn}>
+          <View style={cameraStyles.shutterBtn}>
             <View
               style={[
-                styles.shutterBtnInner,
+                cameraStyles.shutterBtnInner,
                 {
                   backgroundColor: "white",
                 },
@@ -86,44 +87,3 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
 };
 
 export default DeviceCamera;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  cameraContainer: StyleSheet.absoluteFillObject,
-
-  camera: StyleSheet.absoluteFillObject,
-
-  shutterContainer: {
-    position: "absolute",
-    bottom: 44,
-    left: 0,
-    width: "100%",
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    paddingHorizontal: 30,
-  },
-
-  shutterBtn: {
-    backgroundColor: "transparent",
-    borderWidth: 5,
-    borderColor: "white",
-    width: 85,
-    height: 85,
-    borderRadius: 45,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  shutterBtnInner: {
-    width: 70,
-    height: 70,
-    borderRadius: 50,
-  },
-});
