@@ -1,22 +1,24 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import COLORS from "@/constants/colors";
-import useExpoImagePicker from "@/hooks/expoImagePicker";
+import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import React, { useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import ServiceCategoryPicker from "../ServiceCategoryPicker";
+import DeviceCamera from "./Camera";
 import PhotoSection from "./ImageSection";
 
 const PostServiceForm = () => {
-  // Custom Hooks
-  const { image: photo, pickImage } = useExpoImagePicker();
+  // Zustand
+  const photo = usePhotoStore((state) => state.image);
   // Refs
   const jobTitleRef = useRef("");
   const servicePriceRef = useRef("");
   const serviceScheduleRef = useRef("");
   const serviceDescriptionRef = useRef("");
   // States
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [error, setError] = useState("");
   const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
 
@@ -50,10 +52,18 @@ const PostServiceForm = () => {
     }
   };
 
+  if (isCameraOpen) {
+    return <DeviceCamera setIsCameraOpen={setIsCameraOpen} />;
+  }
+
   return (
     <>
       {/* Photo Section */}
-      <PhotoSection photoText={"Service Photo"} photo={photo} pickImage={pickImage} />
+      <PhotoSection
+        photoText={"Product Photo"}
+        photo={photo}
+        openCamera={() => setIsCameraOpen(true)}
+      />
 
       {/* Form Section */}
       <View style={createPostStyles.formContainer}>

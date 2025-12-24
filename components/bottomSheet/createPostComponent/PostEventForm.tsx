@@ -1,28 +1,31 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import COLORS from "@/constants/colors";
-import useExpoImagePicker from "@/hooks/expoImagePicker";
+import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import React, { useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import EventCategoryPicker from "../EventCategoryPicker";
 import EventTypePicker from "../EventTypePicker";
+import DeviceCamera from "./Camera";
 import PhotoSection from "./ImageSection";
 
 const PostEventForm = () => {
-  // Custom Hooks
-  const { image: photo, pickImage } = useExpoImagePicker();
   // Refs
   const eventTopicRef = useRef("");
   const eventVenueRef = useRef("");
   const eventDescriptionRef = useRef("");
   // States
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [error, setError] = useState("");
   const [selectedEventType, setSelectedEventType] = useState("");
   const [selectedEventCategory, setSelectedEventCategory] = useState("");
 
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
+
+  // Zustand
+  const photo = usePhotoStore((state) => state.image);
 
   const isEventFormValid = () => {
     if (!photo) {
@@ -51,10 +54,18 @@ const PostEventForm = () => {
     }
   };
 
+  if (isCameraOpen) {
+    return <DeviceCamera setIsCameraOpen={setIsCameraOpen} />;
+  }
+
   return (
     <>
       {/* Photo Section */}
-      <PhotoSection photoText={"Event Photo"} photo={photo} pickImage={pickImage} />
+      <PhotoSection
+        photoText={"Product Photo"}
+        photo={photo}
+        openCamera={() => setIsCameraOpen(true)}
+      />
 
       {/* Form Section */}
       <View style={createPostStyles.formContainer}>
