@@ -27,7 +27,7 @@ const PostProductForm: React.FC = () => {
   const createPostStyles = useCreatePostBottomSheetStyles();
 
   // Custom Hooks
-  const { image: photo, pickImage } = useExpoImagePicker();
+  const { image: photo, setImage: setPhoto, pickImage } = useExpoImagePicker(setCameraImage);
 
   const isProductFormValid = () => {
     if (!photo || !cameraImage) {
@@ -56,9 +56,16 @@ const PostProductForm: React.FC = () => {
   };
 
   console.log("Camera Image :", cameraImage);
+  console.log("Photo Image :", photo);
 
   if (isCameraOpen) {
-    return <DeviceCamera setIsCameraOpen={setIsCameraOpen} setCameraImage={setCameraImage} />;
+    return (
+      <DeviceCamera
+        setIsCameraOpen={setIsCameraOpen}
+        setCameraImage={setCameraImage}
+        setPhoto={setPhoto}
+      />
+    );
   }
 
   return (

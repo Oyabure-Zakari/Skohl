@@ -3,7 +3,7 @@ import * as Linking from "expo-linking";
 import { useState } from "react";
 import { Alert } from "react-native";
 
-const useExpoImagePicker = () => {
+const useExpoImagePicker = (setCameraImage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const [image, setImage] = useState("");
 
   const pickImage = async () => {
@@ -25,10 +25,11 @@ const useExpoImagePicker = () => {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      setCameraImage("")
     }
   };
 
-  return { image, pickImage };
+  return { image, setImage, pickImage };
 };
 
 export default useExpoImagePicker;

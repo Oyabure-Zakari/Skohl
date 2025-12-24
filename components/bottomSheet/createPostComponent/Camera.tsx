@@ -8,9 +8,14 @@ import { Text, TouchableOpacity, View } from "react-native";
 type DeviceCameraProps = {
   setIsCameraOpen: Dispatch<SetStateAction<boolean>>;
   setCameraImage: Dispatch<SetStateAction<string | null>>;
+  setPhoto: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraImage }) => {
+const DeviceCamera: React.FC<DeviceCameraProps> = ({
+  setIsCameraOpen,
+  setCameraImage,
+  setPhoto,
+}) => {
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
@@ -39,6 +44,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen, setCameraI
     if (photo?.uri) {
       setCameraImage(photo.uri);
       setIsCameraOpen(false);
+      setPhoto("");
     }
   };
 
