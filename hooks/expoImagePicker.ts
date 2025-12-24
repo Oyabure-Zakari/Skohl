@@ -1,10 +1,11 @@
+import usePhotoStore from "@/store/photoStore";
 import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
-import { useState } from "react";
 import { Alert } from "react-native";
 
-const useExpoImagePicker = (setCameraImage: React.Dispatch<React.SetStateAction<string | null>>) => {
-  const [image, setImage] = useState("");
+const useExpoImagePicker = () => {
+  const image =usePhotoStore((state) => state.image);
+  const setImage =usePhotoStore((state) => state.setImage);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -25,11 +26,10 @@ const useExpoImagePicker = (setCameraImage: React.Dispatch<React.SetStateAction<
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      setCameraImage("")
     }
   };
 
-  return { image, setImage, pickImage };
+  return { image, pickImage };
 };
 
 export default useExpoImagePicker;

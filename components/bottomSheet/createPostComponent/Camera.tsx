@@ -1,4 +1,5 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
+import usePhotoStore from "@/store/photoStore";
 import cameraStyles from "@/styles/camera.styles";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
@@ -7,19 +8,14 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 type DeviceCameraProps = {
   setIsCameraOpen: Dispatch<SetStateAction<boolean>>;
-  setCameraImage: Dispatch<SetStateAction<string | null>>;
-  setPhoto: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const DeviceCamera: React.FC<DeviceCameraProps> = ({
-  setIsCameraOpen,
-  setCameraImage,
-  setPhoto,
-}) => {
+const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
   const cameraRef = useRef<CameraView>(null);
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
 
+  const setImage = usePhotoStore((state) => state.setImage);
   if (!permission) {
     return null;
   }
@@ -42,9 +38,8 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({
   const takePicture = async () => {
     const photo = await cameraRef.current?.takePictureAsync();
     if (photo?.uri) {
-      setCameraImage(photo.uri);
+      setImage(photo.uri);
       setIsCameraOpen(false);
-      setPhoto("");
     }
   };
 

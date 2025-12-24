@@ -1,14 +1,20 @@
-import CustomButton from "@/components/reuseableComponents/CustomButton";
-import COLORS from "@/constants/colors";
-import useExpoImagePicker from "@/hooks/expoImagePicker";
-import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+// React
 import React, { useRef, useState } from "react";
+// React Native
 import { TouchableOpacity, View } from "react-native";
+// Components
+import CustomButton from "@/components/reuseableComponents/CustomButton";
 import ProductCategoryPicker from "../ProductCategoryPicker";
-import PhotoSection from "./ImageSection";
-
 import DeviceCamera from "./Camera";
+import PhotoSection from "./ImageSection";
+// Connstants
+import COLORS from "@/constants/colors";
+// Styles
+import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
+// Packages
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+// Zustand
+import usePhotoStore from "@/store/photoStore";
 
 const PostProductForm: React.FC = () => {
   // Refs for form values
@@ -20,17 +26,14 @@ const PostProductForm: React.FC = () => {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [selectedProductCategory, setSelectedProductCategory] = useState("");
 
-  // Camera
-  const [cameraImage, setCameraImage] = useState<string | null>(null);
-
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
 
-  // Custom Hooks
-  const { image: photo, setImage: setPhoto, pickImage } = useExpoImagePicker(setCameraImage);
+  // Zustand
+  const photo = usePhotoStore((state) => state.image);
 
   const isProductFormValid = () => {
-    if (!photo || !cameraImage) {
+    if (!photo) {
       setError("Please add a photo");
       return false;
     }
@@ -55,17 +58,8 @@ const PostProductForm: React.FC = () => {
     }
   };
 
-  console.log("Camera Image :", cameraImage);
-  console.log("Photo Image :", photo);
-
   if (isCameraOpen) {
-    return (
-      <DeviceCamera
-        setIsCameraOpen={setIsCameraOpen}
-        setCameraImage={setCameraImage}
-        setPhoto={setPhoto}
-      />
-    );
+    return <DeviceCamera setIsCameraOpen={setIsCameraOpen} />;
   }
 
   return (
@@ -74,8 +68,6 @@ const PostProductForm: React.FC = () => {
       <PhotoSection
         photoText={"Product Photo"}
         photo={photo}
-        cameraImage={cameraImage}
-        pickImage={pickImage}
         openCamera={() => setIsCameraOpen(true)}
       />
 

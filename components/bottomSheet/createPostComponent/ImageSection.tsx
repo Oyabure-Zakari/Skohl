@@ -1,5 +1,6 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import useExpoImagePicker from "@/hooks/expoImagePicker";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -9,30 +10,25 @@ import { Text, TouchableOpacity, View } from "react-native";
 type PhotoSectionProps = {
   photoText: string;
   photo: string;
-  cameraImage: string | null;
-  pickImage: () => Promise<void>;
   openCamera: () => void;
 };
 
-const PhotoSection: React.FC<PhotoSectionProps> = ({
-  photoText,
-  photo,
-  cameraImage,
-  pickImage,
-  openCamera,
-}) => {
+const PhotoSection: React.FC<PhotoSectionProps> = ({ photoText, photo, openCamera }) => {
+  // Custom Hooks
+  const { pickImage } = useExpoImagePicker(); // Image Picker
+
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
 
   return (
     <>
-      {!photo && !cameraImage ? (
+      {!photo ? (
         <View style={createPostStyles.photoPlaceholder}>
           <Text style={createPostStyles.photoText}>{photoText}</Text>
         </View>
       ) : (
         <Image
-          source={{ uri: photo || cameraImage! }}
+          source={{ uri: photo }}
           style={createPostStyles.postPhoto}
           placeholder={{ blurhash }}
           contentFit="contain"
@@ -42,13 +38,8 @@ const PhotoSection: React.FC<PhotoSectionProps> = ({
 
       {/* Photo Options */}
       <View style={createPostStyles.photoOptions}>
-        <TouchableOpacity style={createPostStyles.photoOption}>
-          <MaterialCommunityIcons
-            name="camera"
-            size={25}
-            color={COLORS.darkGrey}
-            onPress={openCamera}
-          />
+        <TouchableOpacity style={createPostStyles.photoOption} onPress={openCamera}>
+          <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
         </TouchableOpacity>
 
         <TouchableOpacity style={createPostStyles.photoOption} onPress={pickImage}>
