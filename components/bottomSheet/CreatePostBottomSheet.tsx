@@ -43,9 +43,9 @@ const CreatePostBottomSheet: React.FC = () => {
       <PostTypeButtonSection postType={postType} setPostType={setPostType} />
 
       {/* Post Form Section */}
-      {postType === "Post a Product" && <PostProductForm />}
-      {postType === "Post a Service" && <PostServiceForm />}
-      {postType === "Post an Event" && <PostEventForm />}
+      {postType === "Post a Product" && <PostProductForm postType={postType} />}
+      {postType === "Post a Service" && <PostServiceForm postType={postType} />}
+      {postType === "Post an Event" && <PostEventForm postType={postType} />}
     </BottomSheetScrollView>
   );
 };

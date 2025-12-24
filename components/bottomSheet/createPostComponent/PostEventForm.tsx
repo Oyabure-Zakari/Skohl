@@ -3,14 +3,18 @@ import COLORS from "@/constants/colors";
 import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import EventCategoryPicker from "../EventCategoryPicker";
 import EventTypePicker from "../EventTypePicker";
 import DeviceCamera from "./Camera";
 import PhotoSection from "./ImageSection";
 
-const PostEventForm = () => {
+type PostEventFormProps = {
+  postType: "Post a Product" | "Post a Service" | "Post an Event";
+};
+
+const PostEventForm: React.FC<PostEventFormProps> = ({ postType }) => {
   // Refs
   const eventTopicRef = useRef("");
   const eventVenueRef = useRef("");
@@ -28,6 +32,12 @@ const PostEventForm = () => {
 
   // Zustand
   const photo = usePhotoStore((state) => state.image);
+  const clearPhoto = usePhotoStore((state) => state.clearImage);
+
+  // UseEffect to clear image
+  useEffect(() => {
+    clearPhoto();
+  }, [postType]);
 
   const isEventFormValid = () => {
     if (!photo) {

@@ -3,15 +3,17 @@ import COLORS from "@/constants/colors";
 import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 import ServiceCategoryPicker from "../ServiceCategoryPicker";
 import DeviceCamera from "./Camera";
 import PhotoSection from "./ImageSection";
 
-const PostServiceForm = () => {
-  // Zustand
-  const photo = usePhotoStore((state) => state.image);
+type PostServiceFormProps = {
+  postType: "Post a Product" | "Post a Service" | "Post an Event";
+};
+
+const PostServiceForm: React.FC<PostServiceFormProps> = ({ postType }) => {
   // Refs
   const jobTitleRef = useRef("");
   const servicePriceRef = useRef("");
@@ -24,6 +26,15 @@ const PostServiceForm = () => {
 
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
+
+  // Zustand
+  const photo = usePhotoStore((state) => state.image);
+  const clearPhoto = usePhotoStore((state) => state.clearImage);
+
+  // UseEffect to clear image
+  useEffect(() => {
+    clearPhoto();
+  }, [postType]);
 
   const isServiceFormValid = () => {
     if (!photo) {

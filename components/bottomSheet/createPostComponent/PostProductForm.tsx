@@ -1,5 +1,5 @@
 // React
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // React Native
 import { TouchableOpacity, View } from "react-native";
 // Components
@@ -16,7 +16,11 @@ import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 // Zustand
 import usePhotoStore from "@/store/photoStore";
 
-const PostProductForm: React.FC = () => {
+type PostProductFormProps = {
+  postType: "Post a Product" | "Post a Service" | "Post an Event";
+};
+
+const PostProductForm: React.FC<PostProductFormProps> = ({ postType }) => {
   // Refs for form values
   const productNameRef = useRef("");
   const productPriceRef = useRef("");
@@ -31,6 +35,12 @@ const PostProductForm: React.FC = () => {
 
   // Zustand
   const photo = usePhotoStore((state) => state.image);
+  const clearPhoto = usePhotoStore((state) => state.clearImage);
+
+  // UseEffect to clear image
+  useEffect(() => {
+    clearPhoto();
+  }, [postType]);
 
   const isProductFormValid = () => {
     if (!photo) {
