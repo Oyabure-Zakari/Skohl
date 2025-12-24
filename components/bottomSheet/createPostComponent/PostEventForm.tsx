@@ -14,6 +14,8 @@ const PostEventForm = () => {
   // Refs
   const eventTopicRef = useRef("");
   const eventVenueRef = useRef("");
+  const timeRef = useRef("");
+  const dateRef = useRef("");
   const eventDescriptionRef = useRef("");
   // States
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -35,6 +37,8 @@ const PostEventForm = () => {
     if (
       !eventTopicRef.current.trim() ||
       !eventVenueRef.current.trim() ||
+      !timeRef.current.trim() ||
+      !dateRef.current.trim() ||
       !eventDescriptionRef.current.trim() ||
       !selectedEventCategory ||
       !selectedEventType
@@ -83,6 +87,26 @@ const PostEventForm = () => {
           placeholder="Venue"
           onChangeText={(text) => {
             eventVenueRef.current = text;
+            if (error) setError("");
+          }}
+          style={createPostStyles.input}
+          placeholderTextColor={COLORS.darkGrey}
+        />
+
+        <BottomSheetTextInput
+          placeholder="Time"
+          onChangeText={(text) => {
+            timeRef.current = text;
+            if (error) setError("");
+          }}
+          style={createPostStyles.input}
+          placeholderTextColor={COLORS.darkGrey}
+        />
+
+        <BottomSheetTextInput
+          placeholder="Date"
+          onChangeText={(text) => {
+            dateRef.current = text;
             if (error) setError("");
           }}
           style={createPostStyles.input}
