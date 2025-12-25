@@ -1,21 +1,22 @@
+// React
 import { useEffect } from "react";
-
+// Expo
+import { useFonts } from "expo-font";
+import { SplashScreen, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+// Packages
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-
-import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-
+// Libraries
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+// Components
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import SafeScreen from "@/components/SafeScreen";
-
+// Contexts
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-
+// Zustand
 import useVerificationStore from "@/store/verificatonStore";
 
 SplashScreen.preventAutoHideAsync();
@@ -35,11 +36,14 @@ function AppLayout() {
     Segoe_UI_Bold_Italic: require("../assets/fonts/Segoe_UI_Bold_Italic.ttf"),
   });
 
+  // Zustand
   const verificationToken = useVerificationStore((state) => state.verificationToken);
   const checkVerificationToken = useVerificationStore((state) => state.checkVerificationToken);
 
+  // Firebase Auth Conntext
   const { userUid, loading: authLoading } = useAuth();
 
+  // useEffect that updates the verifcation token in Zustand store
   useEffect(() => {
     checkVerificationToken();
   }, []);
@@ -71,6 +75,7 @@ function AppLayout() {
   );
 }
 
+// TanStack Query Client
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
@@ -82,7 +87,7 @@ export default function RootLayout() {
           <SafeScreen>
             <KeyboardProvider>
               <AppLayout />
-              {/* ←←← ADD THIS AT THE VERY BOTTOM ←←← */}
+              {/* Toast Message must be added to the bottom */}
               <Toast position="top" visibilityTime={4000} />
             </KeyboardProvider>
           </SafeScreen>
