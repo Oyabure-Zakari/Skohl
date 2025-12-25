@@ -5,12 +5,15 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+// Import the menu
+import { Menu, MenuDivider, MenuItem } from "react-native-material-menu";
 
 type DeviceCameraProps = {
   setIsCameraOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const cameraRef = useRef<CameraView>(null);
   const [flashMode, setFlashMode] = useState<"on" | "off" | "auto">("off");
   const [facing, setFacing] = useState<CameraType>("back");
@@ -58,6 +61,61 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
         flash={flashMode}
         responsiveOrientationWhenOrientationLocked
       />
+
+      <TouchableOpacity onPress={() => setIsMenuVisible(true)} style={{ padding: 16 }}>
+        {flashMode === "auto" && (
+          <MaterialCommunityIcons name="flash-auto" size={24} color="white" />
+        )}
+        {flashMode === "off" && (
+          <MaterialCommunityIcons name="flash-off-outline" size={24} color="white" />
+        )}
+        {flashMode === "on" && <MaterialCommunityIcons name="flash" size={24} color="white" />}
+      </TouchableOpacity>
+
+      <Menu visible={isMenuVisible} onRequestClose={() => setIsMenuVisible(false)}>
+        <MenuItem>
+          <TouchableOpacity
+            onPress={() => {
+              setFlashMode("auto");
+              setIsMenuVisible(false);
+            }}
+            style={{ flexDirection: "row", alignItems: "center" }}
+          >
+            <MaterialCommunityIcons name="flash-auto" size={24} color="black" />
+            <Text> Auto</Text>
+          </TouchableOpacity>
+        </MenuItem>
+
+        <MenuDivider />
+
+        <MenuItem>
+          <TouchableOpacity
+            onPress={() => {
+              setFlashMode("off");
+              setIsMenuVisible(false);
+            }}
+            style={{ flexDirection: "row", alignItems: "center" }}
+          >
+            <MaterialCommunityIcons name="flash-off-outline" size={24} color="black" />
+            <Text> Off Flashlight</Text>
+          </TouchableOpacity>
+        </MenuItem>
+
+        <MenuDivider />
+
+        <MenuItem>
+          <TouchableOpacity
+            onPress={() => {
+              setFlashMode("on");
+              setIsMenuVisible(false);
+            }}
+            style={{ flexDirection: "row", alignItems: "center" }}
+          >
+            <MaterialCommunityIcons name="flash" size={24} color="black" />
+            <Text> On Flashlight</Text>
+          </TouchableOpacity>
+        </MenuItem>
+      </Menu>
 
       {/* Shutter Container */}
       <View style={cameraStyles.shutterContainer}>
