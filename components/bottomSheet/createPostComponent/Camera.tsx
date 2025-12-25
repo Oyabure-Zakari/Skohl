@@ -12,6 +12,7 @@ type DeviceCameraProps = {
 
 const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
   const cameraRef = useRef<CameraView>(null);
+  const [flashMode, setFlashMode] = useState<"on" | "off" | "auto">("off");
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
 
@@ -54,6 +55,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
         ref={cameraRef}
         mode={"picture"}
         facing={facing}
+        flash={flashMode}
         responsiveOrientationWhenOrientationLocked
       />
 
