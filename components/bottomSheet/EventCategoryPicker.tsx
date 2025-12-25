@@ -16,45 +16,112 @@ const EventCategoryPicker: React.FC<Props> = ({ selectedCategory, setSelectedCat
         selectedValue={selectedCategory}
         onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
       >
-        <Picker.Item label="Event Category" value="none" enabled={false} />
-        <Picker.Item label="🎭 Arts & Culture" value="Arts & Culture" />
-        <Picker.Item label="💼 Business & Entrepreneurship" value="Business & Entrepreneurship" />
-        <Picker.Item label="🎤 Concerts & Music Shows" value="Concerts & Music Shows" />
+        <Picker.Item
+          label="Event Category"
+          value="none"
+          enabled={false}
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🎭 Arts & Culture"
+          value="Arts & Culture"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="💼 Business & Entrepreneurship"
+          value="Business & Entrepreneurship"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🎤 Concerts & Music Shows"
+          value="Concerts & Music Shows"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
         <Picker.Item
           label="🧠 Debates & Intellectual Forums"
           value="Debates & Intellectual Forums"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
         />
         <Picker.Item
           label="🎓 Educational & Academic Events"
           value="Educational & Academic Events"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
         />
         <Picker.Item
           label="🎉 Freshers’ & Orientation Events"
           value="Freshers’ & Orientation Events"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
         />
-        <Picker.Item label="🤝 General Meetups & Networking" value="General Meetups & Networking" />
-        <Picker.Item label="🏥 Health & Wellness" value="Health & Wellness" />
-        <Picker.Item label="💡 Innovation & Hackathons" value="Innovation & Hackathons" />
+        <Picker.Item
+          label="🤝 General Meetups & Networking"
+          value="General Meetups & Networking"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🏥 Health & Wellness"
+          value="Health & Wellness"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="💡 Innovation & Hackathons"
+          value="Innovation & Hackathons"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
         <Picker.Item
           label="🤲 Justice, Advocacy & Awareness"
           value="Justice, Advocacy & Awareness"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
         />
         <Picker.Item
           label="🎯 Knowledge Sharing & Workshops"
           value="Knowledge Sharing & Workshops"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
         />
         <Picker.Item
           label="🏫 Leadership & Student Politics"
           value="Leadership & Student Politics"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
         />
-        <Picker.Item label="🌍 NGO & Community Outreach" value="NGO & Community Outreach" />
-        <Picker.Item label="🎊 Parties & Social Events" value="Parties & Social Events" />
-        <Picker.Item label="❓ Quizzes & Competitions" value="Quizzes & Competitions" />
-        <Picker.Item label="📚 Research & Conferences" value="Research & Conferences" />
-        <Picker.Item label="🕌 Religious Programs" value="Religious Programs" />
-        <Picker.Item label="⚽ Sports & Games" value="Sports & Games" />
-        <Picker.Item label="💻 Tech & Coding Events" value="Tech & Coding Events" />
-        <Picker.Item label="🎒 Undergraduate-Focused Events" value="Undergraduate-Focused Events" />
+        <Picker.Item
+          label="🌍 NGO & Community Outreach"
+          value="NGO & Community Outreach"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🎊 Parties & Social Events"
+          value="Parties & Social Events"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="❓ Quizzes & Competitions"
+          value="Quizzes & Competitions"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="📚 Research & Conferences"
+          value="Research & Conferences"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🕌 Religious Programs"
+          value="Religious Programs"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="⚽ Sports & Games"
+          value="Sports & Games"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="💻 Tech & Coding Events"
+          value="Tech & Coding Events"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🎒 Undergraduate-Focused Events"
+          value="Undergraduate-Focused Events"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
       </Picker>
     </View>
   );

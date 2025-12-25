@@ -16,9 +16,22 @@ const EventTypePicker: React.FC<Props> = ({ selectedEventType, setSelectedEventT
         selectedValue={selectedEventType}
         onValueChange={(itemValue, itemIndex) => setSelectedEventType(itemValue)}
       >
-        <Picker.Item label="Event Type" value="none" enabled={false} />
-        <Picker.Item label="🏛️ On-Campus Event" value="On-Campus Event" />
-        <Picker.Item label="🚍 Off-Campus Event" value="Off-Campus Event" />
+        <Picker.Item
+          label="Event Type"
+          value="none"
+          enabled={false}
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🏛️ On-Campus Event"
+          value="On-Campus Event"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🚍 Off-Campus Event"
+          value="Off-Campus Event"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
       </Picker>
     </View>
   );

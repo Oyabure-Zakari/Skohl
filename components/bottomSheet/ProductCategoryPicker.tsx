@@ -16,17 +16,62 @@ const ProductCategoryPicker: React.FC<Props> = ({ selectedCategory, setSelectedC
         selectedValue={selectedCategory}
         onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
       >
-        <Picker.Item label="Product Category" value="none" enabled={false} />
-        <Picker.Item label="📚 Books & Academic Materials" value="Books & Academic Materials" />
-        <Picker.Item label="💻 Electronics & Gadgets" value="Electronics & Gadgets" />
-        <Picker.Item label="🧰 Equipments" value="Equipments" />
-        <Picker.Item label="👕 Fashion & Clothing" value="Fashion & Clothing" />
-        <Picker.Item label="🪑 Hostel & Room Essentials" value="Hostel & Room Essentials" />
-        <Picker.Item label="🍳 Kitchen & Food Items" value="Kitchen & Food Items" />
-        <Picker.Item label="🧴 Personal Care & Beauty" value="Personal Care & Beauty" />
-        <Picker.Item label="🏃‍♂️ Sportswear" value="Sportswear" />
-        <Picker.Item label="✏️ Stationery & Office Supplies" value="Stationery & Office Supplies" />
-        <Picker.Item label="🚲 Transportation & Mobility" value="Transportation & Mobility" />
+        <Picker.Item
+          label="Product Category"
+          value="none"
+          enabled={false}
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="📚 Books & Academic Materials"
+          value="Books & Academic Materials"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="💻 Electronics & Gadgets"
+          value="Electronics & Gadgets"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🧰 Equipments"
+          value="Equipments"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="👕 Fashion & Clothing"
+          value="Fashion & Clothing"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🪑 Hostel & Room Essentials"
+          value="Hostel & Room Essentials"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🍳 Kitchen & Food Items"
+          value="Kitchen & Food Items"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🧴 Personal Care & Beauty"
+          value="Personal Care & Beauty"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🏃‍♂️ Sportswear"
+          value="Sportswear"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="✏️ Stationery & Office Supplies"
+          value="Stationery & Office Supplies"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🚲 Transportation & Mobility"
+          value="Transportation & Mobility"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
       </Picker>
     </View>
   );

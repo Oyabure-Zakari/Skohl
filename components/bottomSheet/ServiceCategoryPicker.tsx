@@ -16,21 +16,67 @@ const ServiceCategoryPicker: React.FC<Props> = ({ selectedCategory, setSelectedC
         selectedValue={selectedCategory}
         onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
       >
-        <Picker.Item label="Service Category" value="none" enabled={false} />
-        <Picker.Item label="📚 Academic & Educational" value="Academic & Educational" />
+        <Picker.Item
+          label="Service Category"
+          value="none"
+          enabled={false}
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="📚 Academic & Educational"
+          value="Academic & Educational"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
         <Picker.Item
           label="📢 Advertising & Business Services"
           value="Advertising & Business Services"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
         />
-        <Picker.Item label="💄 Beauty & Fashion" value="Beauty & Fashion" />
-        <Picker.Item label="🎨 Creative & Media" value="Creative & Media" />
-        <Picker.Item label="🎉 Events & Catering" value="Events & Catering" />
-        <Picker.Item label="🛍️ Errands & Daily Services" value="Errands & Daily Services" />
-        <Picker.Item label="🏋️ Lifestyle & Wellness" value="Lifestyle & Wellness" />
-        <Picker.Item label="🔧 Repairs & Maintenance" value="Repairs & Maintenance" />
-        <Picker.Item label="💻 Tech & Digital Services" value="Tech & Digital Services" />
-        <Picker.Item label="🚗 Transportation & Logistics" value="Transportation & Logistics" />
-        <Picker.Item label="🧾 Virtual & Freelance Services" value="Virtual & Freelance Services" />
+        <Picker.Item
+          label="💄 Beauty & Fashion"
+          value="Beauty & Fashion"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🎨 Creative & Media"
+          value="Creative & Media"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🎉 Events & Catering"
+          value="Events & Catering"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🛍️ Errands & Daily Services"
+          value="Errands & Daily Services"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🏋️ Lifestyle & Wellness"
+          value="Lifestyle & Wellness"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🔧 Repairs & Maintenance"
+          value="Repairs & Maintenance"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="💻 Tech & Digital Services"
+          value="Tech & Digital Services"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🚗 Transportation & Logistics"
+          value="Transportation & Logistics"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
+        <Picker.Item
+          label="🧾 Virtual & Freelance Services"
+          value="Virtual & Freelance Services"
+          style={{ fontFamily: "Segoe_UI_Bold" }}
+        />
       </Picker>
     </View>
   );
