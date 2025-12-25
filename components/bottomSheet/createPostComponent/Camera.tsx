@@ -97,7 +97,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
             style={{ flexDirection: "row", alignItems: "center" }}
           >
             <MaterialCommunityIcons name="flash-off-outline" size={24} color="black" />
-            <Text> Off Flashlight</Text>
+            <Text>Flash Off</Text>
           </TouchableOpacity>
         </MenuItem>
 
@@ -112,7 +112,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
             style={{ flexDirection: "row", alignItems: "center" }}
           >
             <MaterialCommunityIcons name="flash" size={24} color="black" />
-            <Text> On Flashlight</Text>
+            <Text>Flash On</Text>
           </TouchableOpacity>
         </MenuItem>
       </Menu>
