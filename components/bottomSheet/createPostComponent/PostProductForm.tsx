@@ -174,7 +174,7 @@ const PostProductForm: React.FC<PostProductFormProps> = ({ postType }) => {
       const docRef = await addDoc(collection(db, "products"), {
         id: "",
         name: productNameRef.current.trim(),
-        price: productPriceRef.current.trim(),
+        price: `₦${productPriceRef.current.trim()}`,
         description: productDescriptionRef.current.trim(),
         category: selectedProductCategory.trim(),
         photo: uploadedImage,
