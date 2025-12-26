@@ -28,7 +28,7 @@ const BottomSheetComponent: React.FC<BottomSheetComponentProps> = ({
       // Keyboard handling (optimized for forms): Sheet expands to stay above keyboard
       keyboardBehavior="fillParent"
       keyboardBlurBehavior="restore" // Returns to original snap point when keyboard closes
-      android_keyboardInputMode="adjustResize" // Android: Resizes window for proper keyboard layout
+      android_keyboardInputMode="adjustPan" // Android: When the keyboard opens, the whole screen content pans up to show focused input
     >
       {activeBottomSheet === "Create Post" && <CreatePostBottomSheet />}
       {activeBottomSheet === "Send Feedback" && <SendFeedbackBottomSheet />}
