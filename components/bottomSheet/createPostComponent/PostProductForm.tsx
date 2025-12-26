@@ -178,6 +178,7 @@ const PostProductForm: React.FC<PostProductFormProps> = ({ postType }) => {
         description: productDescriptionRef.current.trim(),
         category: selectedProductCategory.trim(),
         photo: uploadedImage,
+        postType: "product",
         postedBy: { userUid, fullName, image },
         createdAt: serverTimestamp(),
       });
