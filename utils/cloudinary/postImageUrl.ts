@@ -21,9 +21,9 @@ const postImageUrl = async (imageUri: string | null): Promise<string | null> => 
       }
     );
 
-    console.log(`Image compression took ${Date.now() - startCompress}ms`);
-    console.log(`Original URI: ${imageUri}`);
-    console.log(`Compressed URI: ${manipulatedImage.uri}`);
+    // Log compression time for debugging
+    const compressTime = Date.now() - startCompress;
+    console.log(`Image compression took ${compressTime}ms`);
 
     const compressedUri = manipulatedImage.uri;
 
@@ -47,7 +47,9 @@ const postImageUrl = async (imageUri: string | null): Promise<string | null> => 
       }
     );
 
-    console.log(`Cloudinary upload took ${Date.now() - startTime}ms`);
+    // Log Cloudinary time for debugging
+    const cloudinaryTime = Date.now() - startTime;
+    console.log(`Cloudinary upload took ${cloudinaryTime}ms`);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -55,6 +57,10 @@ const postImageUrl = async (imageUri: string | null): Promise<string | null> => 
     }
 
     const data = await response.json();
+    
+    // Log total time for debugging
+    console.log(`Total time ${compressTime + cloudinaryTime}ms`);
+    
     return data.secure_url || null;
   } catch (err: any) {
     throw new Error(`Network error: ${err.message}`);
