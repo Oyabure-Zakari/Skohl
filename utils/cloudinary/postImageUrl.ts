@@ -1,39 +1,43 @@
+import * as ImageManipulator from 'expo-image-manipulator';
+
 const postImageUrl = async (imageUri: string | null): Promise<string | null> => {
   if (!imageUri) {
     throw new Error("No image selected");
   }
 
-  const detectImageType = () => {
-    if (imageUri.toLowerCase().endsWith(".jpg") || imageUri.toLowerCase().endsWith(".jpeg"))
-      return "jpeg";
-    else if (imageUri.toLowerCase().endsWith(".png")) return "png";
-  };
-
-  const imageType = detectImageType();
-  if (!imageType) {
-    throw new Error("Unsupported image format");
-  }
-
-  const detectExtension = () => {
-    if (imageUri.toLowerCase().endsWith(".jpg") || imageUri.toLowerCase().endsWith(".jpeg"))
-      return "jpeg";
-    else if (imageUri.toLowerCase().endsWith(".png")) return "png";
-  };
-
-  const extension = detectExtension();
-  if (!extension) {
-    throw new Error("Extension not found");
-  }
-
   try {
+    console.log("Starting image compression...");
+    const startCompress = Date.now();
+
+    // Compress and resize image before upload
+    const manipulatedImage = await ImageManipulator.manipulateAsync(
+      imageUri,
+      [
+        { resize: { width: 1024 } }, // Resize to max width of 1024px (maintains aspect ratio)
+      ],
+      {
+        compress: 0.7, // Compress to 70% quality
+        format: ImageManipulator.SaveFormat.JPEG, // Convert to JPEG for better compression
+      }
+    );
+
+    console.log(`Image compression took ${Date.now() - startCompress}ms`);
+    console.log(`Original URI: ${imageUri}`);
+    console.log(`Compressed URI: ${manipulatedImage.uri}`);
+
+    const compressedUri = manipulatedImage.uri;
+
     const formData = new FormData();
     formData.append("file", {
-      uri: imageUri,
-      type: `image/${imageType}`,
-      name: `upload.${extension}`,
+      uri: compressedUri,
+      type: 'image/jpeg', // Always JPEG after compression
+      name: 'upload.jpg',
     } as any);
     formData.append("upload_preset", process.env.EXPO_PUBLIC_CLOUDINARY_UPLOADPRESET!);
     formData.append("cloud_name", process.env.EXPO_PUBLIC_CLOUDINARY_CLOUDNAME!);
+
+    console.log("Starting Cloudinary upload...");
+    const startTime = Date.now();
 
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.EXPO_PUBLIC_CLOUDINARY_CLOUDNAME}/image/upload`,
@@ -42,6 +46,8 @@ const postImageUrl = async (imageUri: string | null): Promise<string | null> => 
         body: formData,
       }
     );
+
+    console.log(`Cloudinary upload took ${Date.now() - startTime}ms`);
 
     if (!response.ok) {
       const errorText = await response.text();
