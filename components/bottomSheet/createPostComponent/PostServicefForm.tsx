@@ -1,13 +1,23 @@
-import CustomButton from "@/components/reuseableComponents/CustomButton";
-import COLORS from "@/constants/colors";
-import usePhotoStore from "@/store/photoStore";
-import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+// React
 import React, { useEffect, useRef, useState } from "react";
+// React Native
 import { TouchableOpacity, View } from "react-native";
+// Packages
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+// Components
+import CustomButton from "@/components/reuseableComponents/CustomButton";
+import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import ServiceCategoryPicker from "../ServiceCategoryPicker";
 import DeviceCamera from "./Camera";
 import PhotoSection from "./ImageSection";
+// Constants
+import COLORS from "@/constants/colors";
+// Custom Hooks
+import { usePostService } from "@/hooks/postService";
+// Zustand
+import usePhotoStore from "@/store/photoStore";
+// Styles
+import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 
 type PostServiceFormProps = {
   postType: "Post a Product" | "Post a Service" | "Post an Event";
@@ -15,13 +25,14 @@ type PostServiceFormProps = {
 
 const PostServiceForm: React.FC<PostServiceFormProps> = ({ postType }) => {
   // Refs
+  const inputRef = useRef<any>(null);
   const jobTitleRef = useRef("");
   const servicePriceRef = useRef("");
   const serviceScheduleRef = useRef("");
   const serviceDescriptionRef = useRef("");
+
   // States
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [error, setError] = useState("");
   const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
 
   // Styles
@@ -36,35 +47,24 @@ const PostServiceForm: React.FC<PostServiceFormProps> = ({ postType }) => {
     clearPhoto();
   }, [postType]);
 
-  const isServiceFormValid = () => {
-    if (!photo) {
-      setError("Please add a photo");
-      return false;
-    }
-    if (
-      !jobTitleRef.current.trim() ||
-      !servicePriceRef.current.trim() ||
-      !serviceScheduleRef.current.trim() ||
-      !serviceDescriptionRef.current.trim() ||
-      !selectedServiceCategory
-    ) {
-      setError("All fields are required");
-      return false;
-    }
-
-    setError("");
-    return true;
-  };
-
-  const handlePostService = () => {
-    if (isServiceFormValid()) {
-      console.log("Service posted!");
-      // After posting either failed or successful, reset, photo, and form fields
-    }
-  };
+  // Mutation hook to post service
+  const { postService: handlePostService, isPending: isLoading } = usePostService({
+    inputRef,
+    jobTitleRef,
+    servicePriceRef,
+    serviceScheduleRef,
+    serviceDescriptionRef,
+    selectedServiceCategory,
+    setSelectedServiceCategory,
+    photo,
+  });
 
   if (isCameraOpen) {
     return <DeviceCamera setIsCameraOpen={setIsCameraOpen} />;
+  }
+
+  if (isLoading) {
+    return <OverlayLoadingIndicator />;
   }
 
   return (
@@ -79,42 +79,34 @@ const PostServiceForm: React.FC<PostServiceFormProps> = ({ postType }) => {
       {/* Form Section */}
       <View style={createPostStyles.formContainer}>
         <BottomSheetTextInput
+          ref={inputRef}
           placeholder="Job Title"
-          onChangeText={(text) => {
-            jobTitleRef.current = text;
-            if (error) setError("");
-          }}
+          onChangeText={(text) => (jobTitleRef.current = text)}
           style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
 
         <BottomSheetTextInput
+          ref={inputRef}
           placeholder="Price"
           keyboardType="numeric"
-          onChangeText={(text) => {
-            servicePriceRef.current = text;
-            if (error) setError("");
-          }}
+          onChangeText={(text) => (servicePriceRef.current = text)}
           style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
 
         <BottomSheetTextInput
+          ref={inputRef}
           placeholder="Schedule"
-          onChangeText={(text) => {
-            serviceScheduleRef.current = text;
-            if (error) setError("");
-          }}
+          onChangeText={(text) => (serviceScheduleRef.current = text)}
           style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
 
         <BottomSheetTextInput
+          ref={inputRef}
           placeholder="Description"
-          onChangeText={(text) => {
-            serviceDescriptionRef.current = text;
-            if (error) setError("");
-          }}
+          onChangeText={(text) => (serviceDescriptionRef.current = text)}
           style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
         />
