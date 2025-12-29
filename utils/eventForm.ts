@@ -1,4 +1,4 @@
-const iseventFormValid = (
+const isEventFormValid = (
   eventTopicRef: React.RefObject<string>,
   eventVenueRef: React.RefObject<string>,
   timeRef: React.RefObject<string>,
@@ -22,4 +22,4 @@ const iseventFormValid = (
   return true;
 };
 
-export default iseventFormValid;
+export default isEventFormValid;
