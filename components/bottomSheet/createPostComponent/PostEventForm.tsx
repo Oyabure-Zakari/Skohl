@@ -1,14 +1,24 @@
-import CustomButton from "@/components/reuseableComponents/CustomButton";
-import COLORS from "@/constants/colors";
-import usePhotoStore from "@/store/photoStore";
-import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+// React
 import React, { useEffect, useRef, useState } from "react";
+// React Native
 import { TouchableOpacity, View } from "react-native";
+// Packages
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
+// Components
+import CustomButton from "@/components/reuseableComponents/CustomButton";
+import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import EventCategoryPicker from "../EventCategoryPicker";
 import EventTypePicker from "../EventTypePicker";
 import DeviceCamera from "./Camera";
 import PhotoSection from "./ImageSection";
+// Constants
+import COLORS from "@/constants/colors";
+// Custom Hooks
+import { usePostEvent } from "@/hooks/postEvents";
+// Zustand
+import usePhotoStore from "@/store/photoStore";
+// Styles
+import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 
 type PostEventFormProps = {
   postType: "Post a Product" | "Post a Service" | "Post an Event";
@@ -16,11 +26,13 @@ type PostEventFormProps = {
 
 const PostEventForm: React.FC<PostEventFormProps> = ({ postType }) => {
   // Refs
+  const inputRef = useRef<any>(null);
   const eventTopicRef = useRef("");
   const eventVenueRef = useRef("");
   const timeRef = useRef("");
   const dateRef = useRef("");
   const eventDescriptionRef = useRef("");
+
   // States
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [error, setError] = useState("");
@@ -39,37 +51,27 @@ const PostEventForm: React.FC<PostEventFormProps> = ({ postType }) => {
     clearPhoto();
   }, [postType]);
 
-  const isEventFormValid = () => {
-    if (!photo) {
-      setError("Please add a photo");
-      return false;
-    }
-    if (
-      !eventTopicRef.current.trim() ||
-      !eventVenueRef.current.trim() ||
-      !timeRef.current.trim() ||
-      !dateRef.current.trim() ||
-      !eventDescriptionRef.current.trim() ||
-      !selectedEventCategory ||
-      !selectedEventType
-    ) {
-      setError("All fields are required");
-      return false;
-    }
-
-    setError("");
-    return true;
-  };
-
-  const handlePostEvent = () => {
-    if (isEventFormValid()) {
-      console.log("Service posted!");
-      // After posting either failed or successful, reset, photo, and form fields
-    }
-  };
+  // Mutation hook to post event
+  const { postEvent: handlePostEvent, isPending: isLoading } = usePostEvent({
+    inputRef,
+    eventTopicRef,
+    eventVenueRef,
+    timeRef,
+    dateRef,
+    eventDescriptionRef,
+    selectedEventType,
+    selectedEventCategory,
+    setSelectedEventType,
+    setSelectedEventCategory,
+    photo,
+  });
 
   if (isCameraOpen) {
     return <DeviceCamera setIsCameraOpen={setIsCameraOpen} />;
+  }
+
+  if (isLoading) {
+    return <OverlayLoadingIndicator />;
   }
 
   return (
