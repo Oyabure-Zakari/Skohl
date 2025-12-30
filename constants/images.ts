@@ -1,4 +1,5 @@
 const IMAGES = {
+  defaultAvatar: require("../assets/images/defaultProfilePic.png"),
   noMessages: require("../assets/images/noMessages.png"),
   noRecord: require("../assets/images/noRecord.png"),
   register: require("../assets/images/register.png"),
