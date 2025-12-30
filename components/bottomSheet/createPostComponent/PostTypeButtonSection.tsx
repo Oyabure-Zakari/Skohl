@@ -1,4 +1,4 @@
-import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
+import useReuseableStyles from "@/styles/reuable.styles";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -11,24 +11,24 @@ type PostTypeButtonSectionProps = {
 
 const PostTypeButtonSection: React.FC<PostTypeButtonSectionProps> = ({ postType, setPostType }) => {
   // Styles
-  const createPostStyles = useCreatePostBottomSheetStyles();
+  const reUseableStyles = useReuseableStyles();
 
   return (
-    <View style={createPostStyles.postTypeContainer}>
+    <View style={reUseableStyles.buttonTypeContainer}>
       {/* Post Product Button */}
       <TouchableOpacity
         style={[
           postType === "Post a Product"
-            ? createPostStyles.activeButton
-            : createPostStyles.inactiveButton,
+            ? reUseableStyles.activeButton
+            : reUseableStyles.inactiveButton,
         ]}
         onPress={() => setPostType("Post a Product")}
       >
         <Text
           style={[
             postType === "Post a Product"
-              ? createPostStyles.activeText
-              : createPostStyles.inactiveText,
+              ? reUseableStyles.activeText
+              : reUseableStyles.inactiveText,
           ]}
         >
           Post a Product
@@ -39,16 +39,16 @@ const PostTypeButtonSection: React.FC<PostTypeButtonSectionProps> = ({ postType,
       <TouchableOpacity
         style={[
           postType === "Post a Service"
-            ? createPostStyles.activeButton
-            : createPostStyles.inactiveButton,
+            ? reUseableStyles.activeButton
+            : reUseableStyles.inactiveButton,
         ]}
         onPress={() => setPostType("Post a Service")}
       >
         <Text
           style={[
             postType === "Post a Service"
-              ? createPostStyles.activeText
-              : createPostStyles.inactiveText,
+              ? reUseableStyles.activeText
+              : reUseableStyles.inactiveText,
           ]}
         >
           Post a Service
@@ -59,16 +59,16 @@ const PostTypeButtonSection: React.FC<PostTypeButtonSectionProps> = ({ postType,
       <TouchableOpacity
         style={[
           postType === "Post an Event"
-            ? createPostStyles.activeButton
-            : createPostStyles.inactiveButton,
+            ? reUseableStyles.activeButton
+            : reUseableStyles.inactiveButton,
         ]}
         onPress={() => setPostType("Post an Event")}
       >
         <Text
           style={[
             postType === "Post an Event"
-              ? createPostStyles.activeText
-              : createPostStyles.inactiveText,
+              ? reUseableStyles.activeText
+              : reUseableStyles.inactiveText,
           ]}
         >
           Post an Event
