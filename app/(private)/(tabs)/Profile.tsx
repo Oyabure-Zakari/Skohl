@@ -236,10 +236,11 @@ const styles = StyleSheet.create({
   },
 
   editProfileBtn: {
-    backgroundColor: COLORS.purple,
+    backgroundColor: COLORS.darkBlue,
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 5,
+    elevation: 6,
   },
 
   editProfileBtnText: {
