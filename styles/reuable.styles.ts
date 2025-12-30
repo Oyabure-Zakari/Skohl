@@ -95,24 +95,57 @@ export default function useReuseableStyles() {
       paddingBottom: 50,
     },
 
-// Styles specific to CreatePostBottomSheet and SendFeedbackBottomSheet component
-    bottomSheetTitle: { 
-      color: COLORS.darkGrey, 
-      fontFamily: "Segoe_UI_Bold" 
+    // Styles specific to CreatePostBottomSheet and SendFeedbackBottomSheet component
+    bottomSheetTitle: {
+      color: COLORS.darkGrey,
+      fontFamily: "Segoe_UI_Bold",
     },
 
-    bottomSheetDivider: { 
-      width: "100%", 
-      height: 2, 
-      backgroundColor: COLORS.lightGrey, 
-      marginTop: 20 
+    bottomSheetDivider: {
+      width: "100%",
+      height: 2,
+      backgroundColor: COLORS.lightGrey,
+      marginTop: 20,
     },
 
-    bottomSheetSubTitle: { 
-      color: COLORS.darkBlue, 
-      fontFamily: "Segoe_UI_Bold", 
-      fontSize: fontScale *16, 
-      marginTop: 10 
+    bottomSheetSubTitle: {
+      color: COLORS.darkBlue,
+      fontFamily: "Segoe_UI_Bold",
+      fontSize: fontScale * 16,
+      marginTop: 10,
+    },
+
+    buttonTypeContainer: {
+      flexDirection: "row",
+      gap: 10,
+      marginTop: 10,
+    },
+
+    activeButton: {
+      backgroundColor: COLORS.purple,
+      borderRadius: 5,
+      padding: 5,
+    },
+
+    activeText: {
+      color: COLORS.white,
+      fontFamily: "Segoe_UI_Bold",
+      fontSize: fontScale * 12,
+      paddingHorizontal: 5,
+    },
+
+    inactiveButton: {
+      borderColor: COLORS.purple,
+      borderWidth: 1,
+      borderRadius: 5,
+      padding: 5,
+    },
+
+    inactiveText: {
+      color: COLORS.purple,
+      fontFamily: "Segoe_UI_Bold",
+      fontSize: fontScale * 12,
+      paddingHorizontal: 5,
     },
   });
 }

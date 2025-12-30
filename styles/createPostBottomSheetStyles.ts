@@ -10,39 +10,6 @@ export default function useCreatePostBottomSheetStyles() {
       paddingBottom: 200 
     },
 
-    postTypeContainer: { 
-      flexDirection: "row", 
-      gap: 10, 
-      marginTop: 10 
-    },
-
-    activeButton: { 
-      backgroundColor: COLORS.purple, 
-      borderRadius: 5, 
-      padding: 5 
-    },
-
-    activeText: {
-      color: COLORS.white,
-      fontFamily: "Segoe_UI_Bold",
-      fontSize: fontScale * 12,
-      paddingHorizontal: 5,
-    },
-
-    inactiveButton: { 
-      borderColor: COLORS.purple, 
-      borderWidth: 1, 
-      borderRadius: 5, 
-      padding: 5 
-    },
-
-    inactiveText: {
-      color: COLORS.purple,
-      fontFamily: "Segoe_UI_Bold",
-      fontSize: fontScale * 12,
-      paddingHorizontal: 5,
-    },
-
     photoPlaceholder: {
       marginTop: 20,
       width: width * 0.45,
