@@ -6,27 +6,52 @@ import { useAuth } from "@/contexts/AuthContext";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { auth } from "@/firebase/firebase.config";
 import useVerificationStore from "@/store/verificatonStore";
-import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
+import useRegisterScreenStyles from "@/styles/registerScreen.styles";
+import useReuseableStyles from "@/styles/reuable.styles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
 import { signOut } from "firebase/auth";
 import { getDocs, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function ProfileScreen() {
   // States
-  const [user, setUser] = useState({ firstName: "", image: "", fullName: "", faculty: "" });
+  const [isBioAvalailable, setIsBioAvailable] = useState(false);
+  const [activeButton, setActiveButton] = useState<"Posts" | "Bookmarks">("Posts");
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post"
   );
+  const [user, setUser] = useState({
+    image: "",
+    fullName: "",
+    faculty: "",
+    joinedAt: "",
+  });
 
   // Refs
   const sheetRef = useRef<BottomSheet>(null);
 
+  // Firebase Auth
+  const { userUid } = useAuth();
+
+  // Zustand
   const clearToken = useVerificationStore((state) => state.clearVerificationToken);
+
+  // Styles
+  const registerStyles = useRegisterScreenStyles();
+  const reUseableStyles = useReuseableStyles();
+
+  // Bottom Sheet snap points
+  const snapPoints = useMemo(() => ["25%", "50%", "75%"], []);
+
+  // Handlers
+  const handleSnapPress = useCallback(() => {
+    sheetRef.current?.snapToIndex(2);
+  }, []);
+
   const handleLogOut = async () => {
     try {
       await clearToken();
@@ -35,15 +60,6 @@ export default function ProfileScreen() {
       console.log(error.message);
     }
   };
-
-  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
-
-  const handleSnapPress = useCallback(() => {
-    sheetRef.current?.snapToIndex(2);
-  }, []);
-
-  // Auth Context
-  const { userUid } = useAuth();
 
   const fetchUserInfo = async () => {
     // Query user document
@@ -55,10 +71,10 @@ export default function ProfileScreen() {
       const data = doc.data();
       setUser((prev) => ({
         ...prev,
-        firstName: data.firstname,
         image: data.image,
         fullName: `${data.surname} ${data.firstname}`,
         faculty: data.faculty,
+        joinedAt: data.joinedAt,
       }));
     });
   };
@@ -68,51 +84,133 @@ export default function ProfileScreen() {
     fetchUserInfo();
   }, []);
 
-  console.log(user.firstName, user.image, user.fullName, user.faculty);
-
-  const { width, fontScale } = useWindowDimensions();
   return (
-    <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
-      <Text>Profile Screen</Text>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      {/* Header */}
       <View style={styles.header}>
+        {/* Profile Section */}
         <View style={styles.profile}>
+          {/* Profile Image */}
           <Image
             source={{ uri: user.image }}
-            style={{
-              alignSelf: "center",
-              width: width * 0.15,
-              height: width * 0.15,
-              resizeMode: "contain",
-              marginBottom: 20,
-              borderRadius: 50,
-              // backgroundColor: "red",
-            }}
+            style={registerStyles.image}
             placeholder={{ blurhash }}
             contentFit="contain"
             transition={1000}
             alt="Avatar"
           />
-          <TouchableOpacity style={styles.editBtn}>
-            <Text style={styles.editBtnText}>Edit Profile</Text>
+
+          {/* Edit Button */}
+          <TouchableOpacity style={styles.editProfileBtn}>
+            <Text style={styles.editProfileBtnText}>Edit Profile</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.logoutBtn}>
-          <MaterialCommunityIcons
-            name="logout"
-            size={20}
-            color={COLORS.red}
-            style={{ paddingLeft: 10 }}
-          />
-          <Text style={styles.logoutBtnText}>Log Out</Text>
+
+        {/* Log Out Button */}
+        <TouchableOpacity style={styles.logOutBtn} onPress={handleLogOut}>
+          <MaterialCommunityIcons name="logout" size={20} color={COLORS.red} />
+          <Text style={styles.logOutBtnText}>Log Out</Text>
         </TouchableOpacity>
       </View>
 
+      {/* User Bio */}
+      <View style={styles.bioContainer}>
+        <Text numberOfLines={1} style={styles.bioText1}>
+          {user.fullName}
+        </Text>
+        <Text style={styles.bioText2}>
+          {user.faculty}
+          {"\n"}Ahmadu Bello University,{"\n"}Zaria
+        </Text>
+
+        {/* Display bio if available */}
+        <Text numberOfLines={4} style={[styles.bioText2, { fontSize: 12, marginTop: 4 }]}>
+          Mobile App Developer🔸I build fast, reliable, & visually appealing apps. My goal is to
+          turn your ideas into elegant, performant app solutions that users love Passionate about
+          technology and innovation. Avid reader and lifelong learner.
+        </Text>
+      </View>
+
+      {/* Posts and Bookmarks Buttons */}
+      <View style={[reUseableStyles.buttonTypeContainer, { alignSelf: "center", marginTop: 10 }]}>
+        {/* Posts Button */}
+        <TouchableOpacity
+          style={[
+            activeButton === "Posts"
+              ? reUseableStyles.activeButton
+              : reUseableStyles.inactiveButton,
+          ]}
+          onPress={() => setActiveButton("Posts")}
+        >
+          <Text
+            style={[
+              activeButton === "Posts" ? reUseableStyles.activeText : reUseableStyles.inactiveText,
+            ]}
+          >
+            Posts
+          </Text>
+        </TouchableOpacity>
+
+        {/* Bookmarks Button */}
+        <TouchableOpacity
+          style={[
+            activeButton === "Bookmarks"
+              ? reUseableStyles.activeButton
+              : reUseableStyles.inactiveButton,
+          ]}
+          onPress={() => setActiveButton("Bookmarks")}
+        >
+          <Text
+            style={[
+              activeButton === "Bookmarks"
+                ? reUseableStyles.activeText
+                : reUseableStyles.inactiveText,
+            ]}
+          >
+            Bookmarks
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Divider*/}
+      <View style={reUseableStyles.bottomSheetDivider} />
+
+      {/* Content */}
+      <ScrollView>
+        <Text style={{ paddingHorizontal: 16 }}>
+          Why use a lorem ipsum generator? If everyone used the identical lorem ipsum copy, search
+          engines would flag it for plagiarism and downgrade the site for its lack of helpful
+          content for the reader. However, when you send sample layouts filled with fun lorem ipsum
+          to your customers, they will focus on the look and feel of the page instead of digging
+          into and arguing about the content. Nevertheless, lorem ipsum generators do not spew a
+          random bank of words and paragraphs. Why use a lorem ipsum generator? If everyone used the
+          identical lorem ipsum copy, search engines would flag it for plagiarism and downgrade the
+          site for its lack of helpful content for the reader. However, when you send sample layouts
+          filled with fun lorem ipsum to your customers, they will focus on the look and feel of the
+          page instead of digging into and arguing about the content. Nevertheless, lorem ipsum
+          generators do not spew a random bank of words and paragraphs. Why use a lorem ipsum
+          generator? If everyone used the identical lorem ipsum copy, search engines would flag it
+          for plagiarism and downgrade the site for its lack of helpful content for the reader.
+          However, when you send sample layouts filled with fun lorem ipsum to your customers, they
+          will focus on the look and feel of the page instead of digging into and arguing about the
+          content. Nevertheless, lorem ipsum generators do not spew a random bank of words and
+          paragraphs. Why use a lorem ipsum generator? If everyone used the identical lorem ipsum
+          copy, search engines would flag it for plagiarism and downgrade the site for its lack of
+          helpful content for the reader. However, when you send sample layouts filled with fun
+          lorem ipsum to your customers, they will focus on the look and feel of the page instead of
+          digging into and arguing about the content. Nevertheless, lorem ipsum generators do not
+          spew a random bank of words and paragraphs.
+        </Text>
+      </ScrollView>
+
+      {/* Bottom Sheet */}
       <BottomSheetComponent
         sheetRef={sheetRef}
         snapPoints={snapPoints}
         activeBottomSheet={activeBottomSheet}
       />
 
+      {/* Floating Action Button */}
       <FloatingActionButton
         setActiveBottomSheet={setActiveBottomSheet}
         handleSnapPress={handleSnapPress}
@@ -122,66 +220,66 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-    justifyContent: "center",
-    //alignItems: "center",
-  },
-
   header: {
-    width: "90%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    height: "auto",
-    marginBottom: 20,
-    //backgroundColor: COLORS.red,
-  },
-
-  profile: {
-    width: "auto",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 15,
+    padding: 16,
     //backgroundColor: COLORS.darkGrey,
   },
 
-  editBtn: {
-    // width: 80,
-    // height: 40,
-    padding: 4,
-    borderRadius: 5,
-    backgroundColor: COLORS.purple,
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 5,
-  },
-
-  editBtnText: {
-    color: COLORS.lightGrey,
-    textAlign: "center",
-    fontFamily: "Segoe_UI_Bold",
-    paddingHorizontal: 10,
-    //fontSize: 12,
-  },
-
-  logoutBtn: {
-    // width: 80,
-    // height: 40,
-    padding: 4,
-    borderRadius: 5,
-    backgroundColor: COLORS.lightGrey,
+  profile: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    gap: 5,
+    gap: 12,
+    //backgroundColor: "red",
   },
 
-  logoutBtnText: {
-    color: COLORS.red,
-    textAlign: "center",
+  editProfileBtn: {
+    backgroundColor: COLORS.purple,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+  },
+
+  editProfileBtnText: {
+    color: COLORS.lightGrey,
+    fontSize: 14,
     fontFamily: "Segoe_UI_Bold",
-    paddingRight: 10,
+    textAlign: "center",
+  },
+
+  logOutBtn: {
+    backgroundColor: COLORS.lightGrey,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+
+  logOutBtnText: {
+    color: COLORS.red,
+    fontSize: 14,
+    fontFamily: "Segoe_UI_Bold",
+    textAlign: "center",
+  },
+
+  bioContainer: {
+    paddingHorizontal: 16,
+  },
+
+  bioText1: {
+    fontSize: 18,
+    fontFamily: "Segoe_UI_Bold",
+    color: COLORS.darkBlue,
+    width: "52%", // To prevent long names from overflowing
+  },
+
+  bioText2: {
+    fontSize: 14,
+    fontFamily: "Segoe_UI_Bold",
+    color: COLORS.darkGrey,
   },
 });
