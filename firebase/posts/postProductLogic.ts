@@ -10,7 +10,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import postImageUrl from "../cloudinary/postImageUrl";
+import postImageUrl from "../../utils/cloudinary/postImageUrl";
 
 type UsePostProductParams = {
   userUid: string | null;
