@@ -70,11 +70,7 @@ const PostServiceForm: React.FC<PostServiceFormProps> = ({ postType }) => {
   return (
     <>
       {/* Photo Section */}
-      <PhotoSection
-        photoText={"Product Photo"}
-        photo={photo}
-        openCamera={() => setIsCameraOpen(true)}
-      />
+      <PhotoSection photo={photo} openCamera={() => setIsCameraOpen(true)} />
 
       {/* Form Section */}
       <View style={createPostStyles.formContainer}>
