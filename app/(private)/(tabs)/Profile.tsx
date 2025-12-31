@@ -19,7 +19,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function ProfileScreen() {
   // States
-  const [isBioAvalailable, setIsBioAvailable] = useState(false);
   const [activeButton, setActiveButton] = useState<"Posts" | "Bookmarks">("Posts");
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post"
