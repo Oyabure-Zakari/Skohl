@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 
 
-type UsePostEventParams = {
+type PostEventParams = {
   userUid: string | null;
   eventTopicRef: React.RefObject<string>;
   eventVenueRef: React.RefObject<string>;
@@ -35,7 +35,7 @@ const postEventLogic = async ({
   selectedEventType,
   selectedEventCategory,
   photo,
-}: UsePostEventParams) => {
+}: PostEventParams) => {
   try {
     // Variables to hold user's info
     let fullName;

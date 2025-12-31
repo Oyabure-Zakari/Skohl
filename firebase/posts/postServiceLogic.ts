@@ -12,7 +12,7 @@ import {
   where,
 } from "firebase/firestore";
 
-type UsePostServiceParams = {
+type PostServiceParams = {
   userUid: string | null;
   jobTitleRef: React.RefObject<string>;
   servicePriceRef: React.RefObject<string>;
@@ -30,7 +30,7 @@ const postServiceLogic = async ({
   serviceDescriptionRef,
   selectedServiceCategory,
   photo,
-}: UsePostServiceParams) => {
+}: PostServiceParams) => {
   try {
     // Variables to hold user's info
     let fullName;

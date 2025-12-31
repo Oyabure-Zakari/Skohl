@@ -12,7 +12,7 @@ import {
   where,
 } from "firebase/firestore";
 
-type UsePostProductParams = {
+type PostProductParams = {
   userUid: string | null;
   photo: string;
   productNameRef: React.RefObject<string>;
@@ -28,7 +28,7 @@ const postProductLogic = async ({
   productPriceRef,
   productDescriptionRef,
   selectedProductCategory,
-}: UsePostProductParams) => {
+}: PostProductParams) => {
   try {
     // Variables to hold user's info
     let fullName;
