@@ -66,7 +66,7 @@ const postServiceLogic = async ({
         createdAt: serverTimestamp(),
       });
 
-      // Update document with its own ID
+      // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).
       await updateDoc(doc(db, "posts", docRef.id), { id: docRef.id });
     } else {
       // Add document
@@ -82,7 +82,7 @@ const postServiceLogic = async ({
         createdAt: serverTimestamp(),
       });
 
-      // Update document with its own ID
+      // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).
       await updateDoc(doc(db, "posts", docRef.id), { id: docRef.id });
     }
   } catch (error: any) {
