@@ -1,6 +1,6 @@
 import useReuseableStyles from "@/styles/reuable.styles";
 import React from "react";
-import { Text } from "react-native";
+import Animated, { FadeInLeft } from "react-native-reanimated";
 
 type TitleTextProps = {
   text: string;
@@ -8,7 +8,11 @@ type TitleTextProps = {
 
 const TitleText: React.FC<TitleTextProps> = ({ text }) => {
   const styles = useReuseableStyles();
-  return <Text style={styles.titleText}>{text}</Text>;
+  return (
+    <Animated.Text entering={FadeInLeft.delay(400)} style={styles.titleText}>
+      {text}
+    </Animated.Text>
+  );
 };
 
 export default TitleText;
