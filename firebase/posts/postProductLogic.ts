@@ -1,5 +1,6 @@
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { db } from "@/firebase/firebase.config";
+import postImageUrl from "@/utils/cloudinary/postImageUrl";
 import {
   addDoc,
   collection,
@@ -10,7 +11,6 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import postImageUrl from "../../utils/cloudinary/postImageUrl";
 
 type UsePostProductParams = {
   userUid: string | null;
