@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import usePhotoStore from "@/store/photoStore";
-import isEventFormValid from "@/utils/eventForm";
+import isEventFormValid from "@/utils/postsFormValidation/eventForm";
 import postEventLogic from "@/utils/postsFormValidation/postEventLogic";
 import { useMutation } from "@tanstack/react-query";
 import { useWindowDimensions } from "react-native";

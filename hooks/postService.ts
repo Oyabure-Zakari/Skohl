@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import usePhotoStore from "@/store/photoStore";
 import postServiceLogic from "@/utils/postsFormValidation/postServiceLogic";
-import isServiceFormValid from "@/utils/serviceForm";
+import isServiceFormValid from "@/utils/postsFormValidation/serviceForm";
 import { useMutation } from "@tanstack/react-query";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
