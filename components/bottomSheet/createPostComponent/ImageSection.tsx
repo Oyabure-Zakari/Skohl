@@ -9,12 +9,11 @@ import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 type PhotoSectionProps = {
-  photoText: string;
   photo: string;
   openCamera: () => void;
 };
 
-const PhotoSection: React.FC<PhotoSectionProps> = ({ photoText, photo, openCamera }) => {
+const PhotoSection: React.FC<PhotoSectionProps> = ({ photo, openCamera }) => {
   // Custom Hooks
   const { pickImage } = useExpoImagePicker(); // Image Picker
   // zustand
@@ -27,7 +26,7 @@ const PhotoSection: React.FC<PhotoSectionProps> = ({ photoText, photo, openCamer
     <>
       {!photo ? (
         <View style={createPostStyles.photoPlaceholder}>
-          <Text style={createPostStyles.photoText}>{photoText}</Text>
+          <Text style={createPostStyles.photoText}>Image</Text>
         </View>
       ) : (
         <Image
