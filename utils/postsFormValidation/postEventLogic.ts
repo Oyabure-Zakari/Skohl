@@ -57,7 +57,7 @@ const postEventLogic = async ({
       const uploadedImage = await postImageUrl(photo);
 
       // Add document
-      const docRef = await addDoc(collection(db, "events"), {
+      const docRef = await addDoc(collection(db, "posts"), {
         id: "",
         eventTopic: eventTopicRef.current.trim(),
         eventVenue: eventVenueRef.current.trim(),
@@ -73,10 +73,10 @@ const postEventLogic = async ({
       });
 
       // Update document with its own ID
-      await updateDoc(doc(db, "events", docRef.id), { id: docRef.id });
+      await updateDoc(doc(db, "posts", docRef.id), { id: docRef.id });
     } else {
       // Add document
-      const docRef = await addDoc(collection(db, "events"), {
+      const docRef = await addDoc(collection(db, "posts"), {
         id: "",
         eventTopic: eventTopicRef.current.trim(),
         eventVenue: eventVenueRef.current.trim(),
@@ -91,7 +91,7 @@ const postEventLogic = async ({
       });
 
       // Update document with its own ID
-      await updateDoc(doc(db, "events", docRef.id), { id: docRef.id });
+      await updateDoc(doc(db, "posts", docRef.id), { id: docRef.id });
     }
   } catch (error: any) {
     throw new Error(error.message);

@@ -53,7 +53,7 @@ const postServiceLogic = async ({
       const uploadedImage = await postImageUrl(photo);
 
       // Add document
-      const docRef = await addDoc(collection(db, "services"), {
+      const docRef = await addDoc(collection(db, "posts"), {
         id: "",
         jobTitle: jobTitleRef.current.trim(),
         price: `₦${servicePriceRef.current.trim()}`,
@@ -67,10 +67,10 @@ const postServiceLogic = async ({
       });
 
       // Update document with its own ID
-      await updateDoc(doc(db, "services", docRef.id), { id: docRef.id });
+      await updateDoc(doc(db, "posts", docRef.id), { id: docRef.id });
     } else {
       // Add document
-      const docRef = await addDoc(collection(db, "services"), {
+      const docRef = await addDoc(collection(db, "posts"), {
         id: "",
         jobTitle: jobTitleRef.current.trim(),
         price: `₦${servicePriceRef.current.trim()}`,
@@ -83,7 +83,7 @@ const postServiceLogic = async ({
       });
 
       // Update document with its own ID
-      await updateDoc(doc(db, "services", docRef.id), { id: docRef.id });
+      await updateDoc(doc(db, "posts", docRef.id), { id: docRef.id });
     }
   } catch (error: any) {
     throw new Error(error.message);

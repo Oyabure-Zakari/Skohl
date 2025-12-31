@@ -49,7 +49,7 @@ const postProductLogic = async ({
     const uploadedImage = await postImageUrl(photo);
 
     // Add document
-    const docRef = await addDoc(collection(db, "products"), {
+    const docRef = await addDoc(collection(db, "posts"), {
       id: "",
       name: productNameRef.current.trim(),
       price: `₦${productPriceRef.current.trim()}`,
@@ -62,7 +62,7 @@ const postProductLogic = async ({
     });
 
     // Update document with its own ID
-    await updateDoc(doc(db, "products", docRef.id), { id: docRef.id });
+    await updateDoc(doc(db, "posts", docRef.id), { id: docRef.id });
   } catch (error: any) {
     throw new Error(error.message);
   }
