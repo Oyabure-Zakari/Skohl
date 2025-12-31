@@ -17,6 +17,7 @@ import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
         faculty: studentInfo.faculty,
         gender: studentInfo.gender,
         religion: studentInfo.religion,
+        bio: "",
         joinedAt: serverTimestamp(),
       });
     } catch (error: any) {
