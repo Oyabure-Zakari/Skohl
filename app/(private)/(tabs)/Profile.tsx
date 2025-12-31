@@ -28,6 +28,7 @@ export default function ProfileScreen() {
     image: "",
     fullName: "",
     faculty: "",
+    bio: "",
     joinedAt: "",
   });
 
@@ -74,6 +75,7 @@ export default function ProfileScreen() {
         image: data.image,
         fullName: `${data.surname} ${data.firstname}`,
         faculty: data.faculty,
+        bio: data.bio,
         joinedAt: data.joinedAt,
       }));
     });
@@ -124,11 +126,11 @@ export default function ProfileScreen() {
         </Text>
 
         {/* Display bio if available */}
-        <Text numberOfLines={4} style={[styles.bioText2, { fontSize: 12, marginTop: 4 }]}>
-          Mobile App Developer🔸I build fast, reliable, & visually appealing apps. My goal is to
-          turn your ideas into elegant, performant app solutions that users love Passionate about
-          technology and innovation. Avid reader and lifelong learner.
-        </Text>
+        {user.bio && (
+          <Text numberOfLines={4} style={[styles.bioText2, { fontSize: 12, marginTop: 4 }]}>
+            {user.bio}
+          </Text>
+        )}
       </View>
 
       {/* Posts and Bookmarks Buttons */}
