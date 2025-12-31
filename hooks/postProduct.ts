@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
+import postProductLogic from "@/firebase/posts/postProductLogic";
 import usePhotoStore from "@/store/photoStore";
-import postProductLogic from "@/utils/postsFormValidation/postProductLogic";
 import isProductFormValid from "@/utils/postsFormValidation/productForm";
 import { useMutation } from "@tanstack/react-query";
 import { useWindowDimensions } from "react-native";

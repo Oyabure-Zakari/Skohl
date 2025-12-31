@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/AuthContext";
+import postEventLogic from "@/firebase/posts/postEventLogic";
 import usePhotoStore from "@/store/photoStore";
 import isEventFormValid from "@/utils/postsFormValidation/eventForm";
-import postEventLogic from "@/utils/postsFormValidation/postEventLogic";
 import { useMutation } from "@tanstack/react-query";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
