@@ -1,23 +1,32 @@
+// React
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// React Native
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+// Expo
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+// Packages
+import BottomSheet from "@gorhom/bottom-sheet";
+import { getDocs, query, Timestamp, where } from "firebase/firestore";
+import LottieView from "lottie-react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+// Components
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
+// Constants
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import LOTTIES from "@/constants/lottie";
+// Contexts
 import { useAuth } from "@/contexts/AuthContext";
+// Firebase
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
+// Custom Hooks
 import useHandleLogOut from "@/hooks/logOut";
+// Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import BottomSheet from "@gorhom/bottom-sheet";
-import { Image } from "expo-image";
-import { getDocs, query, Timestamp, where } from "firebase/firestore";
-import LottieView from "lottie-react-native";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function ProfileScreen() {
   // States
