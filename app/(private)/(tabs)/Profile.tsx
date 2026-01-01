@@ -50,7 +50,7 @@ export default function ProfileScreen() {
   const profileStyles = useProfileScreenStyles();
 
   // Bottom Sheet snap points
-  const snapPoints = useMemo(() => ["25%", "50%", "75%"], []);
+  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
 
   // Handlers
   const handleSnapPress = useCallback(() => {
