@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { auth } from "@/firebase/firebase.config";
 import useVerificationStore from "@/store/verificatonStore";
+import useProfileScreenStyles from "@/styles/profile.styles";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -16,7 +17,7 @@ import { signOut } from "firebase/auth";
 import { getDocs, query, where } from "firebase/firestore";
 import LottieView from "lottie-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -46,6 +47,7 @@ export default function ProfileScreen() {
   // Styles
   const registerStyles = useRegisterScreenStyles();
   const reUseableStyles = useReuseableStyles();
+  const profileStyles = useProfileScreenStyles();
 
   // Bottom Sheet snap points
   const snapPoints = useMemo(() => ["25%", "50%", "75%"], []);
@@ -91,9 +93,9 @@ export default function ProfileScreen() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={profileStyles.header}>
         {/* Profile Section */}
-        <View style={styles.profile}>
+        <View style={profileStyles.profile}>
           {/* Profile Image */}
           <Image
             source={{ uri: user.image }}
@@ -105,31 +107,31 @@ export default function ProfileScreen() {
           />
 
           {/* Edit Button */}
-          <TouchableOpacity style={styles.editProfileBtn}>
-            <Text style={styles.editProfileBtnText}>Edit Profile</Text>
+          <TouchableOpacity style={profileStyles.editProfileBtn}>
+            <Text style={profileStyles.editProfileBtnText}>Edit Profile</Text>
           </TouchableOpacity>
         </View>
 
         {/* Log Out Button */}
-        <TouchableOpacity style={styles.logOutBtn} onPress={handleLogOut}>
+        <TouchableOpacity style={profileStyles.logOutBtn} onPress={handleLogOut}>
           <MaterialCommunityIcons name="logout" size={20} color={COLORS.red} />
-          <Text style={styles.logOutBtnText}>Log Out</Text>
+          <Text style={profileStyles.logOutBtnText}>Log Out</Text>
         </TouchableOpacity>
       </View>
 
       {/* User Bio */}
-      <View style={styles.bioContainer}>
-        <Text numberOfLines={1} style={styles.bioText1}>
+      <View style={profileStyles.bioContainer}>
+        <Text numberOfLines={1} style={profileStyles.bioText1}>
           {user.fullName}
         </Text>
-        <Text style={styles.bioText2}>
+        <Text style={profileStyles.bioText2}>
           {user.faculty}
           {"\n"}Ahmadu Bello University,{"\n"}Zaria
         </Text>
 
         {/* Display bio if available */}
         {user.bio && (
-          <Text numberOfLines={4} style={[styles.bioText2, { fontSize: 12, marginTop: 4 }]}>
+          <Text numberOfLines={4} style={[profileStyles.bioText2, { fontSize: 12, marginTop: 4 }]}>
             {user.bio}
           </Text>
         )}
@@ -192,10 +194,7 @@ export default function ProfileScreen() {
           <LottieView
             autoPlay
             speed={1.5}
-            style={{
-              width: "100%",
-              height: 200,
-            }}
+            style={profileStyles.lottieStyle}
             source={LOTTIES.nothingFound}
           />
           <Text style={{ fontFamily: "Segoe_UI_Bold", fontSize: 16, color: COLORS.darkGrey }}>
@@ -219,69 +218,3 @@ export default function ProfileScreen() {
     </GestureHandlerRootView>
   );
 }
-
-const styles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    //backgroundColor: COLORS.darkGrey,
-  },
-
-  profile: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    //backgroundColor: "red",
-  },
-
-  editProfileBtn: {
-    backgroundColor: COLORS.darkBlue,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    elevation: 6,
-  },
-
-  editProfileBtnText: {
-    color: COLORS.lightGrey,
-    fontSize: 14,
-    fontFamily: "Segoe_UI_Bold",
-    textAlign: "center",
-  },
-
-  logOutBtn: {
-    backgroundColor: COLORS.lightGrey,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-
-  logOutBtnText: {
-    color: COLORS.red,
-    fontSize: 14,
-    fontFamily: "Segoe_UI_Bold",
-    textAlign: "center",
-  },
-
-  bioContainer: {
-    paddingHorizontal: 16,
-  },
-
-  bioText1: {
-    fontSize: 18,
-    fontFamily: "Segoe_UI_Bold",
-    color: COLORS.darkBlue,
-    width: "52%", // To prevent long names from overflowing
-  },
-
-  bioText2: {
-    fontSize: 14,
-    fontFamily: "Segoe_UI_Bold",
-    color: COLORS.darkGrey,
-  },
-});
