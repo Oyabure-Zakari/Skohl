@@ -2,6 +2,7 @@ import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent"
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import LOTTIES from "@/constants/lottie";
 import { useAuth } from "@/contexts/AuthContext";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { auth } from "@/firebase/firebase.config";
@@ -13,8 +14,10 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
 import { signOut } from "firebase/auth";
 import { getDocs, query, where } from "firebase/firestore";
+import LottieView from "lottie-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function ProfileScreen() {
@@ -178,30 +181,27 @@ export default function ProfileScreen() {
 
       {/* Content */}
       <ScrollView>
-        <Text style={{ paddingHorizontal: 16 }}>
-          Why use a lorem ipsum generator? If everyone used the identical lorem ipsum copy, search
-          engines would flag it for plagiarism and downgrade the site for its lack of helpful
-          content for the reader. However, when you send sample layouts filled with fun lorem ipsum
-          to your customers, they will focus on the look and feel of the page instead of digging
-          into and arguing about the content. Nevertheless, lorem ipsum generators do not spew a
-          random bank of words and paragraphs. Why use a lorem ipsum generator? If everyone used the
-          identical lorem ipsum copy, search engines would flag it for plagiarism and downgrade the
-          site for its lack of helpful content for the reader. However, when you send sample layouts
-          filled with fun lorem ipsum to your customers, they will focus on the look and feel of the
-          page instead of digging into and arguing about the content. Nevertheless, lorem ipsum
-          generators do not spew a random bank of words and paragraphs. Why use a lorem ipsum
-          generator? If everyone used the identical lorem ipsum copy, search engines would flag it
-          for plagiarism and downgrade the site for its lack of helpful content for the reader.
-          However, when you send sample layouts filled with fun lorem ipsum to your customers, they
-          will focus on the look and feel of the page instead of digging into and arguing about the
-          content. Nevertheless, lorem ipsum generators do not spew a random bank of words and
-          paragraphs. Why use a lorem ipsum generator? If everyone used the identical lorem ipsum
-          copy, search engines would flag it for plagiarism and downgrade the site for its lack of
-          helpful content for the reader. However, when you send sample layouts filled with fun
-          lorem ipsum to your customers, they will focus on the look and feel of the page instead of
-          digging into and arguing about the content. Nevertheless, lorem ipsum generators do not
-          spew a random bank of words and paragraphs.
-        </Text>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            //backgroundColor: "red",
+          }}
+        >
+          <LottieView
+            autoPlay
+            speed={1.5}
+            style={{
+              width: "100%",
+              height: 200,
+            }}
+            source={LOTTIES.nothingFound}
+          />
+          <Text style={{ fontFamily: "Segoe_UI_Bold", fontSize: 16, color: COLORS.darkGrey }}>
+            No {activeButton === "Posts" ? "posts" : "bookmarks"} found.
+          </Text>
+        </View>
       </ScrollView>
 
       {/* Bottom Sheet */}
