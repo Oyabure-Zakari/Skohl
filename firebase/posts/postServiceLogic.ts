@@ -49,21 +49,21 @@ const postServiceLogic = async ({
 
     // If user has selected an image
     if (photo) {
-      // Upload image to cloudinary and get URL
+      // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).
       const uploadedImage = await postImageUrl(photo);
 
       // Add document
       const docRef = await addDoc(collection(db, "posts"), {
         id: "",
-        jobTitle: jobTitleRef.current.trim(),
+        photo: uploadedImage,
+        title: jobTitleRef.current.trim(),
         price: `₦${servicePriceRef.current.trim()}`,
-        schedule: serviceScheduleRef.current.trim(),
         description: serviceDescriptionRef.current.trim(),
         category: selectedServiceCategory.trim(),
-        photo: uploadedImage,
         postType: "service",
         postedBy: { userUid, fullName, image },
         createdAt: serverTimestamp(),
+        serviceSchedule: serviceScheduleRef.current.trim(),
       });
 
       // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).
@@ -72,14 +72,15 @@ const postServiceLogic = async ({
       // Add document
       const docRef = await addDoc(collection(db, "posts"), {
         id: "",
-        jobTitle: jobTitleRef.current.trim(),
+        photo: "",
+        title: jobTitleRef.current.trim(),
         price: `₦${servicePriceRef.current.trim()}`,
-        schedule: serviceScheduleRef.current.trim(),
         description: serviceDescriptionRef.current.trim(),
         category: selectedServiceCategory.trim(),
         postType: "service",
         postedBy: { userUid, fullName, image },
         createdAt: serverTimestamp(),
+        serviceSchedule: serviceScheduleRef.current.trim(),
       });
 
       // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).

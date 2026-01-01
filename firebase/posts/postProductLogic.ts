@@ -51,11 +51,11 @@ const postProductLogic = async ({
     // Add document
     const docRef = await addDoc(collection(db, "posts"), {
       id: "",
-      name: productNameRef.current.trim(),
+      photo: uploadedImage,
+      title: productNameRef.current.trim(),
       price: `₦${productPriceRef.current.trim()}`,
       description: productDescriptionRef.current.trim(),
       category: selectedProductCategory.trim(),
-      photo: uploadedImage,
       postType: "product",
       postedBy: { userUid, fullName, image },
       createdAt: serverTimestamp(),

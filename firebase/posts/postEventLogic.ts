@@ -53,23 +53,23 @@ const postEventLogic = async ({
 
     // If user has selected an image
     if (photo) {
-      // Upload image to cloudinary and get URL
+      // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).
       const uploadedImage = await postImageUrl(photo);
 
       // Add document
       const docRef = await addDoc(collection(db, "posts"), {
         id: "",
-        eventTopic: eventTopicRef.current.trim(),
-        eventVenue: eventVenueRef.current.trim(),
-        time: timeRef.current.trim(),
-        date: dateRef.current.trim(),
-        description: eventDescriptionRef.current.trim(),
-        eventType: selectedEventType.trim(),
-        eventCategory: selectedEventCategory.trim(),
         photo: uploadedImage,
+        title: eventTopicRef.current.trim(),
+        description: eventDescriptionRef.current.trim(),
+        category: selectedEventCategory.trim(),
         postType: "event",
         postedBy: { userUid, fullName, image },
         createdAt: serverTimestamp(),
+        eventVenue: eventVenueRef.current.trim(),
+        eventTime: timeRef.current.trim(),
+        eventDate: dateRef.current.trim(),
+        eventType: selectedEventType.trim(),
       });
 
       // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).
@@ -78,16 +78,17 @@ const postEventLogic = async ({
       // Add document
       const docRef = await addDoc(collection(db, "posts"), {
         id: "",
-        eventTopic: eventTopicRef.current.trim(),
-        eventVenue: eventVenueRef.current.trim(),
-        time: timeRef.current.trim(),
-        date: dateRef.current.trim(),
+        photo: "",
+        title: eventTopicRef.current.trim(),
         description: eventDescriptionRef.current.trim(),
-        eventType: selectedEventType.trim(),
-        eventCategory: selectedEventCategory.trim(),
+        category: selectedEventCategory.trim(),
         postType: "event",
         postedBy: { userUid, fullName, image },
         createdAt: serverTimestamp(),
+        eventVenue: eventVenueRef.current.trim(),
+        eventTime: timeRef.current.trim(),
+        eventDate: dateRef.current.trim(),
+        eventType: selectedEventType.trim(),
       });
 
       // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).
