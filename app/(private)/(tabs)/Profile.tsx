@@ -5,15 +5,13 @@ import blurhash from "@/constants/expoBlurImage";
 import LOTTIES from "@/constants/lottie";
 import { useAuth } from "@/contexts/AuthContext";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
-import { auth } from "@/firebase/firebase.config";
-import useVerificationStore from "@/store/verificatonStore";
+import useHandleLogOut from "@/hooks/logOut";
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { Image } from "expo-image";
-import { signOut } from "firebase/auth";
 import { getDocs, query, where } from "firebase/firestore";
 import LottieView from "lottie-react-native";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -32,7 +30,10 @@ export default function ProfileScreen() {
     fullName: "",
     faculty: "",
     bio: "",
-    joinedAt: "",
+    joinedAt: {
+      nanoseconds: 0,
+      seconds: 0,
+    },
   });
 
   // Refs
@@ -40,9 +41,6 @@ export default function ProfileScreen() {
 
   // Firebase Auth
   const { userUid } = useAuth();
-
-  // Zustand
-  const clearToken = useVerificationStore((state) => state.clearVerificationToken);
 
   // Styles
   const registerStyles = useRegisterScreenStyles();
@@ -57,14 +55,8 @@ export default function ProfileScreen() {
     sheetRef.current?.snapToIndex(2);
   }, []);
 
-  const handleLogOut = async () => {
-    try {
-      await clearToken();
-      await signOut(auth);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
+  // Custom Hooks
+  const { handleLogOut } = useHandleLogOut();
 
   const fetchUserInfo = async () => {
     // Query user document
@@ -80,7 +72,10 @@ export default function ProfileScreen() {
         fullName: `${data.surname} ${data.firstname}`,
         faculty: data.faculty,
         bio: data.bio,
-        joinedAt: data.joinedAt,
+        joinedAt: {
+          nanoseconds: data.joinedAt.nanoseconds,
+          seconds: data.joinedAt.seconds,
+        },
       }));
     });
   };
@@ -89,6 +84,9 @@ export default function ProfileScreen() {
   useEffect(() => {
     fetchUserInfo();
   }, []);
+
+  console.log(user.joinedAt);
+  console.log(user.joinedAt.nanoseconds, user.joinedAt.seconds);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
