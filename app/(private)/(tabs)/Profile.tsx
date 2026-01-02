@@ -1,5 +1,5 @@
 // React
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 // React Native
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 // Expo
@@ -7,6 +7,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 // Packages
 import BottomSheet from "@gorhom/bottom-sheet";
+import { useQuery } from "@tanstack/react-query";
 import { getDocs, query, Timestamp, where } from "firebase/firestore";
 import LottieView from "lottie-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -23,6 +24,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 // Custom Hooks
 import useHandleLogOut from "@/hooks/logOut";
+// Components
+import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 // Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
@@ -34,16 +37,8 @@ export default function ProfileScreen() {
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post"
   );
-  const [user, setUser] = useState({
-    image: "",
-    fullName: "",
-    faculty: "",
-    bio: "",
-    joinedAt: {
-      nanoseconds: 0,
-      seconds: 0,
-    },
-  });
+
+  // Fetch user via TanStack Query instead of local state
 
   // Refs
   const sheetRef = useRef<BottomSheet>(null);
@@ -67,34 +62,47 @@ export default function ProfileScreen() {
   // Custom Hooks
   const { handleLogOut } = useHandleLogOut();
 
+  // Fetch user via TanStack Query instead of local state
   const fetchUserInfo = async () => {
-    // Query user document
     const q = query(usersCollectionRef, where("uid", "==", userUid));
     const snapshot = await getDocs(q);
 
-    // Get user's info
+    let fetchedInfo = {
+      image: "",
+      fullName: "",
+      faculty: "",
+      bio: "",
+      joinedAt: { nanoseconds: 0, seconds: 0 },
+    };
+
     snapshot.forEach((doc) => {
       const data = doc.data();
-      setUser((prev) => ({
-        ...prev,
+      fetchedInfo = {
         image: data.image,
         fullName: `${data.surname} ${data.firstname}`,
         faculty: data.faculty,
         bio: data.bio,
         joinedAt: {
-          nanoseconds: data.joinedAt.nanoseconds,
-          seconds: data.joinedAt.seconds,
+          nanoseconds: data.joinedAt?.nanoseconds ?? 0,
+          seconds: data.joinedAt?.seconds ?? 0,
         },
-      }));
+      };
     });
+
+    return fetchedInfo;
   };
 
-  // Fetch user info
-  useEffect(() => {
-    fetchUserInfo();
-  }, []);
+  const { data: user, isPending: isLoading } = useQuery<any>({
+    queryKey: ["user", userUid],
+    queryFn: fetchUserInfo,
+    enabled: !!userUid,
+    staleTime: 1000 * 60 * 5,
+  });
 
-  // Your timestamp object from Firestore
+  if (isLoading) {
+    return <OverlayLoadingIndicator />;
+  }
+
   const firestoreTimestamp = {
     seconds: user.joinedAt.seconds, // seconds should always come first
     nanoseconds: user.joinedAt.nanoseconds,
