@@ -10,6 +10,8 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { getDocs, query, Timestamp, where } from "firebase/firestore";
 import LottieView from "lottie-react-native";
+import { MotiView } from "moti";
+import { Skeleton } from "moti/skeleton";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Components
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
@@ -24,8 +26,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 // Custom Hooks
 import useHandleLogOut from "@/hooks/logOut";
-// Components
-import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 // Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
@@ -37,8 +37,6 @@ export default function ProfileScreen() {
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post"
   );
-
-  // Fetch user via TanStack Query instead of local state
 
   // Refs
   const sheetRef = useRef<BottomSheet>(null);
@@ -78,13 +76,13 @@ export default function ProfileScreen() {
     snapshot.forEach((doc) => {
       const data = doc.data();
       fetchedInfo = {
-        image: data.image,
-        fullName: `${data.surname} ${data.firstname}`,
-        faculty: data.faculty,
-        bio: data.bio,
+        image: data?.image,
+        fullName: `${data?.surname} ${data?.firstname}`,
+        faculty: data?.faculty,
+        bio: data?.bio,
         joinedAt: {
-          nanoseconds: data.joinedAt?.nanoseconds ?? 0,
-          seconds: data.joinedAt?.seconds ?? 0,
+          nanoseconds: data?.joinedAt?.nanoseconds ?? 0,
+          seconds: data?.joinedAt?.seconds ?? 0,
         },
       };
     });
@@ -99,20 +97,16 @@ export default function ProfileScreen() {
     staleTime: 1000 * 60 * 5,
   });
 
-  if (isLoading) {
-    return <OverlayLoadingIndicator />;
-  }
-
   const firestoreTimestamp = {
-    seconds: user.joinedAt.seconds, // seconds should always come first
-    nanoseconds: user.joinedAt.nanoseconds,
+    seconds: user?.joinedAt?.seconds, // seconds should always come first
+    nanoseconds: user?.joinedAt?.nanoseconds,
   };
 
   // Convert to Firebase Timestamp, then to JavaScript Date
   const date = new Timestamp(firestoreTimestamp.seconds, firestoreTimestamp.nanoseconds).toDate();
 
-  const year = date.getFullYear();
-  const month = date.toLocaleString("default", { month: "long" });
+  const year = date?.getFullYear();
+  const month = date?.toLocaleString("default", { month: "long" });
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -122,7 +116,7 @@ export default function ProfileScreen() {
         <View style={profileStyles.profile}>
           {/* Profile Image */}
           <Image
-            source={{ uri: user.image }}
+            source={{ uri: user?.image }}
             style={registerStyles.image}
             placeholder={{ blurhash }}
             contentFit="contain"
@@ -145,30 +139,47 @@ export default function ProfileScreen() {
 
       {/* User Bio */}
       <View style={profileStyles.bioContainer}>
-        {/* Full Name */}
-        <Text numberOfLines={1} style={profileStyles.bioText1}>
-          {user.fullName}
-        </Text>
+        {isLoading ? (
+          <>
+            {/* Skeleton */}
+            <MotiView style={{ marginBottom: 6 }}>
+              <Skeleton show={isLoading} colorMode="light" width={"60%"}></Skeleton>
+            </MotiView>
+            <MotiView style={{ marginBottom: 6 }}>
+              <Skeleton show={isLoading} colorMode="light" width={"40%"}></Skeleton>
+            </MotiView>
+          </>
+        ) : (
+          <>
+            {/* Full Name */}
+            <Text numberOfLines={1} style={profileStyles.bioText1}>
+              {user?.fullName}
+            </Text>
 
-        {/* Faculty */}
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <MaterialCommunityIcons name="school-outline" size={20} color={COLORS.darkGrey} />
-          <Text style={profileStyles.bioText2}> {user.faculty} </Text>
-        </View>
+            {/* Faculty */}
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialCommunityIcons name="school-outline" size={20} color={COLORS.darkGrey} />
+              <Text style={profileStyles.bioText2}> {user?.faculty} </Text>
+            </View>
 
-        {/* Joined Date */}
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <MaterialIcons name="date-range" size={20} color={COLORS.darkGrey} />
-          <Text style={profileStyles.bioText2}>
-            Joined {month}, {year}
-          </Text>
-        </View>
+            {/* Joined Date */}
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons name="date-range" size={20} color={COLORS.darkGrey} />
+              <Text style={profileStyles.bioText2}>
+                Joined {month}, {year}
+              </Text>
+            </View>
 
-        {/* Display bio if available */}
-        {user.bio && (
-          <Text numberOfLines={4} style={[profileStyles.bioText2, { fontSize: 12, marginTop: 4 }]}>
-            {user.bio}
-          </Text>
+            {/* Display bio if available */}
+            {user?.bio && (
+              <Text
+                numberOfLines={4}
+                style={[profileStyles.bioText2, { fontSize: 12, marginTop: 4 }]}
+              >
+                {user?.bio}
+              </Text>
+            )}
+          </>
         )}
       </View>
 
