@@ -140,14 +140,18 @@ export default function VerificationScreen() {
               source={{ uri: abuLoginPortalUrl.href, method: "GET" }}
               ref={webViewRef}
               javaScriptEnabled={true}
-              injectedJavaScript={injectedJS}
+              // Handles navigation btw pages in the website
               onNavigationStateChange={handleNavigationStateChange}
+              // Injects JavaScript code to disable interactions and scrape student info and sends info back
+              injectedJavaScript={injectedJS}
+              // Recieves the student info
+              onMessage={handleWebViewMessage}
+              // WebView settings for better performance and UX
               startInLoadingState={true}
               scalesPageToFit={true}
               onLoadStart={() => setIsLoading(true)}
               onLoadEnd={() => setIsLoading(false)}
               onError={() => setIsLoading(false)}
-              onMessage={handleWebViewMessage}
             />
 
             {/* Full-screen loading overlay */}
