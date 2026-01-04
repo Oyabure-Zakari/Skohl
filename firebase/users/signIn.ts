@@ -1,67 +1,83 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getDocs, query, where } from "firebase/firestore";
+import { Alert } from "react-native";
+import usersCollectionRef from "../collectionRef/usersCollectionRef";
 import { auth } from "../firebase.config";
 
 const signInUser = async (
   email: string,
   password: string,
   setError: (error: string) => void,
+  verificationFingerprint: string
 ) => {
   setError("");
+
   try {
-    // Sign in with email and password
-    await signInWithEmailAndPassword(auth, email, password);
+    // Sign in with email/password
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userUid = userCredential.user.uid;
+
+    // Fetch user document
+    const q = query(usersCollectionRef, where("uid", "==", userUid));
+    const snapshot = await getDocs(q);
+
+    // No user document found — suspicious activity
+    if (snapshot.empty) {
+      await signOut(auth);
+      setError("Account not found or not verified. Please register again.");
+      return;
+    }
+
+    // Retrieve stored fingerprint
+    let storedFingerprint = "";
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      storedFingerprint = data?.verificationFingerprint || "";
+    });
+
+    // Critical Security Check
+    if (storedFingerprint !== verificationFingerprint) {
+      // Mismatch → immediately sign out and block access
+      Alert.alert(
+        "Unable to Log In ⚠️",
+        "The verification details don't match your original signup. Please use the same information you provided during registration.",
+        [
+          {
+            text: "OK",
+            onPress: async () => await signOut(auth),
+          },
+        ]
+      );
+      return;
+    }
+
+    // All good — login successful
+    console.log("Login successful with matching verification fingerprint");
   } catch (error: any) {
+    // Firebase Auth errors
     switch (error.code) {
-      // Most common: wrong password, user not found, or malformed credentials
-      // Firebase often returns this single code for security (email enumeration protection)
       case "auth/invalid-credential":
-        setError("Invalid email or password. Please try again.");
+        setError("Invalid email or password.");
         break;
-
-      // Email format issues
       case "auth/invalid-email":
-        setError("Please enter a valid email address.");
+        setError("Invalid email address.");
         break;
-
-      // Account disabled by admin
       case "auth/user-disabled":
-        setError("This account has been disabled. Contact support.");
+        setError("This account has been disabled.");
         break;
-
-      // Too many failed attempts — temporary lock
       case "auth/too-many-requests":
-        setError("Too many failed attempts. Please try again later.");
+        setError("Too many attempts. Try again later.");
         break;
-
-      // Network/offline issues
       case "auth/network-request-failed":
-        setError("Network error. Check your connection and try again.");
+        setError("Network error. Check your connection.");
         break;
-
-      // User recently deleted or other internal issues
       case "auth/user-not-found":
-        setError("No account found with this email.");
-        break;
-
       case "auth/wrong-password":
-        setError("Incorrect password. Please try again.");
+        setError("Invalid email or password.");
         break;
-
-      // Generic internal or unexpected errors
-      case "auth/internal-error":
-      case "auth/operation-not-allowed":
-        setError("Authentication service error. Please try again later.");
-        break;
-
-      // Timeout or cancelled
-      case "auth/timeout":
-        setError("Request timed out. Please try again.");
-        break;
-
-      // Fallback for any unhandled error code
       default:
-        setError("An unexpected error occurred. Please try again.");
-        break;
+        setError("Login failed. Please try again.");
+        console.error("Login error:", error);
     }
   }
 };
