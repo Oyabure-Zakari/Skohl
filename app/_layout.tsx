@@ -37,15 +37,17 @@ function AppLayout() {
   });
 
   // Zustand
-  const verificationToken = useVerificationStore((state) => state.verificationToken);
-  const checkVerificationToken = useVerificationStore((state) => state.checkVerificationToken);
+  const verificationFingerprint = useVerificationStore((state) => state.verificationFingerprint);
+  const loadVerificationFingerprint = useVerificationStore(
+    (state) => state.loadVerificationFingerprint
+  );
 
   // Firebase Auth Conntext
   const { userUid, loading: authLoading } = useAuth();
 
-  // useEffect that updates the verifcation token in Zustand store
+  // useEffect that updates the verification fingerprint in Zustand store
   useEffect(() => {
-    checkVerificationToken();
+    loadVerificationFingerprint();
   }, []);
 
   useEffect(() => {
@@ -59,7 +61,7 @@ function AppLayout() {
     return <OverlayLoadingIndicator />;
   }
 
-  const isVerifiedAndAuthenticated = !!verificationToken && !!userUid;
+  const isVerifiedAndAuthenticated = !!verificationFingerprint && !!userUid;
 
   return (
     <Stack>

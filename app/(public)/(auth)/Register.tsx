@@ -1,7 +1,7 @@
 // React
 import React, { useRef, useState } from "react";
 // React Native
-import { TextInput, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 // Expo
 import { Redirect, useRouter } from "expo-router";
 // Components
@@ -46,10 +46,12 @@ export default function RegistartionScreen() {
   const { isPasswordHidden, togglePasswordVisibility } = useTogglePasswordVisibility();
   // Zustand store
   const studentInfo = useVerificationStore((state) => state.studentInfo);
-  const verificationToken = useVerificationStore((state) => state.verificationToken);
+  const verificationFingerprint = useVerificationStore((state) => state.verificationFingerprint);
 
-  // Redirect to verification screen if verification token is not present
-  if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
+  // Redirect to verification screen if verification fingerprint is not present
+  if (!verificationFingerprint) return <Redirect href="/(public)/(auth)" />;
+
+  console.log("From Register Screen", verificationFingerprint);
 
   const handleSignUp = async () => {
     await handleRegistration(
@@ -60,7 +62,8 @@ export default function RegistartionScreen() {
       confirmPasswordInputRef,
       textInputRef,
       setError,
-      setIsLoading
+      setIsLoading,
+      verificationFingerprint
     );
   };
 
@@ -81,7 +84,9 @@ export default function RegistartionScreen() {
 
           {/* Form */}
           <View style={registerStyles.profile}>
-            <ProfileImage userImage={image} />
+            <TouchableOpacity onPress={pickImage}>
+              <ProfileImage userImage={image} />
+            </TouchableOpacity>
             <EditPicButton pickImage={pickImage} />
           </View>
 

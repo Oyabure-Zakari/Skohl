@@ -13,8 +13,8 @@ const useWebViewHandleMessage = ({
   setVerificationStatus,
 }: UseWebViewHandleMessageProps) => {
   // Hook created in zustand to get
-  const getVerificationToken = useVerificationStore(
-    (state) => state.getVerificationToken
+  const setVerifiedStudent = useVerificationStore(
+    (state) => state.setVerifiedStudent
   );
 
   // Handles messages sent from WebView (via postMessage)
@@ -42,7 +42,7 @@ const useWebViewHandleMessage = ({
 
         // If all three core details match → verification successful
         if (isFirstname && isSurname && isFaculty) {
-          getVerificationToken(msg.payload); // Use zustand to generate verification token
+          setVerifiedStudent(msg.payload); // Store verified student info and fingerprint in zustand
           setVerificationStatus("Successful");
         } else {
           setVerificationStatus("Failed");

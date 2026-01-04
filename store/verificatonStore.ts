@@ -1,10 +1,12 @@
+import StudentInfoType from "@/types/StudentInfoType";
 import VerificationStoreStore from "@/types/VerificationStoreStore";
 import { captilizeWord } from "@/utils/captilizeWord";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Crypto from "expo-crypto";
 import { create } from "zustand";
 
-const useVerificationStore = create<VerificationStoreStore>()((set) => ({
-  verificationToken: "",
+const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
+  verificationFingerprint: "",
   studentInfo: {
     firstname: "",
     surname: "",
@@ -13,51 +15,64 @@ const useVerificationStore = create<VerificationStoreStore>()((set) => ({
     gender: "",
   },
 
-  // Update the studentInfo and verificationToken state
-  getVerificationToken: (value) => {
-    const token = process.env.EXPO_PUBLIC_VERIFICATION_TOKEN;
-    if (value) {
-      set({
-        studentInfo: {
-          firstname: captilizeWord(value.firstname),
-          surname: captilizeWord(value.surname),
-          faculty: captilizeWord(value.faculty),
-          religion: captilizeWord(value.religion),
-          gender: captilizeWord(value.gender),
-        },
-        verificationToken: token,
-      });
+  // Generate and store hashed fingerprint from verified student info
+  setVerifiedStudent: async (info: StudentInfoType) => {
+    // Create a unique fingerprint string
+    const fingerprintString = `${info.firstname}|${info.surname}|${info.faculty}|${info.religion}|${info.gender}`; 
 
-      // Store the token in AsyncStorage
-      (async () => {
-        try {
-          await AsyncStorage.setItem("@verificationToken", token!);
-        } catch (error: any) {
-          console.log("Error storing token", error.message);
-        }
-      })();
+    // Hash with SHA-256 using expo-crypto
+    const hashedFingerprint = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      fingerprintString
+    );
+
+    // Save to store and AsyncStorage
+    set({
+      studentInfo: {
+        firstname: captilizeWord(info.firstname),
+        surname: captilizeWord(info.surname),
+        faculty: captilizeWord(info.faculty),
+        religion: captilizeWord(info.religion),
+        gender: captilizeWord(info.gender),
+      },
+      verificationFingerprint: hashedFingerprint,
+    });
+
+    try {
+      await AsyncStorage.setItem("@verificationFingerprint", hashedFingerprint);
+    } catch (error: any) {
+      console.error("Error saving fingerprint:", error.message);
     }
   },
 
-  // Retrieve the token from AsyncStorage and update the verificationToken state
-  checkVerificationToken: async () => {
+  // Load fingerprint on app start
+  loadVerificationFingerprint: async () => {
     try {
-      const storedToken = await AsyncStorage.getItem("@verificationToken");
-      if (storedToken) {
-        set({ verificationToken: storedToken });
+      const storedFingerprint = await AsyncStorage.getItem("@verificationFingerprint");
+      if (storedFingerprint) {
+        set({ verificationFingerprint: storedFingerprint });
       }
     } catch (error: any) {
-      console.log("Error retrieving token", error.message);
+      console.error("Error loading fingerprint:", error.message);
     }
   },
 
-  // Clear the token from AsyncStorage and reset verification Token
-  clearVerificationToken: async () => {
+  // Clear everything (on logout, etc.)
+  clearVerification: async () => {
     try {
-      await AsyncStorage.removeItem("@verificationToken");
-      set({verificationToken: ""});
+      await AsyncStorage.removeItem("@verificationFingerprint");
+      set({
+        verificationFingerprint: "",
+        studentInfo: {
+          firstname: "",
+          surname: "",
+          faculty: "",
+          religion: "",
+          gender: "",
+        },
+      });
     } catch (error: any) {
-      console.log("Error clearing token", error.message);
+      console.error("Error clearing verification:", error.message);
     }
   },
 }));
