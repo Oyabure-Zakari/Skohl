@@ -36,11 +36,13 @@ export default function LoginScreen() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   // Hooks from  zustand store
-  const verificationToken = useVerificationStore((state) => state.verificationToken);
+  const verificationFingerprint = useVerificationStore((state) => state.verificationFingerprint);
   const { isPasswordHidden, togglePasswordVisibility } = useTogglePasswordVisibility();
 
   // Redirect to verification screen if verification token is not present
-  if (!verificationToken) return <Redirect href="/(public)/(auth)" />;
+  if (!verificationFingerprint) return <Redirect href="/(public)/(auth)" />;
+
+  console.log("From Login Screen", verificationFingerprint);
 
   const handleSignIn = async () => {
     await handleLogin(emailInputRef, passwordInputRef, textInputRef, setError, setIsLoading);
