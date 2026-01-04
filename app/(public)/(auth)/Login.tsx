@@ -45,7 +45,14 @@ export default function LoginScreen() {
   console.log("From Login Screen", verificationFingerprint);
 
   const handleSignIn = async () => {
-    await handleLogin(emailInputRef, passwordInputRef, textInputRef, setError, setIsLoading);
+    await handleLogin(
+      emailInputRef,
+      passwordInputRef,
+      textInputRef,
+      setError,
+      setIsLoading,
+      verificationFingerprint
+    );
   };
 
   const navigateToRegister = () => {
