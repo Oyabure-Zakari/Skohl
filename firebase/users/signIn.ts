@@ -46,6 +46,7 @@ const signInUser = async (
           {
             text: "OK",
             onPress: async () => {
+              // Clear verification fingerprint and sign out
               await useVerificationStore.getState().clearVerification();
               await signOut(auth)
             },
