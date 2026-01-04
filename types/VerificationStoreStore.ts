@@ -1,11 +1,11 @@
 import StudentInfoType from "./StudentInfoType";
 
 type VerificationStoreStore = {
-  verificationToken: string;
+verificationFingerprint: string; // Hashed fingerprint
   studentInfo: StudentInfoType;
-  getVerificationToken: (value: StudentInfoType) => void;
-  checkVerificationToken: () => Promise<void>;
-  clearVerificationToken: () => Promise<void>;
+  setVerifiedStudent: (info: StudentInfoType) => Promise<void>;
+  loadVerificationFingerprint: () => Promise<void>;
+  clearVerification: () => Promise<void>;
 };
 
 export default VerificationStoreStore;
