@@ -36,22 +36,17 @@ const signInUser = async (
       storedFingerprint = data?.verificationFingerprint || "";
     });
 
-    // Critical Security Check
+    // Fingerprint mismatch 
     if (storedFingerprint !== verificationFingerprint) {
-      // Mismatch → immediately sign out and block access
+      // Clear verification fingerprint and sign out
+      await useVerificationStore.getState().clearVerification();
+      await signOut(auth);
+
+      // Show alert message and return 
       Alert.alert(
         "Unable to Log In ⚠️",
         "The verification details don't match your original signup. Please use the same information you provided during registration.",
-        [
-          {
-            text: "OK",
-            onPress: async () => {
-              // Clear verification fingerprint and sign out
-              await useVerificationStore.getState().clearVerification();
-              await signOut(auth)
-            },
-          },
-        ]
+        [{ text: "OK"}]
       );
       return;
     }
