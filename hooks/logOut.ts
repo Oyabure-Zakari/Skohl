@@ -4,10 +4,10 @@ import { signOut } from "firebase/auth";
 
 const useHandleLogOut = () => {
   // Zustand
-  const clearToken = useVerificationStore((state) => state.clearVerificationToken);
+  const clearVerificationFingerprint = useVerificationStore((state) => state.clearVerification);
   const handleLogOut = async () => {
     try {
-      await clearToken();
+      await clearVerificationFingerprint();
       await signOut(auth);
     } catch (error: any) {
       console.log(error.message);
