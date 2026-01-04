@@ -55,9 +55,6 @@ const signInUser = async (
       );
       return;
     }
-
-    // All good — login successful
-    console.log("Login successful with matching verification fingerprint");
   } catch (error: any) {
     // Firebase Auth errors
     switch (error.code) {
