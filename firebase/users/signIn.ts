@@ -1,3 +1,4 @@
+import useVerificationStore from "@/store/verificatonStore";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getDocs, query, where } from "firebase/firestore";
 import { Alert } from "react-native";
@@ -44,7 +45,10 @@ const signInUser = async (
         [
           {
             text: "OK",
-            onPress: async () => await signOut(auth),
+            onPress: async () => {
+              await useVerificationStore.getState().clearVerification();
+              await signOut(auth)
+            },
           },
         ]
       );
