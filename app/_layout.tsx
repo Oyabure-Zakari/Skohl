@@ -48,6 +48,7 @@ function AppLayout() {
   const loadVerificationFingerprint = useVerificationStore(
     (state) => state.loadVerificationFingerprint
   );
+  const loadVerifiedStudentInfo = useVerificationStore((state) => state.loadVerifiedStudentInfo);
 
   // Firebase
   const { userUid, loading: authLoading } = useAuth();
@@ -143,10 +144,11 @@ function AppLayout() {
     }
   }, [loaded, authLoading, userLoading, createUserIfMissing]);
 
-  // Load verification fingerprint on mount
+  // Load verification fingerprint and student info on app start
   useEffect(() => {
     loadVerificationFingerprint();
-  }, [loadVerificationFingerprint]);
+    loadVerifiedStudentInfo();
+  }, [loadVerificationFingerprint, loadVerifiedStudentInfo]);
 
   // Hide splash when ready
   useEffect(() => {
