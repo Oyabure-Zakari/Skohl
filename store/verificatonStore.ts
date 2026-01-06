@@ -10,6 +10,7 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
   studentInfo: {
     firstname: "",
     surname: "",
+    othernames: "",
     faculty: "",
     religion: "",
     gender: "",
@@ -18,7 +19,7 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
   // Generate and store hashed fingerprint from verified student info
   setVerifiedStudent: async (info: StudentInfoType) => {
     // Create a unique fingerprint string
-    const fingerprintString = `${info.firstname}|${info.surname}|${info.faculty}|${info.religion}|${info.gender}`; 
+    const fingerprintString = `${info.firstname}|${info.surname}|${info.othernames}|${info.faculty}|${info.religion}|${info.gender}`; 
 
     // Hash with SHA-256 using expo-crypto
     const hashedFingerprint = await Crypto.digestStringAsync(
@@ -31,6 +32,7 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
       studentInfo: {
         firstname: captilizeWord(info.firstname),
         surname: captilizeWord(info.surname),
+        othernames: captilizeWord(info.othernames),
         faculty: captilizeWord(info.faculty),
         religion: captilizeWord(info.religion),
         gender: captilizeWord(info.gender),
@@ -40,6 +42,7 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
 
     try {
       await AsyncStorage.setItem("@verificationFingerprint", hashedFingerprint);
+      await AsyncStorage.setItem("@verifiedStudentInfo", JSON.stringify(info));
     } catch (error: any) {
       console.error("Error saving fingerprint:", error.message);
     }
@@ -57,15 +60,29 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
     }
   },
 
+  // Load verified student info
+    loadVerifiedStudentInfo: async () => {
+    try {
+      const storedStudentInfo = await AsyncStorage.getItem("@verifiedStudentInfo");
+      if (storedStudentInfo) {
+        set({ studentInfo: JSON.parse(storedStudentInfo) });
+      }
+    } catch (error: any) {
+      console.error("Error loading fingerprint:", error.message);
+    }
+  },
+
   // Clear everything (on logout, etc.)
   clearVerification: async () => {
     try {
       await AsyncStorage.removeItem("@verificationFingerprint");
+      await AsyncStorage.removeItem("@verifiedStudentInfo");
       set({
         verificationFingerprint: "",
         studentInfo: {
           firstname: "",
           surname: "",
+          othernames: "",
           faculty: "",
           religion: "",
           gender: "",
