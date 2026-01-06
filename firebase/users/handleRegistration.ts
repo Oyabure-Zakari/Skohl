@@ -5,9 +5,6 @@ import { TextInput } from "react-native";
 import createUser from "./createUser";
 import signUpUser from "./signUp";
 
-const defaultImage =
-  "https://res.cloudinary.com/dngo9kz1b/image/upload/v1765389175/qzg6bcjcwsryd70y4qtp.jpg";
-
 const handleRegistration = async (
   image: string,
   studentInfo: StudentInfoType,
@@ -44,7 +41,7 @@ const handleRegistration = async (
       return;
     }
     // Create user document in Firestore
-    await createUser(uid, uploadedImageUrl ?? defaultImage, studentInfo, setError, verificationFingerprint);
+    await createUser(uid, uploadedImageUrl, studentInfo, setError, verificationFingerprint);
   } catch (error: any) {
     setError(error.message);
   } finally {
