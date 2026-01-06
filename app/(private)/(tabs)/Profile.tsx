@@ -30,6 +30,7 @@ import useHandleLogOut from "@/hooks/logOut";
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
+import { captilizeWord } from "@/utils/captilizeWord";
 
 export default function ProfileScreen() {
   // States
@@ -108,6 +109,12 @@ export default function ProfileScreen() {
   const year = date?.getFullYear();
   const month = date?.toLocaleString("default", { month: "long" });
 
+  const formatFullName = (name: string): string => {
+    return captilizeWord(name?.split(" ")[0]) + " " + captilizeWord(name?.split(" ")[1]);
+  };
+
+  const userFullname = formatFullName(user?.fullName);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       {/* Header */}
@@ -153,7 +160,7 @@ export default function ProfileScreen() {
           <>
             {/* Full Name */}
             <Text numberOfLines={1} style={profileStyles.bioText1}>
-              {user?.fullName}
+              {userFullname}
             </Text>
 
             {/* Faculty */}
