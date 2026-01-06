@@ -16,6 +16,7 @@ const extractStudentInfo =
     const data = {
       surname: get('#surname'),
       firstname: get('#firstname'),
+      othernames: get('#othernames'),
       faculty: get('#faculty'),
       gender: get('#gender'),
       religion: getReligion()
