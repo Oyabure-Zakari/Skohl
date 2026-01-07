@@ -51,8 +51,6 @@ export default function RegistartionScreen() {
   // Redirect to verification screen if verification fingerprint is not present
   if (!verificationFingerprint) return <Redirect href="/(public)/(auth)" />;
 
-  console.log("From Register Screen", verificationFingerprint);
-
   const handleSignUp = async () => {
     await handleRegistration(
       image,

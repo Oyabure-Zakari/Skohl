@@ -41,9 +41,7 @@ export default function LoginScreen() {
 
   // Redirect to verification screen if verification token is not present
   if (!verificationFingerprint) return <Redirect href="/(public)/(auth)" />;
-
-  console.log("From Login Screen", verificationFingerprint);
-
+  
   const handleSignIn = async () => {
     await handleLogin(
       emailInputRef,
