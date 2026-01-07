@@ -94,11 +94,8 @@ function AppLayout() {
         verificationFingerprint,
         joinedAt: serverTimestamp(),
       });
-      console.log("Firestore user created successfully");
       refetch(); // Refresh query
     } catch (error: any) {
-      console.error("Failed to create user doc:", error.message);
-
       // Show alert with retry option
       Alert.alert(
         "Error Creating User",
