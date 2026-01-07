@@ -30,7 +30,8 @@ import useHandleLogOut from "@/hooks/logOut";
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
-import { captilizeWord } from "@/utils/captilizeWord";
+// Utils
+import formatFullName from "@/utils/formatUserFullname";
 
 export default function ProfileScreen() {
   // States
@@ -91,6 +92,7 @@ export default function ProfileScreen() {
     return fetchedInfo;
   };
 
+  // TanStack Query
   const { data: user, isPending: isLoading } = useQuery<any>({
     queryKey: ["user", userUid],
     queryFn: fetchUserInfo,
@@ -106,13 +108,11 @@ export default function ProfileScreen() {
   // Convert to Firebase Timestamp, then to JavaScript Date
   const date = new Timestamp(firestoreTimestamp.seconds, firestoreTimestamp.nanoseconds).toDate();
 
+  // Format date
   const year = date?.getFullYear();
   const month = date?.toLocaleString("default", { month: "long" });
 
-  const formatFullName = (name: string): string => {
-    return captilizeWord(name?.split(" ")[0]) + " " + captilizeWord(name?.split(" ")[1]);
-  };
-
+  // Format fullname
   const userFullname = formatFullName(user?.fullName);
 
   return (
