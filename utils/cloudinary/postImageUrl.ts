@@ -6,9 +6,6 @@ const postImageUrl = async (imageUri: string | null): Promise<string | null> => 
   }
 
   try {
-    console.log("Starting image compression...");
-    const startCompress = Date.now();
-
     // Compress and resize image before upload
     const manipulatedImage = await ImageManipulator.manipulateAsync(
       imageUri,
@@ -21,10 +18,7 @@ const postImageUrl = async (imageUri: string | null): Promise<string | null> => 
       }
     );
 
-    // Log compression time for debugging
-    const compressTime = Date.now() - startCompress;
-    console.log(`Image compression took ${compressTime}ms`);
-
+    // Compressed image URI
     const compressedUri = manipulatedImage.uri;
 
     const formData = new FormData();
@@ -36,9 +30,6 @@ const postImageUrl = async (imageUri: string | null): Promise<string | null> => 
     formData.append("upload_preset", process.env.EXPO_PUBLIC_CLOUDINARY_UPLOADPRESET!);
     formData.append("cloud_name", process.env.EXPO_PUBLIC_CLOUDINARY_CLOUDNAME!);
 
-    console.log("Starting Cloudinary upload...");
-    const startTime = Date.now();
-
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.EXPO_PUBLIC_CLOUDINARY_CLOUDNAME}/image/upload`,
       {
@@ -47,20 +38,13 @@ const postImageUrl = async (imageUri: string | null): Promise<string | null> => 
       }
     );
 
-    // Log Cloudinary time for debugging
-    const cloudinaryTime = Date.now() - startTime;
-    console.log(`Cloudinary upload took ${cloudinaryTime}ms`);
-
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Upload failed: ${response.status} ${errorText}`);
     }
 
     const data = await response.json();
-    
-    // Log total time for debugging
-    console.log(`Total time ${compressTime + cloudinaryTime}ms`);
-    
+
     return data.secure_url || null;
   } catch (err: any) {
     throw new Error(`Network error: ${err.message}`);
