@@ -97,7 +97,7 @@ export default function ProfileScreen() {
     queryKey: ["user", userUid],
     queryFn: fetchUserInfo,
     enabled: !!userUid,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 4,
   });
 
   const firestoreTimestamp = {
@@ -105,9 +105,8 @@ export default function ProfileScreen() {
     nanoseconds: user?.joinedAt?.nanoseconds,
   };
 
-  // Convert to Firebase Timestamp, then to JavaScript Date
+  // Turns the Firestore timestamp into  to JavaScript Date e.g Joined January 2025
   const date = new Timestamp(firestoreTimestamp.seconds, firestoreTimestamp.nanoseconds).toDate();
-
   // Format date
   const year = date?.getFullYear();
   const month = date?.toLocaleString("default", { month: "long" });
