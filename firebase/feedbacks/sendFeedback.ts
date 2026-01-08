@@ -11,8 +11,7 @@ import {
 import usersCollectionRef from "../collectionRef/usersCollectionRef";
 import { db } from "../firebase.config";
 
-const submitFeedback = async (userUid: string, feedback: string, rating: number) => {
-  if (!feedback.trim() && rating === 0) throw new Error("Please provide feedback or rating.");
+const sendFeedback = async (userUid: string, feedback: string, rating: number) => {
   try {
     // Get the user's full name
     let fullName;
@@ -47,4 +46,4 @@ const submitFeedback = async (userUid: string, feedback: string, rating: number)
   }
 };
 
-export default submitFeedback;
+export default sendFeedback;
