@@ -16,11 +16,10 @@ type UserBioProps = {
   isLoading: boolean;
   user: any;
   userFullname: string;
-  month: string;
-  year: number;
+  joinedDate: string;
 };
 
-const UserBio: React.FC<UserBioProps> = ({ isLoading, user, userFullname, month, year }) => {
+const UserBio: React.FC<UserBioProps> = ({ isLoading, user, userFullname, joinedDate }) => {
   // Styles
   const profileStyles = useProfileScreenStyles();
 
@@ -52,9 +51,7 @@ const UserBio: React.FC<UserBioProps> = ({ isLoading, user, userFullname, month,
           {/* Joined Date */}
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <MaterialIcons name="date-range" size={20} color={COLORS.darkGrey} />
-            <Text style={profileStyles.bioText2}>
-              Joined {month}, {year}
-            </Text>
+            <Text style={profileStyles.bioText2}>Joined {joinedDate}</Text>
           </View>
 
           {/* Display bio if available */}
