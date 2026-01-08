@@ -1,7 +1,7 @@
 // React
 import { useCallback, useMemo, useRef, useState } from "react";
 // React Native
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 // Expo
 // Packages
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -25,6 +25,7 @@ import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 // Utils
+import PostAndBookmarksBtn from "@/components/profile/PostAndBookmarksBtn";
 import formatFullName from "@/utils/formatUserFullname";
 
 export default function ProfileScreen() {
@@ -119,45 +120,7 @@ export default function ProfileScreen() {
       />
 
       {/* Posts and Bookmarks Buttons */}
-      <View style={[reUseableStyles.buttonTypeContainer, { alignSelf: "center", marginTop: 10 }]}>
-        {/* Posts Button */}
-        <TouchableOpacity
-          style={[
-            activeButton === "Posts"
-              ? reUseableStyles.activeButton
-              : reUseableStyles.inactiveButton,
-          ]}
-          onPress={() => setActiveButton("Posts")}
-        >
-          <Text
-            style={[
-              activeButton === "Posts" ? reUseableStyles.activeText : reUseableStyles.inactiveText,
-            ]}
-          >
-            Posts
-          </Text>
-        </TouchableOpacity>
-
-        {/* Bookmarks Button */}
-        <TouchableOpacity
-          style={[
-            activeButton === "Bookmarks"
-              ? reUseableStyles.activeButton
-              : reUseableStyles.inactiveButton,
-          ]}
-          onPress={() => setActiveButton("Bookmarks")}
-        >
-          <Text
-            style={[
-              activeButton === "Bookmarks"
-                ? reUseableStyles.activeText
-                : reUseableStyles.inactiveText,
-            ]}
-          >
-            Bookmarks
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <PostAndBookmarksBtn activeButton={activeButton} setActiveButton={setActiveButton} />
 
       {/* Divider*/}
       <View style={reUseableStyles.bottomSheetDivider} />
