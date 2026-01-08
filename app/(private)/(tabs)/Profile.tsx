@@ -3,17 +3,16 @@ import { useCallback, useMemo, useRef, useState } from "react";
 // React Native
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 // Expo
-import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 // Packages
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
 import { getDocs, query, Timestamp, where } from "firebase/firestore";
 import LottieView from "lottie-react-native";
-import { MotiView } from "moti";
-import { Skeleton } from "moti/skeleton";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Components
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
+import Header from "@/components/profile/Header";
+import UserBio from "@/components/profile/UserBio";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 // Constants
 import COLORS from "@/constants/colors";
@@ -22,12 +21,10 @@ import LOTTIES from "@/constants/lottie";
 import { useAuth } from "@/contexts/AuthContext";
 // Firebase
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
-// Custom Hooks
 // Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 // Utils
-import Header from "@/components/profile/Header";
 import formatFullName from "@/utils/formatUserFullname";
 
 export default function ProfileScreen() {
@@ -113,50 +110,13 @@ export default function ProfileScreen() {
       <Header user={user} />
 
       {/* User Bio */}
-      <View style={profileStyles.bioContainer}>
-        {isLoading ? (
-          <>
-            {/* Skeleton */}
-            <MotiView style={{ marginBottom: 6 }}>
-              <Skeleton show={isLoading} colorMode="light" width={"60%"}></Skeleton>
-            </MotiView>
-            <MotiView style={{ marginBottom: 6 }}>
-              <Skeleton show={isLoading} colorMode="light" width={"40%"}></Skeleton>
-            </MotiView>
-          </>
-        ) : (
-          <>
-            {/* Full Name */}
-            <Text numberOfLines={1} style={profileStyles.bioText1}>
-              {userFullname}
-            </Text>
-
-            {/* Faculty */}
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <MaterialCommunityIcons name="school-outline" size={20} color={COLORS.darkGrey} />
-              <Text style={profileStyles.bioText2}> {user?.faculty} </Text>
-            </View>
-
-            {/* Joined Date */}
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <MaterialIcons name="date-range" size={20} color={COLORS.darkGrey} />
-              <Text style={profileStyles.bioText2}>
-                Joined {month}, {year}
-              </Text>
-            </View>
-
-            {/* Display bio if available */}
-            {user?.bio && (
-              <Text
-                numberOfLines={4}
-                style={[profileStyles.bioText2, { fontSize: 12, marginTop: 4 }]}
-              >
-                {user?.bio}
-              </Text>
-            )}
-          </>
-        )}
-      </View>
+      <UserBio
+        isLoading={isLoading}
+        user={user}
+        userFullname={userFullname}
+        month={month}
+        year={year}
+      />
 
       {/* Posts and Bookmarks Buttons */}
       <View style={[reUseableStyles.buttonTypeContainer, { alignSelf: "center", marginTop: 10 }]}>
