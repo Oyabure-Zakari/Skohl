@@ -37,7 +37,7 @@ const sendFeedback = async (userUid: string, feedback: string, rating: number) =
       createdAt: serverTimestamp(),
     });
 
-    // Update the newly created document with the generated id
+    // Stores the Firestore-generated ID inside the document itself to make CRUD operations easier, since Firestore operations rely on the generated ID(i.e document ID = docRef.id).
     await updateDoc(doc(db, "feedbacks", docRef.id), {
       docId: docRef.id,
     });
