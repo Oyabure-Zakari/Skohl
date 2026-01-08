@@ -4,7 +4,6 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 // Packages/Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
-import { useQuery } from "@tanstack/react-query";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Components
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
@@ -13,13 +12,10 @@ import NoPostsOrBookmarks from "@/components/profile/NoPostsOrBookmarks";
 import PostAndBookmarksBtn from "@/components/profile/PostAndBookmarksBtn";
 import UserBio from "@/components/profile/UserBio";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
-// Contexts
-import { useAuth } from "@/contexts/AuthContext";
-// Firebase
-import fetchUserInfo from "@/firebase/users/fetchUserInfo";
 // Styles
 import useReuseableStyles from "@/styles/reuable.styles";
 // Utils
+import { useUserProfile } from "@/hooks/userProfile";
 import formatFullName from "@/utils/formatUserFullname";
 import formatDate from "@/utils/formateDate";
 
@@ -33,9 +29,6 @@ export default function ProfileScreen() {
   // Refs
   const sheetRef = useRef<BottomSheet>(null);
 
-  // Firebase Auth
-  const { userUid } = useAuth();
-
   // Styles
   const reUseableStyles = useReuseableStyles();
 
@@ -48,12 +41,7 @@ export default function ProfileScreen() {
   }, []);
 
   // Fetch user via TanStack Query instead of local state
-  const { data: user, isPending: isLoading } = useQuery<any>({
-    queryKey: ["user", userUid],
-    queryFn: () => fetchUserInfo(userUid),
-    enabled: !!userUid, // only run when userUid is defined
-    staleTime: 1000 * 60 * 4,
-  });
+  const { data: user, isPending: isLoading } = useUserProfile();
 
   // Format fullname and date
   const userFullname = formatFullName(user?.fullName);
