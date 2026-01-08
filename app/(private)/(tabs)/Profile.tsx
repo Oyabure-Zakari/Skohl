@@ -2,16 +2,16 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 // React Native
 import { ScrollView, Text, View } from "react-native";
-// Expo
-// Packages
+// Packages/Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
-import { getDocs, query, Timestamp, where } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 import LottieView from "lottie-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Components
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
 import Header from "@/components/profile/Header";
+import PostAndBookmarksBtn from "@/components/profile/PostAndBookmarksBtn";
 import UserBio from "@/components/profile/UserBio";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 // Constants
@@ -20,12 +20,11 @@ import LOTTIES from "@/constants/lottie";
 // Contexts
 import { useAuth } from "@/contexts/AuthContext";
 // Firebase
-import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
+import fetchUserInfo from "@/firebase/users/fetchUserInfo";
 // Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 // Utils
-import PostAndBookmarksBtn from "@/components/profile/PostAndBookmarksBtn";
 import formatFullName from "@/utils/formatUserFullname";
 
 export default function ProfileScreen() {
@@ -54,49 +53,18 @@ export default function ProfileScreen() {
   }, []);
 
   // Fetch user via TanStack Query instead of local state
-  const fetchUserInfo = async () => {
-    const q = query(usersCollectionRef, where("uid", "==", userUid));
-    const snapshot = await getDocs(q);
-
-    let fetchedInfo = {
-      image: "",
-      fullName: "",
-      faculty: "",
-      bio: "",
-      joinedAt: { nanoseconds: 0, seconds: 0 },
-    };
-
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      fetchedInfo = {
-        image: data?.image,
-        fullName: `${data?.surname} ${data?.firstname}`,
-        faculty: data?.faculty,
-        bio: data?.bio,
-        joinedAt: {
-          nanoseconds: data?.joinedAt?.nanoseconds ?? 0,
-          seconds: data?.joinedAt?.seconds ?? 0,
-        },
-      };
-    });
-
-    return fetchedInfo;
-  };
-
-  // TanStack Query
   const { data: user, isPending: isLoading } = useQuery<any>({
     queryKey: ["user", userUid],
-    queryFn: fetchUserInfo,
+    queryFn: () => fetchUserInfo(userUid),
     enabled: !!userUid,
     staleTime: 1000 * 60 * 4,
   });
 
+  // Turns the Firestore timestamp into  to JavaScript Date e.g Joined January 2025
   const firestoreTimestamp = {
     seconds: user?.joinedAt?.seconds, // seconds should always come first
     nanoseconds: user?.joinedAt?.nanoseconds,
   };
-
-  // Turns the Firestore timestamp into  to JavaScript Date e.g Joined January 2025
   const date = new Timestamp(firestoreTimestamp.seconds, firestoreTimestamp.nanoseconds).toDate();
   // Format date
   const year = date?.getFullYear();
