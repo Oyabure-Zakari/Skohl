@@ -4,7 +4,6 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 // Expo
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 // Packages
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
@@ -18,19 +17,17 @@ import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent"
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 // Constants
 import COLORS from "@/constants/colors";
-import blurhash from "@/constants/expoBlurImage";
 import LOTTIES from "@/constants/lottie";
 // Contexts
 import { useAuth } from "@/contexts/AuthContext";
 // Firebase
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 // Custom Hooks
-import useHandleLogOut from "@/hooks/logOut";
 // Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
-import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 // Utils
+import Header from "@/components/profile/Header";
 import formatFullName from "@/utils/formatUserFullname";
 
 export default function ProfileScreen() {
@@ -47,7 +44,6 @@ export default function ProfileScreen() {
   const { userUid } = useAuth();
 
   // Styles
-  const registerStyles = useRegisterScreenStyles();
   const reUseableStyles = useReuseableStyles();
   const profileStyles = useProfileScreenStyles();
 
@@ -58,9 +54,6 @@ export default function ProfileScreen() {
   const handleSnapPress = useCallback(() => {
     sheetRef.current?.snapToIndex(2);
   }, []);
-
-  // Custom Hooks
-  const { handleLogOut } = useHandleLogOut();
 
   // Fetch user via TanStack Query instead of local state
   const fetchUserInfo = async () => {
@@ -117,31 +110,7 @@ export default function ProfileScreen() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       {/* Header */}
-      <View style={profileStyles.header}>
-        {/* Profile Section */}
-        <View style={profileStyles.profile}>
-          {/* Profile Image */}
-          <Image
-            source={{ uri: user?.image }}
-            style={registerStyles.image}
-            placeholder={{ blurhash }}
-            contentFit="contain"
-            transition={1000}
-            alt="Avatar"
-          />
-
-          {/* Edit Button */}
-          <TouchableOpacity style={profileStyles.editProfileBtn}>
-            <Text style={profileStyles.editProfileBtnText}>Edit Profile</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Log Out Button */}
-        <TouchableOpacity style={profileStyles.logOutBtn} onPress={handleLogOut}>
-          <MaterialCommunityIcons name="logout" size={20} color={COLORS.red} />
-          <Text style={profileStyles.logOutBtnText}>Log Out</Text>
-        </TouchableOpacity>
-      </View>
+      <Header user={user} />
 
       {/* User Bio */}
       <View style={profileStyles.bioContainer}>
