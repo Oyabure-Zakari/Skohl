@@ -14,7 +14,7 @@ import UserBio from "@/components/profile/UserBio";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 // Styles
 import useReuseableStyles from "@/styles/reuable.styles";
-// Utils
+// Custom Hook
 import { useUserProfile } from "@/hooks/userProfile";
 
 export default function ProfileScreen() {
