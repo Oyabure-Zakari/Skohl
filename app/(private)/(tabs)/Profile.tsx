@@ -16,8 +16,6 @@ import FloatingActionButton from "@/components/reuseableComponents/FloatingActio
 import useReuseableStyles from "@/styles/reuable.styles";
 // Utils
 import { useUserProfile } from "@/hooks/userProfile";
-import formatFullName from "@/utils/formatUserFullname";
-import formatDate from "@/utils/formateDate";
 
 export default function ProfileScreen() {
   // States
@@ -43,22 +41,13 @@ export default function ProfileScreen() {
   // Fetch user via TanStack Query instead of local state
   const { data: user, isPending: isLoading } = useUserProfile();
 
-  // Format fullname and date
-  const userFullname = formatFullName(user?.fullName);
-  const joinedDate = formatDate(user);
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       {/* Header */}
       <Header user={user} />
 
       {/* User Bio */}
-      <UserBio
-        isLoading={isLoading}
-        user={user}
-        userFullname={userFullname}
-        joinedDate={joinedDate}
-      />
+      <UserBio isLoading={isLoading} user={user} />
 
       {/* Posts and Bookmarks Buttons */}
       <PostAndBookmarksBtn activeButton={activeButton} setActiveButton={setActiveButton} />

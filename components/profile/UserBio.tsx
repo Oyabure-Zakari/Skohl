@@ -9,17 +9,21 @@ import COLORS from "@/constants/colors";
 // Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
 // Packages
+import formatFullName from "@/utils/formatUserFullname";
+import formatDate from "@/utils/formateDate";
 import { MotiView } from "moti";
 import { Skeleton } from "moti/skeleton";
 
 type UserBioProps = {
   isLoading: boolean;
   user: any;
-  userFullname: string;
-  joinedDate: string;
 };
 
-const UserBio: React.FC<UserBioProps> = ({ isLoading, user, userFullname, joinedDate }) => {
+const UserBio: React.FC<UserBioProps> = ({ isLoading, user }) => {
+  // Format fullname and date
+  const userFullname = formatFullName(user?.fullName);
+  const joinedDate = formatDate(user);
+
   // Styles
   const profileStyles = useProfileScreenStyles();
 
