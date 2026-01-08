@@ -1,16 +1,5 @@
-import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
-import { db } from "@/firebase/firebase.config";
+import sendFeedback from "@/firebase/feedbacks/sendFeedback";
 import { useMutation } from "@tanstack/react-query";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -39,30 +28,8 @@ export const useSubmitFeedback = ({
       // Validation: Ensure at least feedback text or rating is provided
       if (!feedbackText && rating === 0) throw new Error("Please provide feedback or a rating.");
 
-      // Variable to hold user's full name
-      let fullName;
-
-      // Query user document
-      const q = query(usersCollectionRef, where("uid", "==", userUid));
-      const snapshot = await getDocs(q);
-
-      // Get user's full name
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        fullName = `${data.surname} ${data.firstname}`;
-      });
-
-      // Add document
-      const docRef = await addDoc(collection(db, "feedbacks"), {
-        id: "",
-        feedback: feedbackText,
-        rating,
-        postedBy: { userUid, fullName },
-        createdAt: serverTimestamp(),
-      });
-
-      // Update document with its own ID
-      await updateDoc(doc(db, "feedbacks", docRef.id), { id: docRef.id });
+      // Firebase function t send feedback
+      await sendFeedback(userUid, feedbackText, rating)
     },
 
     onSuccess: () => {
