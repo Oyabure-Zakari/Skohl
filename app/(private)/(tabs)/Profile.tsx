@@ -5,7 +5,6 @@ import { ScrollView, Text, View } from "react-native";
 // Packages/Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useQuery } from "@tanstack/react-query";
-import { Timestamp } from "firebase/firestore";
 import LottieView from "lottie-react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Components
@@ -26,6 +25,7 @@ import useProfileScreenStyles from "@/styles/profile.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 // Utils
 import formatFullName from "@/utils/formatUserFullname";
+import formatDate from "@/utils/formateDate";
 
 export default function ProfileScreen() {
   // States
@@ -56,22 +56,13 @@ export default function ProfileScreen() {
   const { data: user, isPending: isLoading } = useQuery<any>({
     queryKey: ["user", userUid],
     queryFn: () => fetchUserInfo(userUid),
-    enabled: !!userUid,
+    enabled: !!userUid, // only run when userUid is defined
     staleTime: 1000 * 60 * 4,
   });
 
-  // Turns the Firestore timestamp into  to JavaScript Date e.g Joined January 2025
-  const firestoreTimestamp = {
-    seconds: user?.joinedAt?.seconds, // seconds should always come first
-    nanoseconds: user?.joinedAt?.nanoseconds,
-  };
-  const date = new Timestamp(firestoreTimestamp.seconds, firestoreTimestamp.nanoseconds).toDate();
-  // Format date
-  const year = date?.getFullYear();
-  const month = date?.toLocaleString("default", { month: "long" });
-
-  // Format fullname
+  // Format fullname and date
   const userFullname = formatFullName(user?.fullName);
+  const joinedDate = formatDate(user);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -83,8 +74,7 @@ export default function ProfileScreen() {
         isLoading={isLoading}
         user={user}
         userFullname={userFullname}
-        month={month}
-        year={year}
+        joinedDate={joinedDate}
       />
 
       {/* Posts and Bookmarks Buttons */}
