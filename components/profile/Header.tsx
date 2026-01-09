@@ -12,7 +12,6 @@ import blurhash from "@/constants/expoBlurImage";
 import useHandleLogOut from "@/hooks/logOut";
 // Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
-import useRegisterScreenStyles from "@/styles/registerScreen.styles";
 import { useRouter } from "expo-router";
 
 type HeaderProps = {
@@ -24,7 +23,6 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
   const router = useRouter();
 
   // Styles
-  const registerStyles = useRegisterScreenStyles();
   const profileStyles = useProfileScreenStyles();
 
   // Custom Hooks
@@ -38,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
         <TouchableOpacity onPress={() => router.push(`/(private)/userProfilePicture/${user?.uid}`)}>
           <Image
             source={{ uri: user?.image }}
-            style={registerStyles.image}
+            style={{ width: 90, height: 90, borderRadius: 50 }}
             placeholder={{ blurhash }}
             contentFit="contain"
             transition={1000}
