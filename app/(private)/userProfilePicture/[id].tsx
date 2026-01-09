@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/userProfile";
 // Styles
 import useProfilePictureStyles from "@/styles/profilePicture.styles";
+import { StatusBar } from "expo-status-bar";
 
 export default function ProfilePicture() {
   // User id
@@ -37,38 +38,44 @@ export default function ProfilePicture() {
   const profilePictureStyles = useProfilePictureStyles();
 
   return (
-    <View style={profilePictureStyles.container}>
-      {/* Header */}
-      <View style={profilePictureStyles.header}>
-        {/* Back Button */}
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back-sharp" size={24} color={COLORS.lightGrey} />
-        </TouchableOpacity>
+    <>
+      {/* Status Bar */}
+      <StatusBar style="light" backgroundColor={COLORS.darkBlue} />
 
-        {/* Option Button */}
+      {/* Container */}
+      <View style={profilePictureStyles.container}>
+        {/* Header */}
+        <View style={profilePictureStyles.header}>
+          {/* Back Button */}
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back-sharp" size={24} color={COLORS.lightGrey} />
+          </TouchableOpacity>
+
+          {/* Option Button */}
+          {isCurrentlyLoggedInUser && (
+            <TouchableOpacity>
+              <Entypo name="dots-three-vertical" size={24} color={COLORS.lightGrey} />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* Profile Picture */}
+        <Image
+          source={{ uri: user?.image }}
+          style={profilePictureStyles.profilePicture}
+          placeholder={{ blurhash }}
+          contentFit="contain"
+          transition={1000}
+          alt="Avatar"
+        />
+
+        {/* Edit Button */}
         {isCurrentlyLoggedInUser && (
-          <TouchableOpacity>
-            <Entypo name="dots-three-vertical" size={24} color={COLORS.lightGrey} />
+          <TouchableOpacity style={profilePictureStyles.editBtn}>
+            <Text style={profilePictureStyles.editBtnText}>Edit</Text>
           </TouchableOpacity>
         )}
       </View>
-
-      {/* Profile Picture */}
-      <Image
-        source={{ uri: user?.image }}
-        style={profilePictureStyles.profilePicture}
-        placeholder={{ blurhash }}
-        contentFit="contain"
-        transition={1000}
-        alt="Avatar"
-      />
-
-      {/* Edit Button */}
-      {isCurrentlyLoggedInUser && (
-        <TouchableOpacity style={profilePictureStyles.editBtn}>
-          <Text style={profilePictureStyles.editBtnText}>Edit</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+    </>
   );
 }
