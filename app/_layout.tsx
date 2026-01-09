@@ -161,14 +161,14 @@ function AppLayout() {
   const isVerifiedAndAuthenticated = !!verificationFingerprint && !!userUid && !!userDoc;
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={isVerifiedAndAuthenticated}>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(private)/(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(private)/(tabs)" />
       </Stack.Protected>
 
       <Stack.Protected guard={!isVerifiedAndAuthenticated}>
-        <Stack.Screen name="(public)/(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(public)/(auth)" />
       </Stack.Protected>
     </Stack>
   );
