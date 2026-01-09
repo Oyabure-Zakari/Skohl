@@ -18,7 +18,7 @@ export default function useProfilePictureStyles() {
   },
 
   profilePicture: {
-    width: width * 0.9,
+    width: 350,
     height: 350,
     alignSelf: "center",
     borderRadius: 5,
