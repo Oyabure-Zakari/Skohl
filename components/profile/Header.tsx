@@ -13,31 +13,38 @@ import useHandleLogOut from "@/hooks/logOut";
 // Styles
 import useProfileScreenStyles from "@/styles/profile.styles";
 import useRegisterScreenStyles from "@/styles/registerScreen.styles";
+import { useRouter } from "expo-router";
 
 type HeaderProps = {
   user: any;
 };
 
 const Header: React.FC<HeaderProps> = ({ user }) => {
+  // Router
+  const router = useRouter();
+
   // Styles
   const registerStyles = useRegisterScreenStyles();
   const profileStyles = useProfileScreenStyles();
 
   // Custom Hooks
   const { handleLogOut } = useHandleLogOut();
+
   return (
     <View style={profileStyles.header}>
       {/* Profile Section */}
       <View style={profileStyles.profile}>
         {/* Profile Image */}
-        <Image
-          source={{ uri: user?.image }}
-          style={registerStyles.image}
-          placeholder={{ blurhash }}
-          contentFit="contain"
-          transition={1000}
-          alt="Avatar"
-        />
+        <TouchableOpacity onPress={() => router.push(`/(private)/userProfilePicture/${user?.uid}`)}>
+          <Image
+            source={{ uri: user?.image }}
+            style={registerStyles.image}
+            placeholder={{ blurhash }}
+            contentFit="contain"
+            transition={1000}
+            alt="Avatar"
+          />
+        </TouchableOpacity>
 
         {/* Edit Button */}
         <TouchableOpacity style={profileStyles.editProfileBtn}>
