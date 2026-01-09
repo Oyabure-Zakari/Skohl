@@ -2,7 +2,7 @@ import COLORS from "@/constants/colors";
 import { StyleSheet, useWindowDimensions } from "react-native";
 
 export default function useReuseableStyles() {
-  const { width, height, fontScale } = useWindowDimensions();
+  const { width, fontScale } = useWindowDimensions();
 
   return StyleSheet.create({
     container: {
@@ -11,8 +11,8 @@ export default function useReuseableStyles() {
     },
 
     image: {
-      width: width * 0.6,
-      height: height * 0.3,
+      width: 250,
+      height:  250,
       resizeMode: "contain",
       alignSelf: "center",
       // backgroundColor: "red"
