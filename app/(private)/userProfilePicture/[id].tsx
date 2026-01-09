@@ -44,9 +44,11 @@ export default function ProfilePicture() {
           <Ionicons name="arrow-back-sharp" size={24} color={COLORS.lightGrey} />
         </TouchableOpacity>
 
-        <TouchableOpacity>
-          <Entypo name="dots-three-vertical" size={24} color={COLORS.lightGrey} />
-        </TouchableOpacity>
+        {isCurrentlyLoggedInUser && (
+          <TouchableOpacity>
+            <Entypo name="dots-three-vertical" size={24} color={COLORS.lightGrey} />
+          </TouchableOpacity>
+        )}
       </View>
 
       <Image
