@@ -7,6 +7,7 @@ const fetchUserInfo = async (userUid: string | null) => {
     const snapshot = await getDocs(q);
 
     let fetchedInfo = {
+      uid: "",
       image: "",
       fullName: "",
       faculty: "",
@@ -17,6 +18,7 @@ const fetchUserInfo = async (userUid: string | null) => {
     snapshot.forEach((doc) => {
       const data = doc.data();
       fetchedInfo = {
+        uid: data?.uid,
         image: data?.image,
         fullName: `${data?.surname} ${data?.firstname}`,
         faculty: data?.faculty,
