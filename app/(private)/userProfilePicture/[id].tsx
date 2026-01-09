@@ -1,7 +1,7 @@
 // React
 import React from "react";
 // React Native
-import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 // Expo
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -41,9 +41,8 @@ export default function ProfilePicture() {
     <>
       {/* Status Bar */}
       <StatusBar style="light" backgroundColor={COLORS.darkBlue} />
-
       {/* Container */}
-      <View style={profilePictureStyles.container}>
+      <ScrollView style={profilePictureStyles.container}>
         {/* Header */}
         <View style={profilePictureStyles.header}>
           {/* Back Button */}
@@ -75,7 +74,7 @@ export default function ProfilePicture() {
             <Text style={profilePictureStyles.editBtnText}>Edit</Text>
           </TouchableOpacity>
         )}
-      </View>
+      </ScrollView>
     </>
   );
 }
