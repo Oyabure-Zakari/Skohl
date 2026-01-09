@@ -1,12 +1,20 @@
-import COLORS from "@/constants/colors";
-import blurhash from "@/constants/expoBlurImage";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/userProfile";
+// React
+import React from "react";
+// React Native
+import { Text, TouchableOpacity, View } from "react-native";
+// Expo
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+// Constants
+import COLORS from "@/constants/colors";
+import blurhash from "@/constants/expoBlurImage";
+// Custom Hooks
+import { useAuth } from "@/contexts/AuthContext";
+// Custom Hooks
+import { useUserProfile } from "@/hooks/userProfile";
+// Styles
+import useProfilePictureStyles from "@/styles/profilePicture.styles";
 
 export default function ProfilePicture() {
   // User id
@@ -17,22 +25,27 @@ export default function ProfilePicture() {
 
   // Check if currently logged in user id is the same as the user id
   const isCurrentlyLoggedInUser = userUid === id;
-  // const isCurrentlyLoggedInUser = false;
+  //const isCurrentlyLoggedInUser = false;
 
   // Router
   const router = useRouter();
 
-  // Fecth user data from Firestore
+  // Fecth user data from Firestore using TanStack Query
   const { data: user } = useUserProfile(id as string | null);
+
+  // Styles
+  const profilePictureStyles = useProfilePictureStyles();
 
   return (
     <View style={profilePictureStyles.container}>
       {/* Header */}
       <View style={profilePictureStyles.header}>
+        {/* Back Button */}
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back-sharp" size={24} color={COLORS.lightGrey} />
         </TouchableOpacity>
 
+        {/* Option Button */}
         {isCurrentlyLoggedInUser && (
           <TouchableOpacity>
             <Entypo name="dots-three-vertical" size={24} color={COLORS.lightGrey} />
@@ -50,6 +63,7 @@ export default function ProfilePicture() {
         alt="Avatar"
       />
 
+      {/* Edit Button */}
       {isCurrentlyLoggedInUser && (
         <TouchableOpacity style={profilePictureStyles.editBtn}>
           <Text style={profilePictureStyles.editBtnText}>Edit</Text>
@@ -58,46 +72,3 @@ export default function ProfilePicture() {
     </View>
   );
 }
-
-const profilePictureStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.darkBlue,
-    paddingVertical: 40,
-  },
-
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-  },
-
-  profilePicture: {
-    width: "90%",
-    height: 350,
-    alignSelf: "center",
-    borderRadius: 5,
-    resizeMode: "cover",
-    overflow: "hidden",
-    marginTop: 150,
-    //backgroundColor: "red",
-  },
-
-  editBtn: {
-    borderColor: COLORS.lightGrey,
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 5,
-    width: "20%",
-    alignSelf: "center",
-    marginTop: "auto",
-  },
-
-  editBtnText: {
-    textAlign: "center",
-    color: COLORS.lightGrey,
-    fontFamily: "Segoe_UI_Bold",
-    fontSize: 12,
-    paddingHorizontal: 5,
-  },
-});
