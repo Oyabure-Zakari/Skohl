@@ -15,9 +15,13 @@ import FloatingActionButton from "@/components/reuseableComponents/FloatingActio
 // Styles
 import useReuseableStyles from "@/styles/reuable.styles";
 // Custom Hook
+import { useAuth } from "@/contexts/AuthContext";
 import { useUserProfile } from "@/hooks/userProfile";
 
 export default function ProfileScreen() {
+  // Currently logged in user
+  const { userUid } = useAuth();
+
   // States
   const [activeButton, setActiveButton] = useState<"Posts" | "Bookmarks">("Posts");
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
@@ -39,7 +43,7 @@ export default function ProfileScreen() {
   }, []);
 
   // Fetch user via TanStack Query instead of local state
-  const { data: user, isPending: isLoading } = useUserProfile();
+  const { data: user, isPending: isLoading } = useUserProfile(userUid);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
