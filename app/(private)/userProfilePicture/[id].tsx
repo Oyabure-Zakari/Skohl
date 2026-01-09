@@ -15,6 +15,10 @@ export default function ProfilePicture() {
   // Currently logged in user
   const { userUid } = useAuth();
 
+  // Check if currently logged in user id is the same as the user id
+  const isCurrentlyLoggedInUser = userUid === id;
+  // const isCurrentlyLoggedInUser = false;
+
   // Router
   const router = useRouter();
 
@@ -26,7 +30,7 @@ export default function ProfilePicture() {
       style={{
         flex: 1,
         backgroundColor: COLORS.darkBlue,
-        justifyContent: "space-between",
+        paddingVertical: 40,
       }}
     >
       <View
@@ -54,6 +58,7 @@ export default function ProfilePicture() {
           borderRadius: 5,
           resizeMode: "cover",
           overflow: "hidden",
+          marginTop: 150,
           //backgroundColor: "red",
         }}
         placeholder={{ blurhash }}
@@ -62,29 +67,31 @@ export default function ProfilePicture() {
         alt="Avatar"
       />
 
-      <TouchableOpacity
-        style={{
-          borderColor: COLORS.lightGrey,
-          borderWidth: 1,
-          borderRadius: 5,
-          padding: 5,
-          width: "20%",
-          alignSelf: "center",
-          marginBottom: 40,
-        }}
-      >
-        <Text
+      {isCurrentlyLoggedInUser && (
+        <TouchableOpacity
           style={{
-            textAlign: "center",
-            color: COLORS.lightGrey,
-            fontFamily: "Segoe_UI_Bold",
-            fontSize: 12,
-            paddingHorizontal: 5,
+            borderColor: COLORS.lightGrey,
+            borderWidth: 1,
+            borderRadius: 5,
+            padding: 5,
+            width: "20%",
+            alignSelf: "center",
+            marginTop: "auto",
           }}
         >
-          Edit
-        </Text>
-      </TouchableOpacity>
+          <Text
+            style={{
+              textAlign: "center",
+              color: COLORS.lightGrey,
+              fontFamily: "Segoe_UI_Bold",
+              fontSize: 12,
+              paddingHorizontal: 5,
+            }}
+          >
+            Edit
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
