@@ -8,13 +8,13 @@ export default function useProfilePictureStyles() {
   container: {
     flex: 1,
     backgroundColor: COLORS.darkBlue,
-    //paddingVertical: 4,
   },
 
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 16,
+    marginTop: 20,
   },
 
   profilePicture: {
@@ -24,7 +24,7 @@ export default function useProfilePictureStyles() {
     borderRadius: 5,
     resizeMode: "cover",
     overflow: "hidden",
-    marginTop: 150,
+    marginVertical: 100,
     //backgroundColor: "red",
   },
 
@@ -35,7 +35,6 @@ export default function useProfilePictureStyles() {
     padding: 5,
     width: width * 0.2,
     alignSelf: "center",
-    marginTop: "auto",
     marginBottom: 40,
   },
 
