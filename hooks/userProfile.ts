@@ -1,11 +1,7 @@
-import { useAuth } from "@/contexts/AuthContext";
 import fetchUserInfo from "@/firebase/users/fetchUserInfo";
 import { useQuery } from "@tanstack/react-query";
 
-export const useUserProfile = () => {
-  // Firebase Auth
-  const { userUid } = useAuth();
-
+export const useUserProfile = (userUid: string | null) => {
   return useQuery<any>({
     queryKey: ["user", userUid],
     queryFn: () => fetchUserInfo(userUid),
