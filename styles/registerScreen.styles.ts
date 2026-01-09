@@ -1,8 +1,6 @@
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { StyleSheet } from "react-native";
 
 export default function useRegisterScreenStyles() {
-  const { width } = useWindowDimensions();
-
   return StyleSheet.create({
     profile: {
       flexDirection: "row",
@@ -11,8 +9,8 @@ export default function useRegisterScreenStyles() {
 
     image: {
       alignSelf: "center",
-      width: width * 0.2,
-      height: width * 0.2,
+      width: 75,
+      height: 75,
       resizeMode: "contain",
       marginBottom: 20,
       borderRadius: 50,
