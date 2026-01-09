@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 // React Native
 import { Text, TouchableOpacity, View } from "react-native";
 // Packages
-import { BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetScrollView, BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import StarRating from "react-native-star-rating-widget";
 // Context
 import { useAuth } from "@/contexts/AuthContext";
@@ -43,7 +43,16 @@ const SendFeedbackBottomSheet: React.FC = () => {
   });
 
   return (
-    <BottomSheetView style={feedbackStyles.content}>
+    <BottomSheetScrollView
+      contentContainerStyle={feedbackStyles.content}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={true}
+      bounces={true}
+      alwaysBounceVertical={true}
+      nestedScrollEnabled={true}
+      decelerationRate="fast"
+      overScrollMode="always"
+    >
       {isLoading ? (
         <OverlayLoadingIndicator />
       ) : (
@@ -84,7 +93,7 @@ const SendFeedbackBottomSheet: React.FC = () => {
           </TouchableOpacity>
         </>
       )}
-    </BottomSheetView>
+    </BottomSheetScrollView>
   );
 };
 
