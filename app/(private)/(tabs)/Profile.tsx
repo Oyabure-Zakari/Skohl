@@ -50,19 +50,21 @@ export default function ProfileScreen() {
       {/* Header */}
       <Header user={user} />
 
-      {/* User Bio */}
-      <UserBio isLoading={isLoading} user={user} />
-
-      {/* Posts and Bookmarks Buttons */}
-      <PostAndBookmarksBtn activeButton={activeButton} setActiveButton={setActiveButton} />
-
-      {/* Divider*/}
-      <View style={reUseableStyles.bottomSheetDivider} />
-
-      {/* Content */}
       <ScrollView>
-        {/* No Posts Or Bookmarks */}
-        <NoPostsOrBookmarks activeButton={activeButton} />
+        {/* User Bio */}
+        <UserBio isLoading={isLoading} user={user} />
+
+        {/* Posts and Bookmarks Buttons */}
+        <PostAndBookmarksBtn activeButton={activeButton} setActiveButton={setActiveButton} />
+
+        {/* Divider*/}
+        <View style={reUseableStyles.bottomSheetDivider} />
+
+        {/* Content */}
+        <ScrollView>
+          {/* No Posts Or Bookmarks */}
+          <NoPostsOrBookmarks activeButton={activeButton} />
+        </ScrollView>
       </ScrollView>
 
       {/* Bottom Sheet */}
