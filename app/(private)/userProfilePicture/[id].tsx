@@ -16,6 +16,10 @@ import { useUserProfile } from "@/hooks/userProfile";
 // Styles
 import useProfilePictureStyles from "@/styles/profilePicture.styles";
 import { StatusBar } from "expo-status-bar";
+import Animated, { FadeInDown } from "react-native-reanimated";
+
+// Custom animated components
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function ProfilePicture() {
   // User id
@@ -70,12 +74,13 @@ export default function ProfilePicture() {
 
         {/* Edit Button */}
         {isCurrentlyLoggedInUser && (
-          <TouchableOpacity
+          <AnimatedTouchableOpacity
+            entering={FadeInDown.delay(400)}
             style={profilePictureStyles.editBtn}
             onPress={() => router.push("/(private)/EditProfile")}
           >
             <Text style={profilePictureStyles.editBtnText}>Edit</Text>
-          </TouchableOpacity>
+          </AnimatedTouchableOpacity>
         )}
       </ScrollView>
     </>
