@@ -13,6 +13,7 @@ import PostAndBookmarksBtn from "@/components/profile/PostAndBookmarksBtn";
 import UserBio from "@/components/profile/UserBio";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 // Styles
+import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
 // Custom Hook
 import { useAuth } from "@/contexts/AuthContext";
@@ -46,7 +47,7 @@ export default function ProfileScreen() {
   const { data: user, isPending: isLoading } = useUserProfile(userUid);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
       {/* Header */}
       <Header user={user} />
 
