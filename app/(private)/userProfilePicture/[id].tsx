@@ -70,7 +70,10 @@ export default function ProfilePicture() {
 
         {/* Edit Button */}
         {isCurrentlyLoggedInUser && (
-          <TouchableOpacity style={profilePictureStyles.editBtn}>
+          <TouchableOpacity
+            style={profilePictureStyles.editBtn}
+            onPress={() => router.push("/(private)/EditProfile")}
+          >
             <Text style={profilePictureStyles.editBtnText}>Edit</Text>
           </TouchableOpacity>
         )}

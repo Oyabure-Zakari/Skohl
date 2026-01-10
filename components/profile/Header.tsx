@@ -40,12 +40,15 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
             placeholder={{ blurhash }}
             contentFit="contain"
             transition={1000}
-            alt="Avatar"
+            alt="Profile Picture"
           />
         </TouchableOpacity>
 
         {/* Edit Button */}
-        <TouchableOpacity style={profileStyles.editProfileBtn}>
+        <TouchableOpacity
+          style={profileStyles.editProfileBtn}
+          onPress={() => router.push("/(private)/EditProfile")}
+        >
           <Text style={profileStyles.editProfileBtnText}>Edit Profile</Text>
         </TouchableOpacity>
       </View>
