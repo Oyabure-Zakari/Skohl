@@ -36,7 +36,6 @@ export default function useProfileScreenStyles() {
     },
 
     logOutBtn: {
-      backgroundColor: COLORS.lightGrey,
       paddingVertical: 6,
       paddingHorizontal: 12,
       borderRadius: 5,
