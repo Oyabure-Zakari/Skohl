@@ -3,14 +3,21 @@ import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import { useAuth } from "@/contexts/AuthContext";
 import useExpoImagePicker from "@/hooks/expoImagePicker";
+import { useUserProfile } from "@/hooks/userProfile";
 import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+
+// Custom animated components
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function EditProfile() {
   // Router
@@ -33,76 +40,107 @@ export default function EditProfile() {
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
 
+  // Currently logged in user
+  const { userUid } = useAuth();
+
+  // Fetch user via TanStack Query instead of local state
+  const { data: user, isPending: isLoading } = useUserProfile(userUid);
+
+  // Image
+  const userImage = photo ? photo : user?.image;
+
   // Functions
   const openCamera = () => setIsCameraOpen(true);
+
+  // UseEffect to clear image
+  useEffect(() => {
+    clearImage();
+  }, []);
 
   if (isCameraOpen) {
     return <DeviceCamera setIsCameraOpen={setIsCameraOpen} />;
   }
 
   return (
-    <CustomKeyboard>
-      <View style={editProfileStyles.container}>
-        {/* Header */}
-        <View style={editProfileStyles.header}>
-          {/* Back Button */}
-          <TouchableOpacity onPress={() => router.back()}>
-            <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkGrey} />
-          </TouchableOpacity>
+    <>
+      <StatusBar style="dark" backgroundColor={COLORS.white} />
 
-          {/* Title */}
-          <Text style={editProfileStyles.title}>Edit Profile</Text>
-        </View>
+      <CustomKeyboard>
+        <View style={editProfileStyles.container}>
+          {/* Header */}
+          <View style={editProfileStyles.header}>
+            {/* Back Button */}
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
+            </TouchableOpacity>
 
-        <View style={editProfileStyles.formContainer}>
-          {!photo ? (
-            <View style={createPostStyles.photoPlaceholder}>
-              <Text style={createPostStyles.photoText}>Image</Text>
-            </View>
-          ) : (
+            {/* Title */}
+            <Text style={editProfileStyles.title}>Edit Profile</Text>
+          </View>
+
+          <View style={editProfileStyles.formContainer}>
+            {/* Profile Picture */}
             <Image
-              source={{ uri: photo }}
-              style={createPostStyles.postPhoto}
+              source={{ uri: userImage }}
+              style={{ width: 150, height: 150, borderRadius: 100 }}
               placeholder={{ blurhash }}
               contentFit="contain"
               transition={1000}
+              alt="Profile Picture"
             />
-          )}
 
-          {/* Photo Options */}
-          <View style={createPostStyles.photoOptions}>
-            <TouchableOpacity style={createPostStyles.photoOption} onPress={openCamera}>
-              <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
-            </TouchableOpacity>
+            {/* Full Name */}
+            <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
+              {user?.fullName}
+            </Animated.Text>
 
-            <TouchableOpacity style={createPostStyles.photoOption} onPress={pickImage}>
-              <Entypo name="images" size={25} color={COLORS.darkGrey} />
-            </TouchableOpacity>
+            {/* Photo Options */}
+            <View style={createPostStyles.photoOptions}>
+              <AnimatedTouchableOpacity
+                entering={FadeInDown.delay(200)}
+                style={createPostStyles.photoOption}
+                onPress={openCamera}
+              >
+                <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
+              </AnimatedTouchableOpacity>
 
-            <TouchableOpacity style={createPostStyles.photoOption} onPress={clearImage}>
-              <MaterialCommunityIcons name="cancel" size={25} color={COLORS.darkGrey} />
-            </TouchableOpacity>
+              <AnimatedTouchableOpacity
+                entering={FadeInDown.delay(400)}
+                style={createPostStyles.photoOption}
+                onPress={pickImage}
+              >
+                <Entypo name="images" size={25} color={COLORS.darkGrey} />
+              </AnimatedTouchableOpacity>
+
+              <AnimatedTouchableOpacity
+                entering={FadeInDown.delay(600)}
+                style={createPostStyles.photoOption}
+                onPress={clearImage}
+              >
+                <MaterialCommunityIcons name="cancel" size={25} color={COLORS.darkGrey} />
+              </AnimatedTouchableOpacity>
+            </View>
+
+            {/* Text Input */}
+            <TextInput
+              ref={textInputRef}
+              placeholder="Bio"
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+              placeholderTextColor={COLORS.darkGrey}
+              style={editProfileStyles.textInput}
+              onChangeText={(text) => (bioTextRef.current = text)}
+            />
+
+            {/* Save Button */}
+            <AnimatedTouchableOpacity entering={FadeInDown.delay(800)} style={{ marginTop: 20 }}>
+              <CustomButton text="Save" />
+            </AnimatedTouchableOpacity>
           </View>
-
-          {/* Text Input */}
-          <TextInput
-            ref={textInputRef}
-            placeholder="Edit bio"
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-            placeholderTextColor={COLORS.darkGrey}
-            style={editProfileStyles.textInput}
-            onChangeText={(text) => (bioTextRef.current = text)}
-          />
         </View>
-      </View>
-
-      {/* Save Button */}
-      <TouchableOpacity>
-        <CustomButton text="Save" />
-      </TouchableOpacity>
-    </CustomKeyboard>
+      </CustomKeyboard>
+    </>
   );
 }
 
@@ -129,11 +167,20 @@ const editProfileStyles = StyleSheet.create({
     flex: 1,
     marginTop: 40,
     alignItems: "center",
+    justifyContent: "center",
+  },
+
+  fullName: {
+    color: COLORS.darkBlue,
+    fontFamily: "Segoe_UI_Bold",
+    fontSize: 16,
+    marginBottom: 10,
   },
 
   textInput: {
     width: "90%",
-    backgroundColor: COLORS.lightGrey,
+    borderColor: COLORS.darkGrey,
+    borderWidth: 2,
     borderRadius: 10,
     paddingHorizontal: 16,
     paddingVertical: 12,
