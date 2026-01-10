@@ -5,8 +5,6 @@ const gestureHandlerRootViewStyle = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.white,
-        justifyContent: "center",
-        alignItems: "center",
       }
   });
 export default gestureHandlerRootViewStyle;
