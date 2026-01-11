@@ -9,6 +9,7 @@ import { useUserProfile } from "@/hooks/userProfile";
 import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import useEditProfileStyles from "@/styles/editProfile.styles";
+import formatFullName from "@/utils/formatUserFullname";
 import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -63,6 +64,8 @@ export default function EditProfile() {
     return <DeviceCamera setIsCameraOpen={setIsCameraOpen} />;
   }
 
+  const fullName = formatFullName(user?.fullName);
+
   return (
     <>
       <StatusBar style="dark" backgroundColor={COLORS.white} />
@@ -93,7 +96,7 @@ export default function EditProfile() {
 
             {/* Full Name */}
             <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
-              {user?.fullName}
+              {fullName}
             </Animated.Text>
 
             {/* Photo Options */}
