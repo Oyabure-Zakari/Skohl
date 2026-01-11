@@ -69,7 +69,7 @@ export default function ProfilePicture() {
           placeholder={{ blurhash }}
           contentFit="contain"
           transition={1000}
-          alt="Avatar"
+          alt="Profile Picture"
         />
 
         {/* Edit Button */}
