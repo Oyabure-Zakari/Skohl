@@ -2,41 +2,53 @@ import COLORS from "@/constants/colors";
 import { StyleSheet, useWindowDimensions } from "react-native";
 
 export default function useEditProfileStyles() {
-  const {width, fontScale} = useWindowDimensions();
+  const { width, fontScale } = useWindowDimensions();
 
   return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: COLORS.white,
     },
-  
+
     header: {
       paddingHorizontal: 16,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
     },
-  
+
     title: {
       color: COLORS.darkBlue,
       fontFamily: "Segoe_UI_Bold",
-      fontSize:fontScale * 16,
+      fontSize: fontScale * 16,
     },
-  
+
     formContainer: {
       flex: 1,
       marginTop: 40,
       alignItems: "center",
       justifyContent: "center",
     },
-  
+
+    UserBio: {
+      width: width * 0.75,
+      alignItems: "center",
+      marginBottom: 10,
+    },
+
     fullName: {
       color: COLORS.darkBlue,
       fontFamily: "Segoe_UI_Bold",
-      fontSize:fontScale * 16,
-      marginBottom: 10,
+      fontSize: fontScale * 16,
     },
-  
+
+    bio: {
+      fontFamily: "Segoe_UI_Bold",
+      textAlign: "center",
+      color: COLORS.darkGrey,
+      fontSize: fontScale *  12,
+    },
+
     textInput: {
       width: width * 0.9,
       borderColor: COLORS.darkGrey,

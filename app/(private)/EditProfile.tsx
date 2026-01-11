@@ -52,9 +52,6 @@ export default function EditProfile() {
   // Image
   const userImage = photo ? photo : user?.image;
 
-  // Bio
-  const userBio = user?.bio ? user?.bio : "Bio";
-
   // Functions
   const openCamera = () => setIsCameraOpen(true);
 
@@ -97,10 +94,16 @@ export default function EditProfile() {
               alt="Profile Picture"
             />
 
-            {/* Full Name */}
-            <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
-              {fullName}
-            </Animated.Text>
+            {/* Full Name and Bio */}
+            <View style={editProfileStyles.UserBio}>
+              {/* Full Name */}
+              <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
+                {fullName}
+              </Animated.Text>
+
+              {/* Bio */}
+              {user?.bio && <Text style={editProfileStyles.bio}>{user.bio}</Text>}
+            </View>
 
             {/* Photo Options */}
             <View style={createPostStyles.photoOptions}>
@@ -132,7 +135,7 @@ export default function EditProfile() {
             {/* Text Input */}
             <TextInput
               ref={textInputRef}
-              placeholder={userBio}
+              placeholder="Edit your bio here"
               multiline
               numberOfLines={4}
               textAlignVertical="top"
