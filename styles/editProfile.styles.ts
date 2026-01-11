@@ -44,7 +44,7 @@ export default function useEditProfileStyles() {
       borderRadius: 10,
       paddingHorizontal: 16,
       paddingVertical: 12,
-      marginVertical: 30,
+      marginTop: 30,
       color: COLORS.darkGrey,
       fontFamily: "Segoe_UI_Bold",
     },
