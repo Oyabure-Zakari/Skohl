@@ -87,7 +87,7 @@ export default function EditProfile() {
             {/* Profile Picture */}
             <Image
               source={{ uri: userImage }}
-              style={{ width: 150, height: 150, borderRadius: 100 }}
+              style={{ width: 140, height: 140, borderRadius: 100 }}
               placeholder={{ blurhash }}
               contentFit="contain"
               transition={1000}
@@ -137,7 +137,7 @@ export default function EditProfile() {
               ref={textInputRef}
               placeholder="Edit your bio here"
               multiline
-              numberOfLines={4}
+              numberOfLines={2}
               textAlignVertical="top"
               placeholderTextColor={COLORS.darkGrey}
               style={editProfileStyles.textInput}

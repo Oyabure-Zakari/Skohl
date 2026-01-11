@@ -33,13 +33,13 @@ export default function useEditProfileStyles() {
     UserBio: {
       width: width * 0.75,
       alignItems: "center",
-      marginBottom: 10,
     },
 
     fullName: {
       color: COLORS.darkBlue,
       fontFamily: "Segoe_UI_Bold",
       fontSize: fontScale * 16,
+      textAlign: "center",
     },
 
     bio: {
@@ -56,7 +56,7 @@ export default function useEditProfileStyles() {
       borderRadius: 10,
       paddingHorizontal: 16,
       paddingVertical: 12,
-      marginTop: 30,
+      marginTop: 20,
       color: COLORS.darkGrey,
       fontFamily: "Segoe_UI_Bold",
     },
