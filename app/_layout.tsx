@@ -21,6 +21,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 // Zustand
 import useVerificationStore from "@/store/verificatonStore";
 // Firebase
+import COLORS from "@/constants/colors";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { db } from "@/firebase/firebase.config";
 import { doc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
@@ -182,7 +183,7 @@ export default function RootLayout() {
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <SafeAreaProvider>
-          <StatusBar style="auto" />
+          <StatusBar style="dark" backgroundColor={COLORS.white} />
           <SafeScreen>
             <KeyboardProvider>
               <AppLayout />
