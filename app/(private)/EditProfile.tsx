@@ -52,6 +52,9 @@ export default function EditProfile() {
   // Image
   const userImage = photo ? photo : user?.image;
 
+  // Bio
+  const userBio = user?.bio ? user?.bio : "Bio";
+
   // Functions
   const openCamera = () => setIsCameraOpen(true);
 
@@ -129,7 +132,7 @@ export default function EditProfile() {
             {/* Text Input */}
             <TextInput
               ref={textInputRef}
-              placeholder="Bio"
+              placeholder={userBio}
               multiline
               numberOfLines={4}
               textAlignVertical="top"
