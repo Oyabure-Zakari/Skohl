@@ -8,12 +8,13 @@ import useExpoImagePicker from "@/hooks/expoImagePicker";
 import { useUserProfile } from "@/hooks/userProfile";
 import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
+import useEditProfileStyles from "@/styles/editProfile.styles";
 import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 
 // Custom animated components
@@ -39,6 +40,7 @@ export default function EditProfile() {
 
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
+  const editProfileStyles = useEditProfileStyles();
 
   // Currently logged in user
   const { userUid } = useAuth();
@@ -143,49 +145,3 @@ export default function EditProfile() {
     </>
   );
 }
-
-const editProfileStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-
-  header: {
-    paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-
-  title: {
-    color: COLORS.darkBlue,
-    fontFamily: "Segoe_UI_Bold",
-    fontSize: 16,
-  },
-
-  formContainer: {
-    flex: 1,
-    marginTop: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  fullName: {
-    color: COLORS.darkBlue,
-    fontFamily: "Segoe_UI_Bold",
-    fontSize: 16,
-    marginBottom: 10,
-  },
-
-  textInput: {
-    width: "90%",
-    borderColor: COLORS.darkGrey,
-    borderWidth: 2,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginVertical: 30,
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-  },
-});
