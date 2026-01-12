@@ -3,6 +3,7 @@ import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import IMAGES from "@/constants/images";
 import { useAuth } from "@/contexts/AuthContext";
 import useExpoImagePicker from "@/hooks/expoImagePicker";
 import { useUserProfile } from "@/hooks/userProfile";
@@ -68,15 +69,26 @@ export default function EditProfile() {
 
   return (
     <>
-      <StatusBar style="dark" backgroundColor={COLORS.white} />
+      <StatusBar style="light" backgroundColor={COLORS.purple} />
 
       <CustomKeyboard>
+        <Image
+          source={IMAGES.pattern2}
+          style={{
+            height: "30%",
+            width: "100%",
+            alignSelf: "center",
+            position: "absolute",
+            top: -40,
+            zIndex: 1000,
+          }}
+        />
         <View style={editProfileStyles.container}>
           {/* Header */}
           <View style={editProfileStyles.header}>
             {/* Back Button */}
             <TouchableOpacity onPress={() => router.back()}>
-              <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
+              <Ionicons name="arrow-back-sharp" size={24} color={COLORS.white} />
             </TouchableOpacity>
 
             {/* Title */}
@@ -87,7 +99,15 @@ export default function EditProfile() {
             {/* Profile Picture */}
             <Image
               source={{ uri: userImage }}
-              style={{ width: 140, height: 140, borderRadius: 100 }}
+              style={{
+                width: 140,
+                height: 140,
+                borderColor: COLORS.white,
+                borderWidth: 6,
+                borderRadius: 100,
+                overflow: "hidden",
+                zIndex: 2000,
+              }}
               placeholder={{ blurhash }}
               contentFit="contain"
               transition={1000}
