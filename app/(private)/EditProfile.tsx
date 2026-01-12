@@ -26,12 +26,18 @@ export default function EditProfile() {
   // Router
   const router = useRouter();
 
+  // Currently logged in user
+  const { userUid } = useAuth();
+
+  // Fetch user via TanStack Query instead of local state
+  const { data: user, isPending: isLoading } = useUserProfile(userUid);
+
   // States
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   // Refs
-  const textInputRef = useRef(null);
-  const bioTextRef = useRef("");
+  const textInputRef = useRef<TextInput>(null);
+  const userBioTextRef = useRef("");
 
   // Custom Hooks
   const { pickImage } = useExpoImagePicker(); // Image Picker
@@ -43,12 +49,6 @@ export default function EditProfile() {
   // Styles
   const createPostStyles = useCreatePostBottomSheetStyles();
   const editProfileStyles = useEditProfileStyles();
-
-  // Currently logged in user
-  const { userUid } = useAuth();
-
-  // Fetch user via TanStack Query instead of local state
-  const { data: user, isPending: isLoading } = useUserProfile(userUid);
 
   // Image
   const userImage = photo ? photo : user?.image;
@@ -66,6 +66,8 @@ export default function EditProfile() {
   }
 
   const fullName = formatFullName(user?.fullName);
+
+  const userBio = user?.bio ? user.bio : "Enter your bio here...";
 
   return (
     <>
@@ -98,21 +100,15 @@ export default function EditProfile() {
               alt="Profile Picture"
             />
 
-            {/* Full Name and Bio */}
-            <View style={editProfileStyles.UserBio}>
-              {/* Full Name */}
-              <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
-                {fullName}
-              </Animated.Text>
-
-              {/* Bio */}
-              {user?.bio && <Text style={editProfileStyles.bio}>{user.bio}</Text>}
-            </View>
+            {/* Full Name */}
+            <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
+              {fullName}
+            </Animated.Text>
 
             {/* Photo Options */}
             <View style={createPostStyles.photoOptions}>
               <AnimatedTouchableOpacity
-                entering={FadeInDown.delay(200)}
+                entering={FadeInDown.delay(400)}
                 style={createPostStyles.photoOption}
                 onPress={openCamera}
               >
@@ -120,32 +116,25 @@ export default function EditProfile() {
               </AnimatedTouchableOpacity>
 
               <AnimatedTouchableOpacity
-                entering={FadeInDown.delay(400)}
+                entering={FadeInDown.delay(600)}
                 style={createPostStyles.photoOption}
                 onPress={pickImage}
               >
                 <Entypo name="images" size={25} color={COLORS.darkGrey} />
-              </AnimatedTouchableOpacity>
-
-              <AnimatedTouchableOpacity
-                entering={FadeInDown.delay(600)}
-                style={createPostStyles.photoOption}
-                onPress={clearImage}
-              >
-                <MaterialCommunityIcons name="cancel" size={25} color={COLORS.darkGrey} />
               </AnimatedTouchableOpacity>
             </View>
 
             {/* Text Input */}
             <TextInput
               ref={textInputRef}
-              placeholder="Edit your bio here"
+              placeholder={userBio}
               multiline
-              numberOfLines={2}
+              maxLength={246}
+              numberOfLines={5.1}
               textAlignVertical="top"
               placeholderTextColor={COLORS.darkGrey}
               style={editProfileStyles.textInput}
-              onChangeText={(text) => (bioTextRef.current = text)}
+              onChangeText={(text) => (userBioTextRef.current = text)}
             />
 
             {/* Save Button */}
