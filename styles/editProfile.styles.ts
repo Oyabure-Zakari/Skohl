@@ -51,11 +51,6 @@ export default function useEditProfileStyles() {
       zIndex: 2000,
     },
 
-    UserBio: {
-      width: width * 0.75,
-      alignItems: "center",
-    },
-
     fullName: {
       color: COLORS.darkBlue,
       fontFamily: "Segoe_UI_Bold",
@@ -71,13 +66,12 @@ export default function useEditProfileStyles() {
     },
 
     textInput: {
-      width: width * 0.9,
+      width: width * 0.8,
       borderColor: COLORS.darkGrey,
-      borderWidth: 2,
-      borderRadius: 10,
+      borderBottomWidth: 2,
+      textAlign: "center",
       paddingHorizontal: 16,
       paddingVertical: 12,
-      marginTop: 20,
       color: COLORS.darkGrey,
       fontFamily: "Segoe_UI_Bold",
     },
