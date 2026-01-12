@@ -10,13 +10,22 @@ export default function useEditProfileStyles() {
       backgroundColor: COLORS.white,
     },
 
+    pattern: {
+      height: "30%",
+      width: "100%",
+      alignSelf: "center",
+      position: "absolute",
+      top: -40,
+      zIndex: 1000,
+    },
+
     header: {
       paddingHorizontal: 16,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       backgroundColor: COLORS.darkBlue,
-      zIndex: 2000
+      zIndex: 2000,
     },
 
     title: {
@@ -30,6 +39,16 @@ export default function useEditProfileStyles() {
       marginTop: 40,
       alignItems: "center",
       justifyContent: "center",
+    },
+
+    profilePicture: {
+      width: 140,
+      height: 140,
+      borderColor: COLORS.white,
+      borderWidth: 6,
+      borderRadius: 100,
+      overflow: "hidden",
+      zIndex: 2000,
     },
 
     UserBio: {
@@ -48,7 +67,7 @@ export default function useEditProfileStyles() {
       fontFamily: "Segoe_UI_Bold",
       textAlign: "center",
       color: COLORS.darkGrey,
-      fontSize: fontScale *  12,
+      fontSize: fontScale * 12,
     },
 
     textInput: {

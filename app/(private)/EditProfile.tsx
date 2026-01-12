@@ -72,17 +72,9 @@ export default function EditProfile() {
       <StatusBar style="light" backgroundColor={COLORS.purple} />
 
       <CustomKeyboard>
-        <Image
-          source={IMAGES.pattern2}
-          style={{
-            height: "30%",
-            width: "100%",
-            alignSelf: "center",
-            position: "absolute",
-            top: -40,
-            zIndex: 1000,
-          }}
-        />
+        {/* Background Image */}
+        <Image source={IMAGES.pattern2} style={editProfileStyles.pattern} />
+        {/*Header Container */}
         <View style={editProfileStyles.container}>
           {/* Header */}
           <View style={editProfileStyles.header}>
@@ -99,15 +91,7 @@ export default function EditProfile() {
             {/* Profile Picture */}
             <Image
               source={{ uri: userImage }}
-              style={{
-                width: 140,
-                height: 140,
-                borderColor: COLORS.white,
-                borderWidth: 6,
-                borderRadius: 100,
-                overflow: "hidden",
-                zIndex: 2000,
-              }}
+              style={editProfileStyles.profilePicture}
               placeholder={{ blurhash }}
               contentFit="contain"
               transition={1000}
