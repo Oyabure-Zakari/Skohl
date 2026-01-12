@@ -49,7 +49,7 @@ const PhotoSection: React.FC<PhotoSectionProps> = ({ photo, openCamera }) => {
         </TouchableOpacity>
 
         <TouchableOpacity style={createPostStyles.photoOption} onPress={clearImage}>
-          <MaterialCommunityIcons name="cancel" size={25} color={COLORS.darkGrey} />
+          <MaterialCommunityIcons name="image-off-outline" size={25} color={COLORS.darkGrey} />
         </TouchableOpacity>
       </View>
     </>
