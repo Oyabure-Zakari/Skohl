@@ -15,10 +15,12 @@ export default function useEditProfileStyles() {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
+      backgroundColor: COLORS.darkBlue,
+      zIndex: 2000
     },
 
     title: {
-      color: COLORS.darkBlue,
+      color: COLORS.white,
       fontFamily: "Segoe_UI_Bold",
       fontSize: fontScale * 16,
     },
