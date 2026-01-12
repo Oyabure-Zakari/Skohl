@@ -79,7 +79,7 @@ export default function EditProfile() {
           {/* Header */}
           <View style={editProfileStyles.header}>
             {/* Back Button */}
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPress={() => router.push("/(private)/(tabs)/Profile")}>
               <Ionicons name="arrow-back-sharp" size={24} color={COLORS.white} />
             </TouchableOpacity>
 
