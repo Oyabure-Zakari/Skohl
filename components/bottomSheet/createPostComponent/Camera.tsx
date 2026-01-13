@@ -1,30 +1,45 @@
-import CustomButton from "@/components/reuseableComponents/CustomButton";
-import usePhotoStore from "@/store/photoStore";
-import cameraStyles from "@/styles/camera.styles";
+// React
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+// React Native
+import { Text, TouchableOpacity, View } from "react-native";
+// Expo
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { CameraType, CameraView, useCameraPermissions } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-// Import the menu
+// Packages/Libraries
 import { Menu, MenuDivider, MenuItem } from "react-native-material-menu";
+// Components
+import CustomButton from "@/components/reuseableComponents/CustomButton";
+// Zustand
+import usePhotoStore from "@/store/photoStore";
+// Styles
+import cameraStyles from "@/styles/camera.styles";
 
 type DeviceCameraProps = {
   setIsCameraOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
+  // States
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const cameraRef = useRef<CameraView>(null);
   const [flashMode, setFlashMode] = useState<"on" | "off" | "auto">("off");
   const [facing, setFacing] = useState<CameraType>("back");
+
+  // Refs
+  const cameraRef = useRef<CameraView>(null);
+
+  // Expo Camera Hooks
   const [permission, requestPermission] = useCameraPermissions();
 
+  // Zustand
   const setImage = usePhotoStore((state) => state.setImage);
+
+  // If no permission
   if (!permission) {
     return null;
   }
 
+  // If permission is not granted
   if (!permission.granted) {
     return (
       <View style={cameraStyles.grantPermissionContainer}>
@@ -66,6 +81,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
           responsiveOrientationWhenOrientationLocked
         />
 
+        {/* Opens the menu reguardless of the flash mode that is set */}
         <TouchableOpacity onPress={() => setIsMenuVisible(true)} style={{ padding: 16 }}>
           {flashMode === "auto" && (
             <MaterialCommunityIcons name="flash-auto" size={24} color="white" />
@@ -76,7 +92,9 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
           {flashMode === "on" && <MaterialCommunityIcons name="flash" size={24} color="white" />}
         </TouchableOpacity>
 
+        {/* Flash Mode Menu */}
         <Menu visible={isMenuVisible} onRequestClose={() => setIsMenuVisible(false)}>
+          {/* Flash Auto */}
           <MenuItem>
             <TouchableOpacity
               onPress={() => {
@@ -92,6 +110,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
 
           <MenuDivider />
 
+          {/* Flash Off */}
           <MenuItem>
             <TouchableOpacity
               onPress={() => {
@@ -107,6 +126,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
 
           <MenuDivider />
 
+          {/* Flash On */}
           <MenuItem>
             <TouchableOpacity
               onPress={() => {
@@ -128,7 +148,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
             <MaterialCommunityIcons name="camera-off" size={30} color="white" />
           </TouchableOpacity>
 
-          {/* Shutter Button */}
+          {/* Take Picture */}
           <TouchableOpacity onPress={takePicture}>
             <View style={cameraStyles.shutterBtn}>
               <View
