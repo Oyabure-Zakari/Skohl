@@ -59,6 +59,7 @@ const DeviceCamera: React.FC<DeviceCameraProps> = ({ setIsCameraOpen }) => {
         mode={"picture"}
         facing={facing}
         flash={flashMode}
+        ratio={"1:1"}
         responsiveOrientationWhenOrientationLocked
       />
 
