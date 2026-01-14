@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { Dispatch, SetStateAction } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { MenuDivider, MenuItem } from "react-native-material-menu";
 
 type FlashModesProps = {
@@ -18,7 +18,7 @@ const FlashModes: React.FC<FlashModesProps> = ({ setFlashMode, setIsMenuVisible 
             setFlashMode("auto");
             setIsMenuVisible(false);
           }}
-          style={{ flexDirection: "row", alignItems: "center" }}
+          style={styles.flashMode}
         >
           <MaterialCommunityIcons name="flash-auto" size={24} color="black" />
           <Text> Auto</Text>
@@ -34,7 +34,7 @@ const FlashModes: React.FC<FlashModesProps> = ({ setFlashMode, setIsMenuVisible 
             setFlashMode("off");
             setIsMenuVisible(false);
           }}
-          style={{ flexDirection: "row", alignItems: "center" }}
+          style={styles.flashMode}
         >
           <MaterialCommunityIcons name="flash-off-outline" size={24} color="black" />
           <Text>Flash Off</Text>
@@ -50,7 +50,7 @@ const FlashModes: React.FC<FlashModesProps> = ({ setFlashMode, setIsMenuVisible 
             setFlashMode("on");
             setIsMenuVisible(false);
           }}
-          style={{ flexDirection: "row", alignItems: "center" }}
+          style={styles.flashMode}
         >
           <MaterialCommunityIcons name="flash" size={24} color="black" />
           <Text>Flash On</Text>
@@ -59,5 +59,12 @@ const FlashModes: React.FC<FlashModesProps> = ({ setFlashMode, setIsMenuVisible 
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  flashMode: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+});
 
 export default FlashModes;
