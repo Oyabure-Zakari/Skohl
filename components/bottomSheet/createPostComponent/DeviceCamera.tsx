@@ -8,10 +8,10 @@ import { StatusBar } from "expo-status-bar";
 // Packages/Libraries
 import { Menu } from "react-native-material-menu";
 // Components
-import FlashModeButton from "./cameraComponent/FlashModeButton";
-import FlashModes from "./cameraComponent/FlashModes";
-import GrantCameraPermission from "./cameraComponent/GrantCameraPermission";
-import ShutterContents from "./cameraComponent/ShutterContents";
+import FlashModeButton from "./deviceCameraComponent/FlashModeButton";
+import FlashModes from "./deviceCameraComponent/FlashModes";
+import GrantCameraPermission from "./deviceCameraComponent/GrantCameraPermission";
+import ShutterContents from "./deviceCameraComponent/ShutterContents";
 // Styles
 import cameraStyles from "@/styles/camera.styles";
 
