@@ -1,6 +1,6 @@
-import DeviceCamera from "@/components/bottomSheet/createPostComponent/Camera";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
+import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import IMAGES from "@/constants/images";
@@ -53,7 +53,9 @@ export default function EditProfile() {
   // Image
   const userImage = photo ? photo : user?.image;
 
-  // Functions
+  console.log("Image:", userImage);
+  console.log("Bio:", userBioTextRef?.current);
+
   const openCamera = () => setIsCameraOpen(true);
 
   // UseEffect to clear image

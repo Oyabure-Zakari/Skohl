@@ -5,8 +5,8 @@ import { TouchableOpacity, View } from "react-native";
 // Components
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
+import DeviceCamera from "../../reuseableComponents/DeviceCamera";
 import ProductCategoryPicker from "../ProductCategoryPicker";
-import DeviceCamera from "./Camera";
 import PhotoSection from "./ImageSection";
 // Connstants
 import COLORS from "@/constants/colors";

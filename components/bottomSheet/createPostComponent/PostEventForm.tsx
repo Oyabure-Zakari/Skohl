@@ -7,9 +7,9 @@ import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 // Components
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
+import DeviceCamera from "../../reuseableComponents/DeviceCamera";
 import EventCategoryPicker from "../EventCategoryPicker";
 import EventTypePicker from "../EventTypePicker";
-import DeviceCamera from "./Camera";
 import PhotoSection from "./ImageSection";
 // Constants
 import COLORS from "@/constants/colors";
