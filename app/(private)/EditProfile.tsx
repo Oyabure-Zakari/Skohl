@@ -124,6 +124,18 @@ export default function EditProfile() {
               >
                 <Entypo name="images" size={25} color={COLORS.darkGrey} />
               </AnimatedTouchableOpacity>
+
+              <AnimatedTouchableOpacity
+                entering={FadeInDown.delay(800)}
+                style={createPostStyles.photoOption}
+                onPress={clearImage}
+              >
+                <MaterialCommunityIcons
+                  name="image-off-outline"
+                  size={25}
+                  color={COLORS.darkGrey}
+                />
+              </AnimatedTouchableOpacity>
             </View>
 
             {/* Text Input */}
