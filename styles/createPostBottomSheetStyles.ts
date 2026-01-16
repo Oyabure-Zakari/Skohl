@@ -5,11 +5,6 @@ export default function useCreatePostBottomSheetStyles() {
   const { width } = useWindowDimensions();
 
   return StyleSheet.create({
-    content: { 
-      alignItems: "center", 
-      paddingBottom: 200 
-    },
-
     photoPlaceholder: {
       marginTop: 20,
       width: width * 0.45,
