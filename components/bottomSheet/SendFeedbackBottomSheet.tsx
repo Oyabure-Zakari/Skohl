@@ -17,6 +17,7 @@ import useReuseableStyles from "@/styles/reuable.styles";
 import useSendFeedBottomSheetStyles from "@/styles/sendFeedBottomSheetStyles";
 // Hook
 import { useSubmitFeedback } from "@/hooks/submitFeedback";
+import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 
 const SendFeedbackBottomSheet: React.FC = () => {
   // State
@@ -42,9 +43,11 @@ const SendFeedbackBottomSheet: React.FC = () => {
     inputRef: bottomSheetTextInputRef,
   });
 
+  const createPostStyles = useCreatePostBottomSheetStyles();
+
   return (
     <BottomSheetScrollView
-      contentContainerStyle={feedbackStyles.content}
+      contentContainerStyle={createPostStyles.content}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={true}
       bounces={true}
