@@ -5,12 +5,6 @@ export default function useSendFeedBottomSheetStyles() {
   const { width, fontScale } = useWindowDimensions();
 
   return StyleSheet.create({
-    content: {
-      flex: 1,
-      alignItems: "center",
-      paddingBottom: 100,
-    },
-
     input: {
       width: width * 0.9,
       backgroundColor: COLORS.lightGrey,
