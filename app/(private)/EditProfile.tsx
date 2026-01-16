@@ -15,6 +15,8 @@ import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { MotiView } from "moti";
+import { Skeleton } from "moti/skeleton";
 import React, { useEffect, useRef, useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
@@ -103,9 +105,18 @@ export default function EditProfile() {
             />
 
             {/* Full Name */}
-            <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
-              {fullName}
-            </Animated.Text>
+            {isLoading ? (
+              <>
+                {/* Skeleton */}
+                <MotiView style={{ alignItems: "center" }}>
+                  <Skeleton show={isLoading} colorMode="light" width={"40%"}></Skeleton>
+                </MotiView>
+              </>
+            ) : (
+              <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
+                {fullName}
+              </Animated.Text>
+            )}
 
             {/* Photo Options */}
             <View style={createPostStyles.photoOptions}>
@@ -139,18 +150,32 @@ export default function EditProfile() {
             </View>
 
             {/* Text Input */}
-            <TextInput
-              ref={textInputRef}
-              placeholder="Enter your bio here..."
-              multiline
-              maxLength={248}
-              numberOfLines={5.1}
-              textAlignVertical="top"
-              placeholderTextColor={COLORS.darkGrey}
-              style={editProfileStyles.textInput}
-              defaultValue={user?.bio}
-              onChangeText={(text) => (userBioTextRef.current = text)}
-            />
+            {isLoading ? (
+              <>
+                {/* Skeleton */}
+                <MotiView style={{ marginTop: 20, alignItems: "center" }}>
+                  <Skeleton
+                    show={isLoading}
+                    colorMode="light"
+                    width={"60%"}
+                    height={100}
+                  ></Skeleton>
+                </MotiView>
+              </>
+            ) : (
+              <TextInput
+                ref={textInputRef}
+                placeholder="Enter your bio here..."
+                multiline
+                maxLength={248}
+                numberOfLines={5.1}
+                textAlignVertical="top"
+                placeholderTextColor={COLORS.darkGrey}
+                style={editProfileStyles.textInput}
+                defaultValue={user?.bio}
+                onChangeText={(text) => (userBioTextRef.current = text)}
+              />
+            )}
 
             {/* Save Button */}
             <AnimatedTouchableOpacity
