@@ -5,7 +5,6 @@ import { Text, View } from "react-native";
 // Packages
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 // Styles
-import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import useReuseableStyles from "@/styles/reuable.styles";
 // Components
 import PostEventForm from "./createPostComponent/PostEventForm";
@@ -21,11 +20,10 @@ const CreatePostBottomSheet: React.FC = () => {
 
   // Styles
   const reuseableStyles = useReuseableStyles();
-  const createPostStyles = useCreatePostBottomSheetStyles();
 
   return (
     <BottomSheetScrollView
-      contentContainerStyle={createPostStyles.content}
+      contentContainerStyle={reuseableStyles.bottomSheetScrollViewContainer}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={true}
       bounces={true}

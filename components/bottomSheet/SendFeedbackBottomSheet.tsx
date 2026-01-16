@@ -17,7 +17,6 @@ import useReuseableStyles from "@/styles/reuable.styles";
 import useSendFeedBottomSheetStyles from "@/styles/sendFeedBottomSheetStyles";
 // Hook
 import { useSubmitFeedback } from "@/hooks/submitFeedback";
-import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 
 const SendFeedbackBottomSheet: React.FC = () => {
   // State
@@ -26,10 +25,6 @@ const SendFeedbackBottomSheet: React.FC = () => {
   // Refs
   const feedbackTextRef = useRef("");
   const bottomSheetTextInputRef = useRef<any>(null);
-
-  // Styles
-  const reusableStyles = useReuseableStyles();
-  const feedbackStyles = useSendFeedBottomSheetStyles();
 
   // Current user uid from auth context
   const { userUid } = useAuth();
@@ -43,11 +38,13 @@ const SendFeedbackBottomSheet: React.FC = () => {
     inputRef: bottomSheetTextInputRef,
   });
 
-  const createPostStyles = useCreatePostBottomSheetStyles();
+  // Styles
+  const reuseableStyles = useReuseableStyles();
+  const feedbackStyles = useSendFeedBottomSheetStyles();
 
   return (
     <BottomSheetScrollView
-      contentContainerStyle={createPostStyles.content}
+      contentContainerStyle={reuseableStyles.bottomSheetScrollViewContainer}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={true}
       bounces={true}
@@ -61,9 +58,9 @@ const SendFeedbackBottomSheet: React.FC = () => {
       ) : (
         <>
           {/* Bottom Sheet Header */}
-          <Text style={reusableStyles.bottomSheetTitle}>Send Feedback</Text>
-          <View style={reusableStyles.bottomSheetDivider} />
-          <Text style={reusableStyles.bottomSheetSubTitle}>{"We'd love your feedback!"}</Text>
+          <Text style={reuseableStyles.bottomSheetTitle}>Send Feedback</Text>
+          <View style={reuseableStyles.bottomSheetDivider} />
+          <Text style={reuseableStyles.bottomSheetSubTitle}>{"We'd love your feedback!"}</Text>
 
           {/* Feedback Form */}
           <BottomSheetTextInput
