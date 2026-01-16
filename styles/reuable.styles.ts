@@ -12,7 +12,7 @@ export default function useReuseableStyles() {
 
     image: {
       width: 250,
-      height:  250,
+      height: 250,
       resizeMode: "contain",
       alignSelf: "center",
       // backgroundColor: "red"
@@ -146,6 +146,11 @@ export default function useReuseableStyles() {
       fontFamily: "Segoe_UI_Bold",
       fontSize: fontScale * 12,
       paddingHorizontal: 5,
+    },
+
+    bottomSheetScrollViewContainer: {
+      alignItems: "center",
+      paddingBottom: 200,
     },
   });
 }
