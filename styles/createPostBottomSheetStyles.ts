@@ -2,7 +2,7 @@ import COLORS from "@/constants/colors";
 import { StyleSheet, useWindowDimensions } from "react-native";
 
 export default function useCreatePostBottomSheetStyles() {
-  const { width, fontScale } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   return StyleSheet.create({
     content: { 
