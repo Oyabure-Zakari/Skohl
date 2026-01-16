@@ -37,7 +37,7 @@ export default function EditProfile() {
 
   // Refs
   const textInputRef = useRef<TextInput>(null);
-  const userBioTextRef = useRef("");
+  const userBioTextRef = useRef(user?.bio || "");
 
   // Custom Hooks
   const { pickImage } = useExpoImagePicker(); // Image Picker
@@ -53,9 +53,6 @@ export default function EditProfile() {
   // Image
   const userImage = photo ? photo : user?.image;
 
-  console.log("Image:", userImage);
-  console.log("Bio:", userBioTextRef?.current);
-
   const openCamera = () => setIsCameraOpen(true);
 
   // UseEffect to clear image
@@ -69,7 +66,10 @@ export default function EditProfile() {
 
   const fullName = formatFullName(user?.fullName);
 
-  const userBio = user?.bio ? user.bio : "Enter your bio here...";
+  const handleSaveProfile = () => {
+    console.log("Image saved:", userImage);
+    console.log("Bio saved:", userBioTextRef.current);
+  };
 
   return (
     <>
@@ -129,18 +129,23 @@ export default function EditProfile() {
             {/* Text Input */}
             <TextInput
               ref={textInputRef}
-              placeholder={userBio}
+              placeholder="Enter your bio here..."
               multiline
-              maxLength={246}
+              maxLength={248}
               numberOfLines={5.1}
               textAlignVertical="top"
               placeholderTextColor={COLORS.darkGrey}
               style={editProfileStyles.textInput}
+              defaultValue={user?.bio}
               onChangeText={(text) => (userBioTextRef.current = text)}
             />
 
             {/* Save Button */}
-            <AnimatedTouchableOpacity entering={FadeInDown.delay(800)} style={{ marginTop: 20 }}>
+            <AnimatedTouchableOpacity
+              entering={FadeInDown.delay(800)}
+              style={{ marginTop: 20 }}
+              onPress={handleSaveProfile}
+            >
               <CustomButton text="Save" />
             </AnimatedTouchableOpacity>
           </View>
