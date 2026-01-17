@@ -1,6 +1,7 @@
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
+import bioMaxLength from "@/constants/bioMaxLength";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import IMAGES from "@/constants/images";
@@ -167,7 +168,7 @@ export default function EditProfile() {
                 ref={textInputRef}
                 placeholder="Enter your bio here..."
                 multiline
-                maxLength={248}
+                maxLength={bioMaxLength}
                 numberOfLines={5.1}
                 textAlignVertical="top"
                 placeholderTextColor={COLORS.darkGrey}
