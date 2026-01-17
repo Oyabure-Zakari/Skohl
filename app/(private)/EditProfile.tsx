@@ -1,3 +1,4 @@
+import EditProfileHeader from "@/components/editProfile/EditProfileHeader";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
@@ -12,14 +13,14 @@ import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import useEditProfileStyles from "@/styles/editProfile.styles";
 import formatFullName from "@/utils/formatUserFullname";
-import { Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import { Skeleton } from "moti/skeleton";
 import React, { useEffect, useRef, useState } from "react";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 
 // Custom animated components
@@ -84,15 +85,7 @@ export default function EditProfile() {
         {/*Header Container */}
         <View style={editProfileStyles.container}>
           {/* Header */}
-          <View style={editProfileStyles.header}>
-            {/* Back Button */}
-            <TouchableOpacity onPress={() => router.push("/(private)/(tabs)/Profile")}>
-              <Ionicons name="arrow-back-sharp" size={24} color={COLORS.white} />
-            </TouchableOpacity>
-
-            {/* Title */}
-            <Text style={editProfileStyles.title}>Edit Profile</Text>
-          </View>
+          <EditProfileHeader />
 
           <View style={editProfileStyles.formContainer}>
             {/* Profile Picture */}
