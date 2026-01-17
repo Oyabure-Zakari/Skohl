@@ -1,4 +1,5 @@
 import BioSkeletonUI from "@/components/editProfile/BioSkeletonUI";
+import BioTextInput from "@/components/editProfile/BioTextInput";
 import EditProfileHeader from "@/components/editProfile/EditProfileHeader";
 import Fullname from "@/components/editProfile/Fullname";
 import FullnameSkeletonUI from "@/components/editProfile/FullnameSkeletonUI";
@@ -67,7 +68,6 @@ export default function EditProfile() {
   return (
     <>
       <StatusBar style="light" backgroundColor={COLORS.purple} />
-
       <CustomKeyboard>
         {/* Background Image */}
         <Image source={IMAGES.pattern2} style={editProfileStyles.pattern} />
@@ -103,17 +103,11 @@ export default function EditProfile() {
             {isLoading ? (
               <BioSkeletonUI isLoading={isLoading} />
             ) : (
-              <TextInput
-                ref={textInputRef}
-                placeholder="Enter your bio here..."
-                multiline
-                maxLength={bioMaxLength}
-                numberOfLines={5.1}
-                textAlignVertical="top"
-                placeholderTextColor={COLORS.darkGrey}
-                style={editProfileStyles.textInput}
-                defaultValue={user?.bio}
-                onChangeText={(text) => (userBioTextRef.current = text)}
+              <BioTextInput
+                textInputRef={textInputRef}
+                bioMaxLength={bioMaxLength}
+                user={user}
+                userBioTextRef={userBioTextRef}
               />
             )}
 
