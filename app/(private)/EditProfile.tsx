@@ -1,29 +1,35 @@
+// React
+import React, { useEffect, useRef, useState } from "react";
+// React Native
+import { TextInput, View } from "react-native";
+// Expo
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
+// Components
 import BioSkeletonUI from "@/components/editProfile/BioSkeletonUI";
 import BioTextInput from "@/components/editProfile/BioTextInput";
 import EditProfileHeader from "@/components/editProfile/EditProfileHeader";
 import Fullname from "@/components/editProfile/Fullname";
 import FullnameSkeletonUI from "@/components/editProfile/FullnameSkeletonUI";
-import CustomButton from "@/components/reuseableComponents/CustomButton";
+import SaveProfileButton from "@/components/editProfile/SaveProfileButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
 import PhotoOptions from "@/components/reuseableComponents/PhotoOptions";
 import bioMaxLength from "@/constants/bioMaxLength";
+// Constants
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import IMAGES from "@/constants/images";
+// Contexts
 import { useAuth } from "@/contexts/AuthContext";
+// Custom Hooks
 import { useUserProfile } from "@/hooks/userProfile";
+// Zustand
 import usePhotoStore from "@/store/photoStore";
+// Styles
 import useEditProfileStyles from "@/styles/editProfile.styles";
+// Utils
 import formatFullName from "@/utils/formatUserFullname";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useRef, useState } from "react";
-import { TextInput, TouchableOpacity, View } from "react-native";
-import Animated, { FadeInDown } from "react-native-reanimated";
-
-// Custom animated components
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function EditProfile() {
   // Currently logged in user
@@ -112,13 +118,7 @@ export default function EditProfile() {
             )}
 
             {/* Save Button */}
-            <AnimatedTouchableOpacity
-              entering={FadeInDown.delay(800)}
-              style={{ marginTop: 20 }}
-              onPress={handleSaveProfile}
-            >
-              <CustomButton text="Save" />
-            </AnimatedTouchableOpacity>
+            <SaveProfileButton handleSaveProfile={handleSaveProfile} />
           </View>
         </View>
       </CustomKeyboard>
