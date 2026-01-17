@@ -1,4 +1,5 @@
 import EditProfileHeader from "@/components/editProfile/EditProfileHeader";
+import FullnameSkeletonUI from "@/components/editProfile/FullnameSkeletonUI";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
@@ -82,11 +83,12 @@ export default function EditProfile() {
       <CustomKeyboard>
         {/* Background Image */}
         <Image source={IMAGES.pattern2} style={editProfileStyles.pattern} />
-        {/*Header Container */}
+        {/* Container */}
         <View style={editProfileStyles.container}>
           {/* Header */}
           <EditProfileHeader />
 
+          {/* Form */}
           <View style={editProfileStyles.formContainer}>
             {/* Profile Picture */}
             <Image
@@ -100,12 +102,7 @@ export default function EditProfile() {
 
             {/* Full Name */}
             {isLoading ? (
-              <>
-                {/* Skeleton */}
-                <MotiView style={{ alignItems: "center" }}>
-                  <Skeleton show={isLoading} colorMode="light" width={"40%"}></Skeleton>
-                </MotiView>
-              </>
+              <FullnameSkeletonUI isLoading={isLoading} />
             ) : (
               <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
                 {fullName}
