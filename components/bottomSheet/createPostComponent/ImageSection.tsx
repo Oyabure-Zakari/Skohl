@@ -1,12 +1,10 @@
-import COLORS from "@/constants/colors";
+import PhotoOptions from "@/components/reuseableComponents/PhotoOptions";
 import blurhash from "@/constants/expoBlurImage";
-import useExpoImagePicker from "@/hooks/expoImagePicker";
 import usePhotoStore from "@/store/photoStore";
 import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
-import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, View } from "react-native";
 
 type PhotoSectionProps = {
   photo: string;
@@ -14,8 +12,6 @@ type PhotoSectionProps = {
 };
 
 const PhotoSection: React.FC<PhotoSectionProps> = ({ photo, openCamera }) => {
-  // Custom Hooks
-  const { pickImage } = useExpoImagePicker(); // Image Picker
   // zustand
   const clearImage = usePhotoStore((state) => state.clearImage);
 
@@ -39,19 +35,7 @@ const PhotoSection: React.FC<PhotoSectionProps> = ({ photo, openCamera }) => {
       )}
 
       {/* Photo Options */}
-      <View style={createPostStyles.photoOptions}>
-        <TouchableOpacity style={createPostStyles.photoOption} onPress={openCamera}>
-          <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={createPostStyles.photoOption} onPress={pickImage}>
-          <Entypo name="images" size={25} color={COLORS.darkGrey} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={createPostStyles.photoOption} onPress={clearImage}>
-          <MaterialCommunityIcons name="image-off-outline" size={25} color={COLORS.darkGrey} />
-        </TouchableOpacity>
-      </View>
+      <PhotoOptions openCamera={openCamera} clearImage={clearImage} />
     </>
   );
 };
