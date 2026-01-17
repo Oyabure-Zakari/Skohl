@@ -4,20 +4,17 @@ import FullnameSkeletonUI from "@/components/editProfile/FullnameSkeletonUI";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
+import PhotoOptions from "@/components/reuseableComponents/PhotoOptions";
 import bioMaxLength from "@/constants/bioMaxLength";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import IMAGES from "@/constants/images";
 import { useAuth } from "@/contexts/AuthContext";
-import useExpoImagePicker from "@/hooks/expoImagePicker";
 import { useUserProfile } from "@/hooks/userProfile";
 import usePhotoStore from "@/store/photoStore";
-import useCreatePostBottomSheetStyles from "@/styles/createPostBottomSheetStyles";
 import useEditProfileStyles from "@/styles/editProfile.styles";
 import formatFullName from "@/utils/formatUserFullname";
-import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { MotiView } from "moti";
 import { Skeleton } from "moti/skeleton";
@@ -29,9 +26,6 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 export default function EditProfile() {
-  // Router
-  const router = useRouter();
-
   // Currently logged in user
   const { userUid } = useAuth();
 
@@ -45,21 +39,15 @@ export default function EditProfile() {
   const textInputRef = useRef<TextInput>(null);
   const userBioTextRef = useRef(user?.bio || "");
 
-  // Custom Hooks
-  const { pickImage } = useExpoImagePicker(); // Image Picker
-
   // zustand
   const photo = usePhotoStore((state) => state.image);
   const clearImage = usePhotoStore((state) => state.clearImage);
 
   // Styles
-  const createPostStyles = useCreatePostBottomSheetStyles();
   const editProfileStyles = useEditProfileStyles();
 
   // Image
   const userImage = photo ? photo : user?.image;
-
-  const openCamera = () => setIsCameraOpen(true);
 
   // UseEffect to clear image
   useEffect(() => {
@@ -84,6 +72,7 @@ export default function EditProfile() {
       <CustomKeyboard>
         {/* Background Image */}
         <Image source={IMAGES.pattern2} style={editProfileStyles.pattern} />
+
         {/* Container */}
         <View style={editProfileStyles.container}>
           {/* Header */}
@@ -109,35 +98,7 @@ export default function EditProfile() {
             )}
 
             {/* Photo Options */}
-            <View style={createPostStyles.photoOptions}>
-              <AnimatedTouchableOpacity
-                entering={FadeInDown.delay(400)}
-                style={createPostStyles.photoOption}
-                onPress={openCamera}
-              >
-                <MaterialCommunityIcons name="camera" size={25} color={COLORS.darkGrey} />
-              </AnimatedTouchableOpacity>
-
-              <AnimatedTouchableOpacity
-                entering={FadeInDown.delay(600)}
-                style={createPostStyles.photoOption}
-                onPress={pickImage}
-              >
-                <Entypo name="images" size={25} color={COLORS.darkGrey} />
-              </AnimatedTouchableOpacity>
-
-              <AnimatedTouchableOpacity
-                entering={FadeInDown.delay(800)}
-                style={createPostStyles.photoOption}
-                onPress={clearImage}
-              >
-                <MaterialCommunityIcons
-                  name="image-off-outline"
-                  size={25}
-                  color={COLORS.darkGrey}
-                />
-              </AnimatedTouchableOpacity>
-            </View>
+            <PhotoOptions openCamera={() => setIsCameraOpen(true)} clearImage={clearImage} />
 
             {/* Text Input */}
             {isLoading ? (
