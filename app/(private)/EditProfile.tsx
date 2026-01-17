@@ -1,3 +1,4 @@
+import BioSkeletonUI from "@/components/editProfile/BioSkeletonUI";
 import EditProfileHeader from "@/components/editProfile/EditProfileHeader";
 import Fullname from "@/components/editProfile/Fullname";
 import FullnameSkeletonUI from "@/components/editProfile/FullnameSkeletonUI";
@@ -16,8 +17,6 @@ import useEditProfileStyles from "@/styles/editProfile.styles";
 import formatFullName from "@/utils/formatUserFullname";
 import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
-import { MotiView } from "moti";
-import { Skeleton } from "moti/skeleton";
 import React, { useEffect, useRef, useState } from "react";
 import { TextInput, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -102,17 +101,7 @@ export default function EditProfile() {
 
             {/* Text Input */}
             {isLoading ? (
-              <>
-                {/* Skeleton */}
-                <MotiView style={{ marginTop: 20, alignItems: "center" }}>
-                  <Skeleton
-                    show={isLoading}
-                    colorMode="light"
-                    width={"60%"}
-                    height={100}
-                  ></Skeleton>
-                </MotiView>
-              </>
+              <BioSkeletonUI isLoading={isLoading} />
             ) : (
               <TextInput
                 ref={textInputRef}
