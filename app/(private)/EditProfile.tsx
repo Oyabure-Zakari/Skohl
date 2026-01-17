@@ -1,4 +1,5 @@
 import EditProfileHeader from "@/components/editProfile/EditProfileHeader";
+import Fullname from "@/components/editProfile/Fullname";
 import FullnameSkeletonUI from "@/components/editProfile/FullnameSkeletonUI";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
@@ -22,7 +23,7 @@ import { MotiView } from "moti";
 import { Skeleton } from "moti/skeleton";
 import React, { useEffect, useRef, useState } from "react";
 import { TextInput, TouchableOpacity, View } from "react-native";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 // Custom animated components
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
@@ -104,9 +105,7 @@ export default function EditProfile() {
             {isLoading ? (
               <FullnameSkeletonUI isLoading={isLoading} />
             ) : (
-              <Animated.Text entering={FadeInUp.delay(600)} style={editProfileStyles.fullName}>
-                {fullName}
-              </Animated.Text>
+              <Fullname fullName={fullName} />
             )}
 
             {/* Photo Options */}
