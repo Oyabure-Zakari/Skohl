@@ -71,6 +71,28 @@ export default function EditProfile() {
 
   const fullName = formatFullName(user?.fullName);
 
+  const deleteCloudinaryImage = async (publicId: string) => {
+    const response = await fetch("/apis/cloudinary/delete-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        public_id: publicId,
+        invalidate: true,
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete image");
+    }
+
+    //return data;
+  };
+
   const handleSaveProfile = async () => {
     // Check if image is from cloudinary, if not, upload
     let uploadedImage;
@@ -91,9 +113,11 @@ export default function EditProfile() {
         bio: userBioTextRef.current,
         image: uploadedImage ? uploadedImage : user?.image,
       });
-      //TODO: Delete previously uploaded image from cloudinary i.e user?.image
+      // Delete previously uploaded image from cloudinary i.e user?.image
       const publicId = extractPublicId(user?.image);
-      console.log(publicId);
+      await deleteCloudinaryImage(publicId);
+
+      // Show toast
       Toast.show({
         type: "success",
         text1: "Profile updated",
