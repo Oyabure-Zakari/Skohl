@@ -15,22 +15,23 @@ import SaveProfileButton from "@/components/editProfile/SaveProfileButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
 import PhotoOptions from "@/components/reuseableComponents/PhotoOptions";
-import bioMaxLength from "@/constants/bioMaxLength";
 // Constants
+import bioMaxLength from "@/constants/bioMaxLength";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import IMAGES from "@/constants/images";
 // Contexts
 import { useAuth } from "@/contexts/AuthContext";
 // Custom Hooks
+import { useUpdateProfile } from "@/hooks/updateProfile";
 import { useUserProfile } from "@/hooks/userProfile";
 // Zustand
 import usePhotoStore from "@/store/photoStore";
 // Styles
 import useEditProfileStyles from "@/styles/editProfile.styles";
-// Utils
-import { useUpdateProfile } from "@/hooks/updateProfile";
+// Types
 import UserProfileType from "@/types/userProfileTypes";
+// Utils
 import formatFullName from "@/utils/formatUserFullname";
 
 export default function EditProfile() {
