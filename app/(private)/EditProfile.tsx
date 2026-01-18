@@ -97,7 +97,7 @@ export default function EditProfile() {
   const handleSaveProfile = async () => {
     setLoading(true);
     try {
-      // Check if user uploaded a new image (not from cloudinary yet)
+      // Check if user has selected a new image (not from cloudinary)
       const hasNewImage = userImage && !userImage.includes("cloudinary");
       let uploadedImage;
 
@@ -112,7 +112,7 @@ export default function EditProfile() {
       if (!imageChanged && !bioChanged) {
         // Show toast
         Toast.show({
-          type: "error",
+          type: "info",
           text1: "Profile not updated",
           text2: "You did not make any changes",
           text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
