@@ -29,7 +29,11 @@ import usePhotoStore from "@/store/photoStore";
 // Styles
 import useEditProfileStyles from "@/styles/editProfile.styles";
 // Utils
+import { db } from "@/firebase/firebase.config";
+import postImageUrl from "@/utils/cloudinary/postImageUrl";
 import formatFullName from "@/utils/formatUserFullname";
+import { doc, updateDoc } from "firebase/firestore";
+import Toast from "react-native-toast-message";
 
 export default function EditProfile() {
   // Currently logged in user
@@ -66,9 +70,36 @@ export default function EditProfile() {
 
   const fullName = formatFullName(user?.fullName);
 
-  const handleSaveProfile = () => {
-    console.log("Image saved:", userImage);
-    console.log("Bio saved:", userBioTextRef.current);
+  const handleSaveProfile = async () => {
+    // Check if image is from cloudinary, if not, upload
+    let uploadedImage;
+    if (!userImage.includes("cloudinary")) uploadedImage = await postImageUrl(userImage);
+
+    // Check if user did not make any changes
+    if (userImage === user?.image && userBioTextRef.current === user?.bio) {
+      //TODO: Delete recently uploaded image from cloudinary i.e. uploadedImage
+      // Show toast
+      Toast.show({
+        type: "error",
+        text1: "Profile not updated",
+        text2: "You did not make any changes",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
+    } else {
+      await updateDoc(doc(db, "users", user?.uid), {
+        bio: userBioTextRef.current,
+        image: uploadedImage ? uploadedImage : user?.image,
+      });
+      //TODO: Delete previously uploaded image from cloudinary i.e user?.image
+      Toast.show({
+        type: "success",
+        text1: "Profile updated",
+        text2: "Your profile has been updated successfully",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
+    }
   };
 
   return (
