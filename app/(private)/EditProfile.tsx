@@ -29,6 +29,7 @@ import usePhotoStore from "@/store/photoStore";
 // Styles
 import useEditProfileStyles from "@/styles/editProfile.styles";
 // Utils
+import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import { db } from "@/firebase/firebase.config";
 import postImageUrl from "@/utils/cloudinary/postImageUrl";
 import extractPublicId from "@/utils/extractPublicId";
@@ -45,6 +46,7 @@ export default function EditProfile() {
 
   // States
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Refs
   const textInputRef = useRef<TextInput>(null);
@@ -84,7 +86,6 @@ export default function EditProfile() {
     });
 
     const data = await response.json();
-    console.log(data);
 
     if (!response.ok) {
       throw new Error(data.message || "Failed to delete image");
@@ -94,30 +95,53 @@ export default function EditProfile() {
   };
 
   const handleSaveProfile = async () => {
-    // Check if image is from cloudinary, if not, upload
-    let uploadedImage;
-    if (!userImage.includes("cloudinary")) uploadedImage = await postImageUrl(userImage);
+    setLoading(true);
+    try {
+      // Check if user uploaded a new image (not from cloudinary yet)
+      const hasNewImage = userImage && !userImage.includes("cloudinary");
+      let uploadedImage;
 
-    // Check if user did not make any changes
-    if (userImage === user?.image && userBioTextRef.current === user?.bio) {
-      // Show toast
-      Toast.show({
-        type: "error",
-        text1: "Profile not updated",
-        text2: "You did not make any changes",
-        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
-        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
-      });
-    } else {
+      if (hasNewImage) {
+        uploadedImage = await postImageUrl(userImage);
+      }
+
+      // Check if user did not make any changes
+      const imageChanged = hasNewImage;
+      const bioChanged = userBioTextRef.current.trim() !== user?.bio;
+
+      if (!imageChanged && !bioChanged) {
+        // Show toast
+        Toast.show({
+          type: "error",
+          text1: "Profile not updated",
+          text2: "You did not make any changes",
+          text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+          text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+        });
+        return; // Exit early
+      }
+
+      // Update Firestore
       await updateDoc(doc(db, "users", user?.uid), {
-        bio: userBioTextRef.current,
-        image: uploadedImage ? uploadedImage : user?.image,
+        bio: userBioTextRef.current.trim(),
+        image: uploadedImage || user?.image, // Use new image if uploaded, otherwise keep existing
       });
-      // Delete previously uploaded image from cloudinary i.e user?.image
-      const publicId = extractPublicId(user?.image);
-      await deleteCloudinaryImage(publicId);
 
-      // Show toast
+      // Delete previous image from Cloudinary ONLY if a new image was uploaded
+      if (uploadedImage && user?.image?.includes("cloudinary")) {
+        try {
+          const publicId = extractPublicId(user?.image);
+          if (publicId) {
+            await deleteCloudinaryImage(publicId);
+            console.log("Previous image deleted from Cloudinary");
+          }
+        } catch (deleteError: any) {
+          // Log error but don't fail the entire operation
+          console.error("Failed to delete old image:", deleteError.message);
+        }
+      }
+
+      // Show success toast
       Toast.show({
         type: "success",
         text1: "Profile updated",
@@ -125,8 +149,24 @@ export default function EditProfile() {
         text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
         text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
       });
+    } catch (error: any) {
+      console.log(error.message);
+      // Show error toast
+      Toast.show({
+        type: "error",
+        text1: "Update failed",
+        text2: error.message || "Failed to update profile",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <OverlayLoadingIndicator />;
+  }
 
   return (
     <>
