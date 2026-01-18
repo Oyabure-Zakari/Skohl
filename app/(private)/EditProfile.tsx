@@ -31,6 +31,7 @@ import useEditProfileStyles from "@/styles/editProfile.styles";
 // Utils
 import { db } from "@/firebase/firebase.config";
 import postImageUrl from "@/utils/cloudinary/postImageUrl";
+import extractPublicId from "@/utils/extractPublicId";
 import formatFullName from "@/utils/formatUserFullname";
 import { doc, updateDoc } from "firebase/firestore";
 import Toast from "react-native-toast-message";
@@ -77,7 +78,6 @@ export default function EditProfile() {
 
     // Check if user did not make any changes
     if (userImage === user?.image && userBioTextRef.current === user?.bio) {
-      //TODO: Delete recently uploaded image from cloudinary i.e. uploadedImage
       // Show toast
       Toast.show({
         type: "error",
@@ -92,6 +92,8 @@ export default function EditProfile() {
         image: uploadedImage ? uploadedImage : user?.image,
       });
       //TODO: Delete previously uploaded image from cloudinary i.e user?.image
+      const publicId = extractPublicId(user?.image);
+      console.log(publicId);
       Toast.show({
         type: "success",
         text1: "Profile updated",
