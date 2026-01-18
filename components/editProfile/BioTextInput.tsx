@@ -1,12 +1,13 @@
 import COLORS from "@/constants/colors";
 import useEditProfileStyles from "@/styles/editProfile.styles";
+import UserProfileType from "@/types/userProfileTypes";
 import React from "react";
 import { TextInput } from "react-native";
 
 type BioTextInputProps = {
   textInputRef: React.RefObject<TextInput | null>;
   bioMaxLength: number;
-  user: any;
+  user: UserProfileType;
   userBioTextRef: React.RefObject<any>;
 };
 
