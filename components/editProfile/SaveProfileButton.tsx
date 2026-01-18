@@ -7,15 +7,17 @@ import CustomButton from "../reuseableComponents/CustomButton";
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 type SaveProfileButtonProps = {
+  isLoading: boolean;
   handleSaveProfile: () => void;
 };
 
-const SaveProfileButton: React.FC<SaveProfileButtonProps> = ({ handleSaveProfile }) => {
+const SaveProfileButton: React.FC<SaveProfileButtonProps> = ({ isLoading, handleSaveProfile }) => {
   return (
     <AnimatedTouchableOpacity
       entering={FadeInDown.delay(800)}
       style={{ marginTop: 20 }}
       onPress={handleSaveProfile}
+      disabled={isLoading}
     >
       <CustomButton text="Save" />
     </AnimatedTouchableOpacity>
