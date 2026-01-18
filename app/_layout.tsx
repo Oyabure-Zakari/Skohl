@@ -105,7 +105,6 @@ function AppLayout() {
           {
             text: "Retry",
             onPress: () => {
-              console.log("Retrying user creation...");
               refetch(); // This will trigger the query again
             },
           },
@@ -125,7 +124,6 @@ function AppLayout() {
           {
             text: "Retry",
             onPress: () => {
-              console.log("Retrying user fetch...");
               refetch();
             },
           },
