@@ -1,3 +1,5 @@
+import LOTTIES from "@/constants/lottie";
+import LottieView from "lottie-react-native";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -19,7 +21,18 @@ const SaveProfileButton: React.FC<SaveProfileButtonProps> = ({ isLoading, handle
       onPress={handleSaveProfile}
       disabled={isLoading}
     >
-      <CustomButton text="Save" />
+      {isLoading ? (
+        <LottieView
+          autoPlay
+          style={{
+            width: 150,
+            height: 150,
+          }}
+          source={LOTTIES.loading}
+        />
+      ) : (
+        <CustomButton text="Save" />
+      )}
     </AnimatedTouchableOpacity>
   );
 };
