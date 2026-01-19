@@ -129,6 +129,7 @@ const PostEventForm: React.FC<PostEventFormProps> = ({ postType }) => {
           }}
           style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
+          multiline={true}
         />
 
         <EventTypePicker

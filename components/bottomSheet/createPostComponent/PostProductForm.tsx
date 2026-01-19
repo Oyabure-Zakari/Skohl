@@ -95,6 +95,7 @@ const PostProductForm: React.FC<PostProductFormProps> = ({ postType }) => {
           onChangeText={(text) => (productDescriptionRef.current = text)}
           style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
+          multiline={true}
         />
 
         <ProductCategoryPicker

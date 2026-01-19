@@ -105,6 +105,7 @@ const PostServiceForm: React.FC<PostServiceFormProps> = ({ postType }) => {
           onChangeText={(text) => (serviceDescriptionRef.current = text)}
           style={createPostStyles.input}
           placeholderTextColor={COLORS.darkGrey}
+          multiline={true}
         />
 
         <ServiceCategoryPicker
