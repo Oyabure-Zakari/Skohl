@@ -24,18 +24,20 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
   // useMutation gives us methods and states which is saved in mutation variable
   const mutation = useMutation({
     mutationFn: async () => {
-      // Check if user has selected a new image (not from cloudinary)
+      // Check if user has selected a new image that is not a cloudinary image
       const hasNewImage = userImage && !userImage.includes("cloudinary");
       let uploadedImage;
 
+      // User has selected a new image, upload to Cloudinary
       if (hasNewImage) {
         uploadedImage = await postImageUrl(userImage);
       }
 
       // Check if user did not make any changes
-      const imageChanged = hasNewImage;
+      const imageChanged = hasNewImage; 
       const bioChanged = userBioTextRef.current.trim() !== user?.bio;
 
+      // User did not make any changes
       if (!imageChanged && !bioChanged) {
         // Show toast
         Toast.show({
@@ -63,10 +65,12 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
         } catch (deleteError: any) {
           // Log error but don't fail the entire operation
           console.error("Failed to delete old image:", deleteError.message);
+          throw new Error("Failed to delete old image:", deleteError.message);
         }
       }
     },
 
+    // Success callback runs after mutation is successful
     onSuccess: () => {
       // Invalidate and refetch user profile query
       queryClient.invalidateQueries({ 
@@ -83,13 +87,11 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
       });
     },
 
+    // Error callback runs if mutation fails
     onError: (error: any) => {
       // Don't show error toast if it's just "No changes made"
-      if (error.message === "No changes made") {
-        return;
-      }
+      if (error.message === "No changes made") return;
 
-      
       // Show error toast
       Toast.show({
         type: "error",
