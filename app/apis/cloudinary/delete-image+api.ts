@@ -2,9 +2,12 @@ import * as Crypto from 'expo-crypto';
 
 export async function POST(request: Request): Promise<Response> {
   try {
+    // Get request body
     const body = await request.json();
-    const { public_id, invalidate = true } = body;
+    // Destructure request body
+    const { public_id, invalidate = true } = body; 
 
+    // Check if public_id is provided
     if (!public_id) {
       return Response.json(
         { success: false, message: 'public_id is required' },
@@ -12,10 +15,12 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
 
+    // Get Cloudinary credentials
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
     const apiKey = process.env.CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
+    // Check if Cloudinary credentials are provided
     if (!cloudName || !apiKey || !apiSecret) {
       return Response.json(
         { success: false, message: 'Cloudinary credentials not configured' },
@@ -28,11 +33,13 @@ export async function POST(request: Request): Promise<Response> {
 
     // Create the string to sign (parameters must be in alphabetical order)
     const paramsToSign: string[] = [`public_id=${public_id}`, `timestamp=${timestamp}`];
-    
+
+    // If invalidate is true, add it to the string to sign
     if (invalidate) {
       paramsToSign.unshift('invalidate=true'); // Add at beginning (alphabetical order)
     }
-    
+
+    // Concatenate string to sign
     const stringToSign = paramsToSign.join('&') + apiSecret;
 
     // Create signature using expo-crypto
@@ -48,10 +55,12 @@ export async function POST(request: Request): Promise<Response> {
     formData.append('api_key', apiKey);
     formData.append('signature', signature);
     
+    // If invalidate is true, add it to the form data
     if (invalidate) {
       formData.append('invalidate', 'true');
     }
 
+    // Send request to Cloudinary
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`,
       {
@@ -59,17 +68,20 @@ export async function POST(request: Request): Promise<Response> {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: formData.toString(),
+        body: formData.toString(), // Convert form data to string
       }
     );
 
+    // Check response status
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(`Deletion failed: ${response.status} ${errorText}`);
     }
 
+    // Parse response
     const result = await response.json();
 
+    // Check result
     if (result.result === 'ok') {
       return Response.json(
         { 
