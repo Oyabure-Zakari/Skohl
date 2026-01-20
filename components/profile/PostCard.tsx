@@ -45,15 +45,13 @@ type Post = EventPost | ServicePost | ProductPost;
 
 interface PostCardProps {
   post: Post;
-  onPress?: (post: Post) => void;
-  onChatPress?: (post: Post) => void;
-  onBookmarkPress?: (post: Post) => void;
 }
 
-export default function PostCard({ post, onPress, onChatPress, onBookmarkPress }: PostCardProps) {
+const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const getFirstName = post.postedBy.fullName.split(" ")[1];
 
   return (
+    // Card container
     <TouchableOpacity
       activeOpacity={0.9}
       style={{
@@ -66,10 +64,10 @@ export default function PostCard({ post, onPress, onChatPress, onBookmarkPress }
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 3,
-        flexGrow: 1,
+        //flex: 1,
       }}
     >
-      {/* Posted by - smaller avatar */}
+      {/* User info */}
       <View
         style={{
           flexDirection: "row",
@@ -84,34 +82,64 @@ export default function PostCard({ post, onPress, onChatPress, onBookmarkPress }
           style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
           placeholder={{ blurhash }}
         />
-        <Text numberOfLines={1} style={{ fontSize: 13, color: "#333", flex: 1 }}>
+        {/* Name */}
+        <Text
+          numberOfLines={1}
+          style={{ fontSize: 13, color: COLORS.darkBlue, flex: 1, fontFamily: "Segoe_UI_Bold" }}
+        >
           {getFirstName}
         </Text>
+
+        {/* Date */}
+        <Text
+          numberOfLines={1}
+          style={{ fontSize: 8, fontFamily: "Segoe_UI_Bold", color: COLORS.darkGrey }}
+        >
+          {new Date(post.createdAt.seconds * 1000).toDateString()}
+        </Text>
       </View>
-      {/* Smaller photo for two columns */}
-      {post.photo && (
+
+      {/* Post image and display description if no image */}
+      {post.photo ? (
         <Image
           source={{ uri: post.photo }}
           style={{ width: "100%", height: 120, resizeMode: "cover" }} // ← reduced height
           placeholder={{ blurhash }}
           transition={300}
         />
+      ) : (
+        <Text
+          style={{
+            marginTop: 8,
+            paddingHorizontal: 10,
+            fontSize: 13,
+            fontFamily: "Segoe_UI_Bold",
+            color: COLORS.darkGrey,
+            borderBottomWidth: 1,
+            borderColor: COLORS.lightGrey,
+          }}
+          numberOfLines={4}
+        >
+          {post.description}
+        </Text>
       )}
 
-      {/* Content - tighter padding */}
-      <View style={{ padding: 10 }}>
+      {/* Post details */}
+      <View style={{ paddingHorizontal: 10 }}>
+        {/* Category */}
         <Text
           numberOfLines={1}
           style={{
             fontSize: 12,
             color: COLORS.darkGrey,
-            marginTop: 2,
+            marginTop: 4,
             fontFamily: "Segoe_UI_Bold",
           }}
         >
-          {post.category}
+          ℹ️ {post.category}
         </Text>
 
+        {/* Title */}
         <Text
           numberOfLines={2}
           style={{ width: "90%", fontSize: 15, fontFamily: "Segoe_UI_Bold_Italic" }}
@@ -119,7 +147,7 @@ export default function PostCard({ post, onPress, onChatPress, onBookmarkPress }
           {post.title}
         </Text>
 
-        {/* Price / Event info - smaller font */}
+        {/* Price */}
         {(post.postType === "service" || post.postType === "product") && post.price && (
           <Text style={{ fontSize: 13, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.green }}>
             {post.price}
@@ -127,7 +155,7 @@ export default function PostCard({ post, onPress, onChatPress, onBookmarkPress }
         )}
       </View>
 
-      {/* Footer - compact */}
+      {/* Footer */}
       <View
         style={{
           flexDirection: "row",
@@ -135,6 +163,7 @@ export default function PostCard({ post, onPress, onChatPress, onBookmarkPress }
           alignItems: "center",
         }}
       >
+        {/* Chat Button */}
         <TouchableOpacity
           style={{
             flexDirection: "row",
@@ -151,10 +180,13 @@ export default function PostCard({ post, onPress, onChatPress, onBookmarkPress }
           </Text>
         </TouchableOpacity>
 
+        {/* Bookmark Button */}
         <TouchableOpacity style={{ marginLeft: "auto" }}>
           <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.darkGrey} />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
-}
+};
+
+export default PostCard;
