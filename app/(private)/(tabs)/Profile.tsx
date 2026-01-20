@@ -93,7 +93,9 @@ export default function ProfileScreen() {
   // Fetch created by the user
   const [isLoadingCreatedPosts, setIsLoadingCreatedPosts] = useState(true);
   const [posts, setPosts] = useState<Post[]>([]);
-  const fecthCreatedPosts = async () => {
+
+  const fetchCreatedPosts = async () => {
+    setIsLoadingCreatedPosts(true);
     try {
       const q = query(
         postsCollectionRef,
@@ -102,10 +104,12 @@ export default function ProfileScreen() {
       );
       const snapshot = await getDocs(q);
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        setPosts(data as Post[]);
-      });
+      const fetchedPosts: Post[] = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Post[]; // cast as Post[] for TypeScript
+
+      setPosts(fetchedPosts);
     } catch (error: any) {
       console.log(error.message);
     } finally {
@@ -116,7 +120,7 @@ export default function ProfileScreen() {
   console.log("Posts", posts);
 
   useEffect(() => {
-    fecthCreatedPosts();
+    fetchCreatedPosts();
   }, []);
 
   return (
