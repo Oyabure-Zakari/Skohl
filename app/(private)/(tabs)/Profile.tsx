@@ -1,5 +1,5 @@
 // React
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // React Native
 import { ScrollView, View } from "react-native";
 // Packages/Libraries
@@ -17,7 +17,9 @@ import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles"
 import useReuseableStyles from "@/styles/reuable.styles";
 // Custom Hook
 import { useAuth } from "@/contexts/AuthContext";
+import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
 import { useUserProfile } from "@/hooks/userProfile";
+import { getDocs, orderBy, query, where } from "firebase/firestore";
 
 export default function ProfileScreen() {
   // Currently logged in user
@@ -45,6 +47,32 @@ export default function ProfileScreen() {
 
   // Fetch user via TanStack Query instead of local state
   const { data: user, isPending: isLoading } = useUserProfile(userUid);
+
+  // Fetch created by the user
+  const [isLoadingCreatedPosts, setIsLoadingCreatedPosts] = useState(true);
+  const fecthCreatedPosts = async () => {
+    try {
+      const q = query(
+        postsCollectionRef,
+        where("postedBy.userUid", "==", userUid),
+        orderBy("createdAt", "desc")
+      );
+      const snapshot = await getDocs(q);
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        console.log(data);
+      });
+    } catch (error: any) {
+      console.log(error.message);
+    } finally {
+      setIsLoadingCreatedPosts(false);
+    }
+  };
+
+  useEffect(() => {
+    fecthCreatedPosts();
+  }, []);
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
