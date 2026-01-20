@@ -1,7 +1,7 @@
 // React
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // React Native
-import { FlatList, Image, ScrollView, Text, View } from "react-native";
+import { FlatList, ScrollView, View } from "react-native";
 // Packages/Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -10,6 +10,7 @@ import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent"
 import Header from "@/components/profile/Header";
 import NoPostsOrBookmarks from "@/components/profile/NoPostsOrBookmarks";
 import PostAndBookmarksBtn from "@/components/profile/PostAndBookmarksBtn";
+import PostCard from "@/components/profile/PostCard";
 import UserBio from "@/components/profile/UserBio";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 // Styles
@@ -123,56 +124,6 @@ export default function ProfileScreen() {
     fetchCreatedPosts();
   }, []);
 
-  const renderPostItem = ({ item }: { item: Post }) => {
-    return (
-      <View style={{ padding: 16, marginBottom: 12, borderWidth: 1, borderRadius: 8 }}>
-        <Text style={{ fontWeight: "bold", fontSize: 16 }}>{item.title}</Text>
-        <Text style={{ color: "gray" }}>{item.category}</Text>
-
-        {/* Show photo if exists */}
-        {item.photo ? (
-          <Image
-            source={{ uri: item.photo }}
-            style={{ width: "100%", height: 200, marginVertical: 8, borderRadius: 8 }}
-          />
-        ) : null}
-
-        <Text>{item.description}</Text>
-
-        {/* Show fields based on postType */}
-        {item.postType === "event" && (
-          <View style={{ marginTop: 8 }}>
-            <Text>📅 Date: {item.eventDate}</Text>
-            {item.eventTime && <Text>⏰ Time: {item.eventTime}</Text>}
-            {item.eventType && <Text>🏷️ Type: {item.eventType}</Text>}
-            {item.eventVenue && <Text>📍 Venue: {item.eventVenue}</Text>}
-          </View>
-        )}
-
-        {item.postType === "service" && (
-          <View style={{ marginTop: 8 }}>
-            {item.price && <Text>💰 Price: {item.price}</Text>}
-            {item.serviceSchedule && <Text>🕒 Schedule: {item.serviceSchedule}</Text>}
-          </View>
-        )}
-
-        {item.postType === "product" && (
-          <View style={{ marginTop: 8 }}>{item.price && <Text>💰 Price: {item.price}</Text>}</View>
-        )}
-
-        <View style={{ marginTop: 8, flexDirection: "row", alignItems: "center" }}>
-          {item.postedBy.image && (
-            <Image
-              source={{ uri: item.postedBy.image }}
-              style={{ width: 30, height: 30, borderRadius: 15, marginRight: 8 }}
-            />
-          )}
-          <Text>Posted by: {item.postedBy.fullName}</Text>
-        </View>
-      </View>
-    );
-  };
-
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
       {/* Header */}
@@ -192,15 +143,38 @@ export default function ProfileScreen() {
 
         {/* No Posts Or Bookmarks */}
         {posts.length === 0 && <NoPostsOrBookmarks activeButton={activeButton} />}
-
-        {/* Created Posts */}
         {activeButton === "Posts" && !isLoadingCreatedPosts && posts.length > 0 && (
           <FlatList
             data={posts}
-            renderItem={renderPostItem}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={{ padding: 16 }}
-            //numColumns={2}
+            numColumns={2} // ← Two columns!
+            columnWrapperStyle={{
+              justifyContent: "space-between",
+              paddingHorizontal: 12,
+            }}
+            renderItem={({ item }) => (
+              <View style={{ flex: 1, maxWidth: "50%", paddingHorizontal: 6 }}>
+                <PostCard
+                  post={item}
+                  onPress={() => {
+                    // Navigate to post detail if you add one
+                    console.log("Open post:", item.id);
+                  }}
+                  onChatPress={(post) => {
+                    console.log("Chat with:", post.postedBy.fullName);
+                  }}
+                  onBookmarkPress={(post) => {
+                    console.log("Bookmark:", post.title);
+                  }}
+                />
+              </View>
+            )}
+            ListEmptyComponent={<NoPostsOrBookmarks activeButton={activeButton} />}
+            contentContainerStyle={{
+              paddingTop: 20,
+              paddingBottom: 100, // Space for FAB
+            }}
+            showsVerticalScrollIndicator={false}
             scrollEnabled={false} // prevents the FlatList from handling its own scroll, letting the outer ScrollView control scrolling instead.
           />
         )}
