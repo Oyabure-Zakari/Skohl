@@ -77,35 +77,47 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       }}
     >
       {/* User info */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginVertical: 5,
-          paddingHorizontal: 10,
-        }}
-      >
+      <View style={{ flexDirection: "row", alignItems: "center", padding: 5 }}>
         {/* Avatar */}
         <Image
           source={{ uri: post.postedBy.image }}
           style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
           placeholder={{ blurhash }}
         />
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
+
+        {/* Name and date */}
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            //backgroundColor: "green",
+          }}
+        >
           {/* Name */}
           <Text
             numberOfLines={1}
-            style={{ fontSize: 13, color: COLORS.darkBlue, flex: 1, fontFamily: "Segoe_UI_Bold" }}
+            style={{
+              fontSize: 12,
+              color: COLORS.darkBlue,
+              fontFamily: "Segoe_UI_Bold",
+              //backgroundColor: "red",
+              width: "50%",
+            }}
           >
-            {getFirstName}
+            {getFirstName} {"Oyabure"}
           </Text>
 
           {/* Date with ReactTimeAgo */}
           <Text
+            numberOfLines={1}
             style={{
-              fontSize: 13,
+              fontSize: 10,
               fontFamily: "Segoe_UI_Bold",
               color: COLORS.darkGrey,
+              //backgroundColor: "blue",
+              //width: "50%",
             }}
           >
             <ReactTimeAgo
