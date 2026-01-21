@@ -1,11 +1,11 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import { captilizeWord } from "@/utils/captilizeWord";
-import formattedTime from "@/utils/formatTime";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import ReactTimeAgo from "react-time-ago";
 
 type PostType = "event" | "service" | "product";
 
@@ -49,13 +49,16 @@ interface PostCardProps {
   post: Post;
 }
 
+// Custom Time component for React Native
+function Time({ children }: { children: string }) {
+  return <Text>{children}</Text>;
+}
+
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const getFirstName = captilizeWord(post.postedBy.fullName.split(" ")[1]);
 
-  // Inside your PostCard render
-  const postTime = formattedTime(
-    new Date(post.createdAt.seconds * 1000 + post.createdAt.nanoseconds / 1000000)
-  );
+  // Convert Firestore timestamp to Date object
+  const postDate = new Date(post.createdAt.seconds * 1000 + post.createdAt.nanoseconds / 1000000);
 
   return (
     // Card container
@@ -71,7 +74,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 3,
-        //flex: 1,
       }}
     >
       {/* User info */}
@@ -89,28 +91,39 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
           placeholder={{ blurhash }}
         />
-        {/* Name */}
-        <Text
-          numberOfLines={1}
-          style={{ fontSize: 13, color: COLORS.darkBlue, flex: 1, fontFamily: "Segoe_UI_Bold" }}
-        >
-          {getFirstName}
-        </Text>
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          {/* Name */}
+          <Text
+            numberOfLines={1}
+            style={{ fontSize: 13, color: COLORS.darkBlue, flex: 1, fontFamily: "Segoe_UI_Bold" }}
+          >
+            {getFirstName}
+          </Text>
 
-        {/* Date */}
-        <Text
-          numberOfLines={1}
-          style={{ fontSize: 8, fontFamily: "Segoe_UI_Bold", color: COLORS.darkGrey }}
-        >
-          {postTime}
-        </Text>
+          {/* Date with ReactTimeAgo */}
+          <Text
+            style={{
+              fontSize: 13,
+              fontFamily: "Segoe_UI_Bold",
+              color: COLORS.darkGrey,
+            }}
+          >
+            <ReactTimeAgo
+              date={postDate}
+              locale="en-US"
+              component={Time}
+              timeStyle="round"
+              tick={true} // Auto-update enabled (this is the default)
+            />
+          </Text>
+        </View>
       </View>
 
       {/* Post image and display description if no image */}
       {post.photo ? (
         <Image
           source={{ uri: post.photo }}
-          style={{ width: "100%", height: 120 }} // ← reduced height
+          style={{ width: "100%", height: 120 }}
           placeholder={{ blurhash }}
           transition={300}
           contentFit="cover"
