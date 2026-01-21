@@ -1,5 +1,7 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import { captilizeWord } from "@/utils/captilizeWord";
+import formattedTime from "@/utils/formatTime";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import React from "react";
@@ -48,7 +50,12 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
-  const getFirstName = post.postedBy.fullName.split(" ")[1];
+  const getFirstName = captilizeWord(post.postedBy.fullName.split(" ")[1]);
+
+  // Inside your PostCard render
+  const postTime = formattedTime(
+    new Date(post.createdAt.seconds * 1000 + post.createdAt.nanoseconds / 1000000)
+  );
 
   return (
     // Card container
@@ -95,7 +102,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           numberOfLines={1}
           style={{ fontSize: 8, fontFamily: "Segoe_UI_Bold", color: COLORS.darkGrey }}
         >
-          {new Date(post.createdAt.seconds * 1000).toDateString()}
+          {postTime}
         </Text>
       </View>
 
@@ -103,9 +110,10 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       {post.photo ? (
         <Image
           source={{ uri: post.photo }}
-          style={{ width: "100%", height: 120, resizeMode: "cover" }} // ← reduced height
+          style={{ width: "100%", height: 120 }} // ← reduced height
           placeholder={{ blurhash }}
           transition={300}
+          contentFit="cover"
         />
       ) : (
         <Text
