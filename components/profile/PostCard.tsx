@@ -106,7 +106,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               width: "50%",
             }}
           >
-            {getFirstName} {"Oyabure"}
+            {getFirstName}
           </Text>
 
           {/* Date with ReactTimeAgo */}
