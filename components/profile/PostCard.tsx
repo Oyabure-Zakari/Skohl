@@ -124,7 +124,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               date={postDate}
               locale="en-US"
               component={Time}
-              timeStyle="round"
+              timeStyle="twitter"
               tick={true} // Auto-update enabled (this is the default)
             />
           </Text>
