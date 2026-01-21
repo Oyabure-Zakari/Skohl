@@ -13,6 +13,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 // Libraries
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en.json";
 // Components
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import SafeScreen from "@/components/SafeScreen";
@@ -25,6 +27,9 @@ import COLORS from "@/constants/colors";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { db } from "@/firebase/firebase.config";
 import { doc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+
+// Initialize the library with English locale
+TimeAgo.addDefaultLocale(en);
 
 SplashScreen.preventAutoHideAsync();
 
