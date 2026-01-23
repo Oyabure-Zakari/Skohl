@@ -1,49 +1,12 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import { Post } from "@/types/PostTypes";
 import { captilizeWord } from "@/utils/captilizeWord";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import ReactTimeAgo from "react-time-ago";
-
-type PostType = "event" | "service" | "product";
-
-interface BasePost {
-  id: string;
-  title: string;
-  category: string;
-  description: string;
-  postType: PostType;
-  createdAt: { seconds: number; nanoseconds: number; type: string };
-  photo?: string;
-  postedBy: {
-    fullName: string;
-    image?: string;
-    userUid: string;
-  };
-}
-
-interface EventPost extends BasePost {
-  postType: "event";
-  eventDate: string;
-  eventTime?: string;
-  eventType?: string;
-  eventVenue?: string;
-}
-
-interface ServicePost extends BasePost {
-  postType: "service";
-  price?: string;
-  serviceSchedule?: string;
-}
-
-interface ProductPost extends BasePost {
-  postType: "product";
-  price?: string;
-}
-
-type Post = EventPost | ServicePost | ProductPost;
 
 interface PostCardProps {
   post: Post;
