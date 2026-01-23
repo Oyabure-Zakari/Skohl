@@ -66,7 +66,7 @@ export default function ProfileScreen() {
       const snapshot = await getDocs(q);
 
       const fetchedPosts: Post[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
+        // id: doc.id,
         ...doc.data(),
       })) as Post[]; // cast as Post[] for TypeScript
 
@@ -97,11 +97,10 @@ export default function ProfileScreen() {
         {/* Divider*/}
         <View style={reUseableStyles.bottomSheetDivider} />
 
-        {/* Content */}
-
         {/* No Posts Or Bookmarks */}
         {posts.length === 0 && <NoPostsOrBookmarks activeButton={activeButton} />}
 
+        {/* Created Posts  */}
         {activeButton === "Posts" && !isLoadingCreatedPosts && posts.length > 0 && (
           <UserPosts posts={posts} />
         )}
