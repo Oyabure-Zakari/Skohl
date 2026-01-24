@@ -4,7 +4,7 @@ import UserProfileType from "@/types/userProfileTypes";
 import postImageUrl from "@/utils/cloudinary/postImageUrl";
 import extractPublicId from "@/utils/extractPublicId";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { doc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, query, updateDoc, where, writeBatch } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -17,7 +17,7 @@ type UseUpdateProfile = {
 export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateProfile) => {
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
-  
+
   // Get query client to invalidate queries
   const queryClient = useQueryClient();
 
@@ -34,12 +34,11 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
       }
 
       // Check if user did not make any changes
-      const imageChanged = hasNewImage; 
+      const imageChanged = hasNewImage;
       const bioChanged = userBioTextRef.current.trim() !== user?.bio;
 
       // User did not make any changes
       if (!imageChanged && !bioChanged) {
-        // Show toast
         Toast.show({
           type: "info",
           text1: "Profile not updated",
@@ -47,34 +46,36 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
           text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
           text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
         });
-        throw new Error("No changes made"); // Throw to prevent onSuccess from running
+        throw new Error("No changes made"); // Throw to prevent onSuccess from runnin
       }
 
-      // Update Firestore
+      // Update user profile in Firestore
       await updateDoc(doc(db, "users", user?.uid), {
         bio: userBioTextRef.current.trim(),
-        image: uploadedImage || user?.image, // Use new image if uploaded, otherwise keep existing
+        image: uploadedImage || user?.image,
       });
 
-      // Delete previous image from Cloudinary ONLY if a new image was uploaded
+      // Update user image in all posts if image changed
+      if (uploadedImage) {
+        await updateUserImageInPosts(user?.uid, uploadedImage);
+      }
+
+      // Delete previous image from Cloudinary
       if (uploadedImage && user?.image?.includes("cloudinary")) {
         try {
           const publicId = extractPublicId(user?.image);
           if (publicId) await deleteCloudinaryImage(publicId);
-
         } catch (deleteError: any) {
-          // Log error but don't fail the entire operation
           console.error("Failed to delete old image:", deleteError.message);
-          throw new Error("Failed to delete old image:", deleteError.message);
+          // Don't throw here - profile update was successful
         }
       }
     },
 
     // Success callback runs after mutation is successful
     onSuccess: () => {
-      // Invalidate and refetch user profile query
-      queryClient.invalidateQueries({ 
-        queryKey: ["user", user?.uid] 
+      queryClient.invalidateQueries({
+        queryKey: ["user", user?.uid],
       });
 
       // Show success toast
@@ -111,3 +112,35 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
     isPending: mutation.isPending, // So that in the component we use isPending instead of mutation.isPending
   };
 };
+
+// Helper function to update user image in all posts
+async function updateUserImageInPosts(userId: string, newImageUrl: string) {
+  try {
+    // Query all posts by this user
+    const q = query(collection(db, "posts"), where("postedBy.userUid", "==", userId));
+    const snapshot = await getDocs(q);
+
+    // If the user hasn't created any posts yet, exit early
+    if (snapshot.empty) {
+      console.log("No posts to update");
+      return;
+    }
+
+    // Create a batch to group multiple updates into a single operation instead of updating each post's user image one by one
+    const batch = writeBatch(db);
+
+    snapshot.forEach((postDoc) => {
+      // Queue this post for update
+      batch.update(postDoc.ref, {
+        "postedBy.image": newImageUrl,
+      });
+    });
+
+    // Execute all batched updates at once
+    await batch.commit();
+    console.log(`Updated ${snapshot.size} posts with new profile image`);
+  } catch (error) {
+    console.error("Error updating posts:", error);
+    throw new Error("Failed to update posts with new profile image");
+  }
+}
