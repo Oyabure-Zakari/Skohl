@@ -55,7 +55,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         if (publicId) await deleteCloudinaryImage(publicId);
         console.log(`Deleted ${post.title} image from Cloudinary successfully`);
       } catch (deleteError: any) {
-        console.error("Failed to delete old image:", deleteError.message);
+        //console.error("Failed to delete old image:", deleteError.message);
         // Don't throw here - profile update was successful
       } finally {
         setIsDetelingImage(false);
