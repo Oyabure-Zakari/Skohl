@@ -11,6 +11,7 @@ import { Image } from "expo-image";
 import { deleteDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 import ReactTimeAgo from "react-time-ago";
 
 // Custom Time component for React Native (required by react-time-ago)
@@ -61,10 +62,21 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     try {
       await deleteImageFromCloudinary();
       await deleteDoc(doc(db, "posts", post.id));
-      console.log(`Deleted ${post.title} successfully`);
+      Toast.show({
+        type: "success",
+        text1: "Profile deleted",
+        text2: "Profile deleted successfully",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
     } catch (error: any) {
-      console.error("Error deleting post:", error);
-      Alert.alert("Error", "Failed to delete post. Try again.");
+      Toast.show({
+        type: "error",
+        text1: "Post not deleted",
+        text2: "Failed to delete post. Try again.",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
     }
   };
 
