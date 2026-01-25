@@ -1,30 +1,54 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import { useAuth } from "@/contexts/AuthContext";
+import { db } from "@/firebase/firebase.config";
 import { Post } from "@/types/PostTypes";
 import { captilizeWord } from "@/utils/captilizeWord";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { deleteDoc, doc } from "firebase/firestore";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import ReactTimeAgo from "react-time-ago";
+
+// Custom Time component for React Native (required by react-time-ago)
+function Time({ children }: { children: string }) {
+  return <Text>{children}</Text>;
+}
 
 interface PostCardProps {
   post: Post;
 }
 
-// Custom Time component for React Native
-function Time({ children }: { children: string }) {
-  return <Text>{children}</Text>;
-}
-
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
-  const getFirstName = captilizeWord(post.postedBy.fullName.split(" ")[1]);
+  const { userUid } = useAuth();
+  const isTheOwner = post.postedBy.userUid === userUid;
 
-  // Convert Firestore timestamp to Date object
-  const postDate = new Date(post.createdAt.seconds * 1000 + post.createdAt.nanoseconds / 1000000);
+  const getFirstName = captilizeWord(post.postedBy.fullName.split(" ")[1] || "");
+
+  // Safe timestamp conversion with fallback
+  const postDate = post.createdAt?.seconds
+    ? new Date(post.createdAt.seconds * 1000 + (post.createdAt.nanoseconds || 0) / 1000000)
+    : new Date(); // fallback to now
+
+  const deletePost = async () => {
+    try {
+      await deleteDoc(doc(db, "posts", post.id));
+      console.log(`Deleted ${post.title} successfully`);
+    } catch (error: any) {
+      console.error("Error deleting post:", error);
+      Alert.alert("Error", "Failed to delete post. Try again.");
+    }
+  };
+
+  const handleDeletePost = () => {
+    Alert.alert("Delete Post", `Are you sure you want to delete "${post.title}"?`, [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", style: "destructive", onPress: deletePost },
+    ]);
+  };
 
   return (
-    // Card container
     <TouchableOpacity
       activeOpacity={0.9}
       style={{
@@ -41,46 +65,39 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     >
       {/* User info */}
       <View style={{ flexDirection: "row", alignItems: "center", padding: 5 }}>
-        {/* Avatar */}
         <Image
           source={{ uri: post.postedBy.image }}
           style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
           placeholder={{ blurhash }}
         />
 
-        {/* Name and date */}
         <View
           style={{
             flex: 1,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
-            //backgroundColor: "green",
           }}
         >
-          {/* Name */}
           <Text
             numberOfLines={1}
             style={{
               fontSize: 12,
               color: COLORS.darkBlue,
               fontFamily: "Segoe_UI_Bold",
-              //backgroundColor: "red",
               width: "50%",
             }}
           >
             {getFirstName}
           </Text>
 
-          {/* Date with ReactTimeAgo */}
+          {/* Safe TimeAgo */}
           <Text
             numberOfLines={1}
             style={{
               fontSize: 10,
               fontFamily: "Segoe_UI_Bold",
               color: COLORS.darkGrey,
-              //backgroundColor: "blue",
-              //width: "50%",
             }}
           >
             <ReactTimeAgo
@@ -88,13 +105,13 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               locale="en-US"
               component={Time}
               timeStyle="twitter"
-              tick={true} // Auto-update enabled (this is the default)
+              tick={true}
             />
           </Text>
         </View>
       </View>
 
-      {/* Post image and display description if no image */}
+      {/* Image or description */}
       {post.photo ? (
         <Image
           source={{ uri: post.photo }}
@@ -120,9 +137,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </Text>
       )}
 
-      {/* Post details */}
+      {/* Details */}
       <View style={{ paddingHorizontal: 10 }}>
-        {/* Category */}
         <Text
           numberOfLines={1}
           style={{
@@ -135,7 +151,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           ℹ️ {post.category}
         </Text>
 
-        {/* Title */}
         <Text
           numberOfLines={2}
           style={{ width: "90%", fontSize: 15, fontFamily: "Segoe_UI_Bold_Italic" }}
@@ -143,7 +158,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           {post.title}
         </Text>
 
-        {/* Price */}
         {(post.postType === "service" || post.postType === "product") && post.price && (
           <Text style={{ fontSize: 13, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.green }}>
             {post.price}
@@ -152,33 +166,53 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       </View>
 
       {/* Footer */}
-      <View
-        style={{
-          flexDirection: "row",
-          padding: 10,
-          alignItems: "center",
-        }}
-      >
-        {/* Chat Button */}
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: COLORS.darkBlue,
-            paddingVertical: 6,
-            paddingHorizontal: 12,
-            borderRadius: 5,
-          }}
-        >
-          <MaterialCommunityIcons name="chat-outline" size={18} color="white" />
-          <Text style={{ color: "white", fontSize: 13, marginLeft: 6, fontWeight: "600" }}>
-            Chat
-          </Text>
-        </TouchableOpacity>
+      <View style={{ flexDirection: "row", padding: 10, alignItems: "center" }}>
+        {isTheOwner ? (
+          <TouchableOpacity
+            onPress={handleDeletePost}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: COLORS.red,
+              paddingVertical: 2,
+              paddingHorizontal: 12,
+              borderRadius: 5,
+            }}
+          >
+            <Text
+              style={{
+                color: COLORS.lightGrey,
+                fontSize: 13,
+                fontFamily: "Segoe_UI_Bold",
+              }}
+            >
+              Delete
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: COLORS.darkBlue,
+              paddingVertical: 6,
+              paddingHorizontal: 12,
+              borderRadius: 5,
+            }}
+          >
+            <MaterialCommunityIcons name="chat-outline" size={18} color="white" />
+            <Text style={{ color: "white", fontSize: 13, marginLeft: 6, fontWeight: "600" }}>
+              Chat
+            </Text>
+          </TouchableOpacity>
+        )}
 
-        {/* Bookmark Button */}
         <TouchableOpacity style={{ marginLeft: "auto" }}>
-          <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.darkGrey} />
+          {isTheOwner ? (
+            <MaterialIcons name="edit-note" size={22} color={COLORS.darkGrey} />
+          ) : (
+            <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.darkGrey} />
+          )}
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
