@@ -36,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
         <TouchableOpacity onPress={() => router.push(`/(private)/userProfilePicture/${user?.uid}`)}>
           <Image
             source={{ uri: user?.image }}
-            style={{ width: 90, height: 90, borderRadius: 50 }}
+            style={{ width: 80, height: 80, borderRadius: 50 }}
             placeholder={{ blurhash }}
             contentFit="contain"
             transition={1000}
