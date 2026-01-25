@@ -70,8 +70,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       await deleteDoc(doc(db, "posts", post.id));
       Toast.show({
         type: "success",
-        text1: "Profile deleted",
-        text2: "Profile deleted successfully",
+        text1: "Post deleted",
+        text2: "Post deleted successfully",
         text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
         text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
       });
