@@ -1,7 +1,7 @@
 // React
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 // React Native
-import { ScrollView, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 // Packages/Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -22,6 +22,7 @@ import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
 import { useUserProfile } from "@/hooks/userProfile";
 // Types
 import { Post } from "@/types/PostTypes";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import Toast from "react-native-toast-message";
 
@@ -52,28 +53,43 @@ export default function ProfileScreen() {
   // Fetch user via TanStack Query instead of local state
   const { data: user, isPending: isLoading } = useUserProfile(userUid);
 
-  // Fetch created by the user
-  const [isLoadingCreatedPosts, setIsLoadingCreatedPosts] = useState(true);
-  const [posts, setPosts] = useState<Post[]>([]);
+  // TanStack Query client
+  const queryClient = useQueryClient();
 
+  // Use TanStack Query to manage the posts data (caching, loading, error states)
+  const {
+    data: posts = [],
+    isLoading: isLoadingCreatedPosts,
+    isError,
+    error,
+  } = useQuery<Post[]>({
+    queryKey: ["userPosts", userUid], // Unique key per user
+    enabled: !!userUid, // Don't run if no user
+    staleTime: Infinity, // Never consider it stale — onSnapshot keeps it fresh
+    gcTime: 1000 * 60 * 5, // Keep in cache 5 min after unmount
+    queryFn: () => {
+      // This is a placeholder — we never actually "fetch" here
+      return Promise.resolve([]); // or throw if you want
+    },
+  });
+
+  // Real-time listener (runs once per userUid change)
   useEffect(() => {
-    // If userUid is null, exit early
+    // If no userUid, clear cache
     if (!userUid) {
-      setPosts([]);
-      setIsLoadingCreatedPosts(false);
+      // Clear cache
+      queryClient.setQueryData(["userPosts", userUid], []);
       return;
     }
 
-    setIsLoadingCreatedPosts(true);
-
-    // Firestore query to fetch created posts by the user
+    // Fetch user's posts
     const q = query(
       postsCollectionRef,
       where("postedBy.userUid", "==", userUid),
       orderBy("createdAt", "desc")
     );
 
-    // Real-time listener
+    // Real-time listener, listens for changes in posts collection (add/update/delete)
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
@@ -82,13 +98,11 @@ export default function ProfileScreen() {
           ...doc.data(),
         })) as Post[];
 
-        setPosts(fetchedPosts);
-        setIsLoadingCreatedPosts(false);
+        // setQueryData will update TanStack Query's cache with the fresh data from Firestore
+        queryClient.setQueryData(["userPosts", userUid], fetchedPosts);
       },
       (error) => {
         console.error("Posts real-time error:", error);
-        setIsLoadingCreatedPosts(false);
-        // Optional: show toast
         Toast.show({
           type: "error",
           text1: "Failed to load posts",
@@ -97,9 +111,10 @@ export default function ProfileScreen() {
       }
     );
 
-    // Cleanup: stop listening when component unmounts or userUid changes
     return () => unsubscribe();
   }, [userUid]);
+
+  if (isError) return Alert.alert("Error", error.message);
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
