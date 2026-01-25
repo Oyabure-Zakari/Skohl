@@ -22,7 +22,8 @@ import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
 import { useUserProfile } from "@/hooks/userProfile";
 // Types
 import { Post } from "@/types/PostTypes";
-import { getDocs, orderBy, query, where } from "firebase/firestore";
+import { onSnapshot, orderBy, query, where } from "firebase/firestore";
+import Toast from "react-native-toast-message";
 
 export default function ProfileScreen() {
   // Currently logged in user
@@ -55,32 +56,50 @@ export default function ProfileScreen() {
   const [isLoadingCreatedPosts, setIsLoadingCreatedPosts] = useState(true);
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const fetchCreatedPosts = async () => {
-    setIsLoadingCreatedPosts(true);
-    try {
-      const q = query(
-        postsCollectionRef,
-        where("postedBy.userUid", "==", userUid),
-        orderBy("createdAt", "desc")
-      );
-      const snapshot = await getDocs(q);
-
-      const fetchedPosts: Post[] = snapshot.docs.map((doc) => ({
-        // id: doc.id,
-        ...doc.data(),
-      })) as Post[]; // cast as Post[] for TypeScript
-
-      setPosts(fetchedPosts);
-    } catch (error: any) {
-      console.log(error.message);
-    } finally {
-      setIsLoadingCreatedPosts(false);
-    }
-  };
-
   useEffect(() => {
-    fetchCreatedPosts();
-  }, []);
+    // If userUid is null, exit early
+    if (!userUid) {
+      setPosts([]);
+      setIsLoadingCreatedPosts(false);
+      return;
+    }
+
+    setIsLoadingCreatedPosts(true);
+
+    // Firestore query to fetch created posts by the user
+    const q = query(
+      postsCollectionRef,
+      where("postedBy.userUid", "==", userUid),
+      orderBy("createdAt", "desc")
+    );
+
+    // Real-time listener
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const fetchedPosts: Post[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Post[];
+
+        setPosts(fetchedPosts);
+        setIsLoadingCreatedPosts(false);
+      },
+      (error) => {
+        console.error("Posts real-time error:", error);
+        setIsLoadingCreatedPosts(false);
+        // Optional: show toast
+        Toast.show({
+          type: "error",
+          text1: "Failed to load posts",
+          text2: error.message,
+        });
+      }
+    );
+
+    // Cleanup: stop listening when component unmounts or userUid changes
+    return () => unsubscribe();
+  }, [userUid]);
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
