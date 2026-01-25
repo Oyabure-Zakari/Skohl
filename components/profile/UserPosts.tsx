@@ -22,10 +22,9 @@ const UserPosts: React.FC<UserPostsProps> = ({ posts }) => {
           <PostCard post={item} />
         </View>
       )}
-      // ListEmptyComponent={<NoPostsOrBookmarks activeButton={activeButton} />}
       contentContainerStyle={{
         paddingTop: 20,
-        paddingBottom: 100, // Space for FAB
+        paddingBottom: 100, // Add some padding at the bottom
       }}
       showsVerticalScrollIndicator={false}
       scrollEnabled={false} // prevents the FlatList from handling its own scroll, letting the outer ScrollView control scrolling instead.
