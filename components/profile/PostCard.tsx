@@ -10,7 +10,7 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { deleteDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import ReactTimeAgo from "react-time-ago";
 
@@ -35,6 +35,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     : new Date(); // fallback to now
 
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isDeletingPost, setIsDeletingPost] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -44,9 +45,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     return () => clearInterval(interval);
   }, []);
 
+  const [isDeletingImage, setIsDetelingImage] = useState(false);
   const deleteImageFromCloudinary = async () => {
     // Check if the post has an image
     if (post?.photo) {
+      setIsDetelingImage(true);
       try {
         const publicId = extractPublicId(post.photo);
         if (publicId) await deleteCloudinaryImage(publicId);
@@ -54,11 +57,14 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       } catch (deleteError: any) {
         console.error("Failed to delete old image:", deleteError.message);
         // Don't throw here - profile update was successful
+      } finally {
+        setIsDetelingImage(false);
       }
     }
   };
 
   const deletePost = async () => {
+    setIsDeletingPost(true);
     try {
       await deleteImageFromCloudinary();
       await deleteDoc(doc(db, "posts", post.id));
@@ -77,6 +83,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
         text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
       });
+    } finally {
+      setIsDeletingPost(false);
     }
   };
 
@@ -212,6 +220,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         {isTheOwner ? (
           <TouchableOpacity
             onPress={handleDeletePost}
+            disabled={isDeletingImage}
             style={{
               flexDirection: "row",
               alignItems: "center",
@@ -222,16 +231,19 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               gap: 6,
             }}
           >
-            <MaterialCommunityIcons name="trash-can-outline" size={18} color={COLORS.lightGrey} />
-            <Text
-              style={{
-                color: COLORS.lightGrey,
-                fontSize: 13,
-                fontFamily: "Segoe_UI_Bold",
-              }}
-            >
-              Delete
-            </Text>
+            {isDeletingPost ? (
+              <ActivityIndicator size="small" color={COLORS.lightGrey} />
+            ) : (
+              <Text
+                style={{
+                  color: COLORS.lightGrey,
+                  fontSize: 13,
+                  fontFamily: "Segoe_UI_Bold",
+                }}
+              >
+                Delete
+              </Text>
+            )}
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
