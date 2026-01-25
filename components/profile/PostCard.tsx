@@ -1,13 +1,15 @@
+import deleteCloudinaryImage from "@/app/apis/deleteCloudinaryImage";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import { Post } from "@/types/PostTypes";
 import { captilizeWord } from "@/utils/captilizeWord";
+import extractPublicId from "@/utils/extractPublicId";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { deleteDoc, doc } from "firebase/firestore";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import ReactTimeAgo from "react-time-ago";
 
@@ -31,8 +33,33 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     ? new Date(post.createdAt.seconds * 1000 + (post.createdAt.nanoseconds || 0) / 1000000)
     : new Date(); // fallback to now
 
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey((prev) => prev + 1); // Forces re-render of TimeAgo
+    }, 30000); // every 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const deleteImageFromCloudinary = async () => {
+    // Check if the post has an image
+    if (post?.photo) {
+      try {
+        const publicId = extractPublicId(post.photo);
+        if (publicId) await deleteCloudinaryImage(publicId);
+        console.log(`Deleted ${post.title} image from Cloudinary successfully`);
+      } catch (deleteError: any) {
+        console.error("Failed to delete old image:", deleteError.message);
+        // Don't throw here - profile update was successful
+      }
+    }
+  };
+
   const deletePost = async () => {
     try {
+      await deleteImageFromCloudinary();
       await deleteDoc(doc(db, "posts", post.id));
       console.log(`Deleted ${post.title} successfully`);
     } catch (error: any) {
@@ -101,11 +128,12 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             }}
           >
             <ReactTimeAgo
+              key={refreshKey} // Forces re-mount/re-calc every 20s
               date={postDate}
               locale="en-US"
               component={Time}
               timeStyle="twitter"
-              tick={true}
+              tick={false} // Turn off internal tick
             />
           </Text>
         </View>
@@ -159,7 +187,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </Text>
 
         {(post.postType === "service" || post.postType === "product") && post.price && (
-          <Text style={{ fontSize: 13, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.green }}>
+          <Text
+            style={{ fontSize: 13, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.darkGrey }}
+          >
             {post.price}
           </Text>
         )}
@@ -173,12 +203,14 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              backgroundColor: COLORS.red,
-              paddingVertical: 2,
+              backgroundColor: COLORS.darkBlue,
+              paddingVertical: 4,
               paddingHorizontal: 12,
               borderRadius: 5,
+              gap: 6,
             }}
           >
+            <MaterialCommunityIcons name="trash-can-outline" size={18} color={COLORS.lightGrey} />
             <Text
               style={{
                 color: COLORS.lightGrey,
@@ -195,7 +227,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
               flexDirection: "row",
               alignItems: "center",
               backgroundColor: COLORS.darkBlue,
-              paddingVertical: 6,
+              paddingVertical: 4,
               paddingHorizontal: 12,
               borderRadius: 5,
             }}
