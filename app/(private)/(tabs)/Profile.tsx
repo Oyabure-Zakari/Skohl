@@ -1,5 +1,5 @@
 // React
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 // React Native
 import { Alert, ScrollView, View } from "react-native";
 // Packages/Libraries
@@ -16,15 +16,12 @@ import FloatingActionButton from "@/components/reuseableComponents/FloatingActio
 // Styles
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
-// Custom Hook
+// Contexts
 import { useAuth } from "@/contexts/AuthContext";
-import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
+// Custom Hook
+import { useListenForPostsChanges } from "@/hooks/listenForPostsChanges";
+import { useUserPosts } from "@/hooks/userPosts";
 import { useUserProfile } from "@/hooks/userProfile";
-// Types
-import { Post } from "@/types/PostTypes";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { onSnapshot, orderBy, query, where } from "firebase/firestore";
-import Toast from "react-native-toast-message";
 
 export default function ProfileScreen() {
   // Currently logged in user
@@ -53,68 +50,13 @@ export default function ProfileScreen() {
   // Fetch user via TanStack Query instead of local state
   const { data: user, isPending: isLoading } = useUserProfile(userUid);
 
-  // TanStack Query client
-  const queryClient = useQueryClient();
-
   // Use TanStack Query to manage the posts data (caching, loading, error states)
-  const {
-    data: posts = [],
-    isLoading: isLoadingCreatedPosts,
-    isError,
-    error,
-  } = useQuery<Post[]>({
-    queryKey: ["userPosts", userUid], // Unique key per user
-    enabled: !!userUid, // Don't run if no user
-    staleTime: Infinity, // Never consider it stale — onSnapshot keeps it fresh
-    gcTime: 1000 * 60 * 5, // Keep in cache 5 min after unmount
-    queryFn: () => {
-      // This is a placeholder — we never actually "fetch" here
-      return Promise.resolve([]); // or throw if you want
-    },
-  });
+  const { posts, isLoadingCreatedPosts, isError, error } = useUserPosts(userUid);
 
-  // Real-time listener (runs once per userUid change)
-  useEffect(() => {
-    // If no userUid, clear cache
-    if (!userUid) {
-      // Clear cache
-      queryClient.setQueryData(["userPosts", userUid], []);
-      return;
-    }
+  // Real-time listener runs once per userUid change, listens for changes in posts collection (add/update/delete)
+  useListenForPostsChanges(userUid);
 
-    // Fetch user's posts
-    const q = query(
-      postsCollectionRef,
-      where("postedBy.userUid", "==", userUid),
-      orderBy("createdAt", "desc")
-    );
-
-    // Real-time listener, listens for changes in posts collection (add/update/delete)
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const fetchedPosts: Post[] = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Post[];
-
-        // setQueryData will update TanStack Query's cache with the fresh data from Firestore
-        queryClient.setQueryData(["userPosts", userUid], fetchedPosts);
-      },
-      (error) => {
-        console.error("Posts real-time error:", error);
-        Toast.show({
-          type: "error",
-          text1: "Failed to load posts",
-          text2: error.message,
-        });
-      }
-    );
-
-    return () => unsubscribe();
-  }, [userUid]);
-
-  if (isError) return Alert.alert("Error", error.message);
+  if (isError && error) return Alert.alert("Error", error.message);
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
