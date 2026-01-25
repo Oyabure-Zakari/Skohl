@@ -66,7 +66,7 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
           const publicId = extractPublicId(user?.image);
           if (publicId) await deleteCloudinaryImage(publicId);
         } catch (deleteError: any) {
-          console.error("Failed to delete old image:", deleteError.message);
+          //console.error("Failed to delete old image:", deleteError.message);
           // Don't throw here - profile update was successful
         }
       }
@@ -122,7 +122,7 @@ async function updateUserImageInPosts(userId: string, newImageUrl: string) {
 
     // If the user hasn't created any posts yet, exit early
     if (snapshot.empty) {
-      console.log("No posts to update");
+      // console.log("No posts to update");
       return;
     }
 
@@ -139,8 +139,8 @@ async function updateUserImageInPosts(userId: string, newImageUrl: string) {
     // Execute all batched updates at once
     await batch.commit();
     console.log(`Updated ${snapshot.size} posts with new profile image`);
-  } catch (error) {
-    console.error("Error updating posts:", error);
+  } catch (error:any) {
+    //console.error("Error updating posts:", error);
     throw new Error("Failed to update posts with new profile image");
   }
 }
