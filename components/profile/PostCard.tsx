@@ -15,6 +15,8 @@ import PostCatergory from "../postsCard/PostCatergory";
 import PostDescription from "../postsCard/PostDescription";
 import PostHeader from "../postsCard/PostHeader";
 import PostImage from "../postsCard/PostImage";
+import PostPrice from "../postsCard/PostPrice";
+import PostTitle from "../postsCard/PostTitle";
 
 // Custom Time component for React Native (required by react-time-ago)
 function Time({ children }: { children: string }) {
@@ -108,21 +110,15 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
       {/* Details */}
       <View style={{ paddingHorizontal: 10 }}>
+        {/* Post Catergory */}
         <PostCatergory catergory={post?.category} />
 
-        <Text
-          numberOfLines={2}
-          style={{ width: "90%", fontSize: 15, fontFamily: "Segoe_UI_Bold_Italic" }}
-        >
-          {post.title}
-        </Text>
+        {/* Post Title */}
+        <PostTitle title={post.title} />
 
+        {/* Post Price */}
         {(post.postType === "service" || post.postType === "product") && post.price && (
-          <Text
-            style={{ fontSize: 13, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.darkGrey }}
-          >
-            {post.price}
-          </Text>
+          <PostPrice price={post.price} />
         )}
       </View>
 
