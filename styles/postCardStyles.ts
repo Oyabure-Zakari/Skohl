@@ -97,6 +97,13 @@ const usePostCardStyles = () => {
       paddingHorizontal: 12,
       borderRadius: 5,
     },
+
+    chatText: {
+      color: "white",
+      fontSize: fontScale * 13,
+      marginLeft: 6,
+      fontWeight: "600",
+    },
   });
 };
 
