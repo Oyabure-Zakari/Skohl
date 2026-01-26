@@ -1,6 +1,5 @@
 import deleteCloudinaryImage from "@/app/apis/deleteCloudinaryImage";
 import COLORS from "@/constants/colors";
-import blurhash from "@/constants/expoBlurImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import usePostCardStyles from "@/styles/postCardStyles";
@@ -8,12 +7,12 @@ import { Post } from "@/types/PostTypes";
 import { captilizeWord } from "@/utils/captilizeWord";
 import extractPublicId from "@/utils/extractPublicId";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { deleteDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import PostHeader from "../postsCard/PostHeader";
+import PostImage from "../postsCard/PostImage";
 
 // Custom Time component for React Native (required by react-time-ago)
 function Time({ children }: { children: string }) {
@@ -100,13 +99,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
       {/* Image or description */}
       {post.photo ? (
-        <Image
-          source={{ uri: post.photo }}
-          style={{ width: "100%", height: 120 }}
-          placeholder={{ blurhash }}
-          transition={300}
-          contentFit="cover"
-        />
+        <PostImage postImage={post?.photo} />
       ) : (
         <Text
           style={{
