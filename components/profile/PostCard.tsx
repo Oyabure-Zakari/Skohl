@@ -95,8 +95,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   return (
     <TouchableOpacity activeOpacity={0.9} style={postCardStyles.postsContainer}>
-      {/* User info */}
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 5 }}>
+      {/* Post Header */}
+      <View style={postCardStyles.postHeaderContainer}>
         <Image
           source={{ uri: post.postedBy.image }}
           style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
