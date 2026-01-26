@@ -5,6 +5,18 @@ const usePostCardStyles = () => {
   const { width, fontScale } = useWindowDimensions();
 
   return StyleSheet.create({
+    postsContainer: {
+      backgroundColor: COLORS.white,
+      borderRadius: 12,
+      marginVertical: 8,
+      overflow: "hidden",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 3,
+    },
+
     postHeaderContainer: {
       flexDirection: "row",
       alignItems: "center",
