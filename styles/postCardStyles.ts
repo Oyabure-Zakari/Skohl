@@ -89,7 +89,7 @@ const usePostCardStyles = () => {
       fontFamily: "Segoe_UI_Bold",
     },
 
-    chatContainer: {
+    chatBtn: {
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: COLORS.darkBlue,
