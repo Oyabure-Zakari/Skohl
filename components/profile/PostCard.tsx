@@ -13,7 +13,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import ReactTimeAgo from "react-time-ago";
+import PostHeader from "../postsCard/PostHeader";
 
 // Custom Time component for React Native (required by react-time-ago)
 function Time({ children }: { children: string }) {
@@ -96,53 +96,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
     <TouchableOpacity activeOpacity={0.9} style={postCardStyles.postsContainer}>
       {/* Post Header */}
-      <View style={postCardStyles.postHeaderContainer}>
-        <Image
-          source={{ uri: post.postedBy.image }}
-          style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
-          placeholder={{ blurhash }}
-        />
-
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text
-            numberOfLines={1}
-            style={{
-              fontSize: 12,
-              color: COLORS.darkBlue,
-              fontFamily: "Segoe_UI_Bold",
-              width: "50%",
-            }}
-          >
-            {getFirstName}
-          </Text>
-
-          {/* Safe TimeAgo */}
-          <Text
-            numberOfLines={1}
-            style={{
-              fontSize: 10,
-              fontFamily: "Segoe_UI_Bold",
-              color: COLORS.darkGrey,
-            }}
-          >
-            <ReactTimeAgo
-              key={refreshKey} // Forces re-mount/re-calc every 20s
-              date={postDate}
-              locale="en-US"
-              component={Time}
-              timeStyle="twitter"
-              tick={false} // Turn off internal tick
-            />
-          </Text>
-        </View>
-      </View>
+      <PostHeader post={post} />
 
       {/* Image or description */}
       {post.photo ? (
