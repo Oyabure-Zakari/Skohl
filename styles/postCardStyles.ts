@@ -72,6 +72,16 @@ const usePostCardStyles = () => {
       fontFamily: "Segoe_UI_Bold_Italic",
       color: COLORS.darkGrey,
     },
+
+    deletePostContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: COLORS.darkBlue,
+      paddingVertical: 4,
+      paddingHorizontal: 12,
+      borderRadius: 5,
+      gap: 6,
+    },
   });
 };
 
