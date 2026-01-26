@@ -49,6 +49,16 @@ const usePostCardStyles = () => {
       fontFamily: "Segoe_UI_Bold",
       color: COLORS.darkGrey,
     },
+
+    postDescription: {
+      marginTop: 8,
+      paddingHorizontal: 10,
+      fontSize: 13,
+      fontFamily: "Segoe_UI_Bold",
+      color: COLORS.darkGrey,
+      borderBottomWidth: 1,
+      borderColor: COLORS.lightGrey,
+    },
   });
 };
 
