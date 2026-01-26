@@ -88,6 +88,15 @@ const usePostCardStyles = () => {
       fontSize: fontScale * 13,
       fontFamily: "Segoe_UI_Bold",
     },
+
+    chatContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: COLORS.darkBlue,
+      paddingVertical: 4,
+      paddingHorizontal: 12,
+      borderRadius: 5,
+    },
   });
 };
 
