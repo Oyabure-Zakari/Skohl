@@ -66,6 +66,12 @@ const usePostCardStyles = () => {
       marginTop: 4,
       fontFamily: "Segoe_UI_Bold",
     },
+
+    postPrice: {
+      fontSize: fontScale * 13,
+      fontFamily: "Segoe_UI_Bold_Italic",
+      color: COLORS.darkGrey,
+    },
   });
 };
 
