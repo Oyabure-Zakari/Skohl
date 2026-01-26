@@ -125,6 +125,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       {/* Footer */}
       <View style={{ flexDirection: "row", padding: 10, alignItems: "center" }}>
         {isTheOwner ? (
+          // Delete Button
           <TouchableOpacity
             onPress={handleDeletePost}
             disabled={isDeletingPost}
@@ -137,20 +138,10 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             )}
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: COLORS.darkBlue,
-              paddingVertical: 4,
-              paddingHorizontal: 12,
-              borderRadius: 5,
-            }}
-          >
+          // Chat Button
+          <TouchableOpacity style={postCardStyles.chatBtn}>
             <MaterialCommunityIcons name="chat-outline" size={18} color="white" />
-            <Text style={{ color: "white", fontSize: 13, marginLeft: 6, fontWeight: "600" }}>
-              Chat
-            </Text>
+            <Text style={postCardStyles.chatText}>Chat</Text>
           </TouchableOpacity>
         )}
 
