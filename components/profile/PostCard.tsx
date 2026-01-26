@@ -108,7 +108,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         <PostDescription postDescripton={post?.description} />
       )}
 
-      {/* Details */}
+      {/* Post Details */}
       <View style={{ paddingHorizontal: 10 }}>
         {/* Post Catergory */}
         <PostCatergory catergory={post?.category} />
@@ -128,15 +128,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           <TouchableOpacity
             onPress={handleDeletePost}
             disabled={isDeletingPost}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              backgroundColor: COLORS.darkBlue,
-              paddingVertical: 4,
-              paddingHorizontal: 12,
-              borderRadius: 5,
-              gap: 6,
-            }}
+            style={postCardStyles.deletePostContainer}
           >
             {isDeletingPost ? (
               <ActivityIndicator size="small" color={COLORS.lightGrey} />
