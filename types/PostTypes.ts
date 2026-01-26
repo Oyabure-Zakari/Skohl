@@ -1,6 +1,6 @@
 type PostType = "event" | "service" | "product";
 
-interface BasePost {
+export interface BasePost {
   id: string;
   title: string;
   category: string;
