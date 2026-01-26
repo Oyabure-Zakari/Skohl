@@ -11,6 +11,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
+import PostDescription from "../postsCard/PostDescription";
 import PostHeader from "../postsCard/PostHeader";
 import PostImage from "../postsCard/PostImage";
 
@@ -101,20 +102,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       {post.photo ? (
         <PostImage postImage={post?.photo} />
       ) : (
-        <Text
-          style={{
-            marginTop: 8,
-            paddingHorizontal: 10,
-            fontSize: 13,
-            fontFamily: "Segoe_UI_Bold",
-            color: COLORS.darkGrey,
-            borderBottomWidth: 1,
-            borderColor: COLORS.lightGrey,
-          }}
-          numberOfLines={4}
-        >
-          {post.description}
-        </Text>
+        <PostDescription postDescripton={post?.description} />
       )}
 
       {/* Details */}
