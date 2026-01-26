@@ -3,6 +3,7 @@ import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
+import usePostCardStyles from "@/styles/postCardStyles";
 import { Post } from "@/types/PostTypes";
 import { captilizeWord } from "@/utils/captilizeWord";
 import extractPublicId from "@/utils/extractPublicId";
@@ -45,19 +46,15 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     return () => clearInterval(interval);
   }, []);
 
-  const [isDeletingImage, setIsDetelingImage] = useState(false);
   const deleteImageFromCloudinary = async () => {
     // Check if the post has an image
     if (post?.photo) {
-      setIsDetelingImage(true);
       try {
         const publicId = extractPublicId(post.photo);
         if (publicId) await deleteCloudinaryImage(publicId);
       } catch (deleteError: any) {
         //console.error("Failed to delete old image:", deleteError.message);
         // Don't throw here - profile update was successful
-      } finally {
-        setIsDetelingImage(false);
       }
     }
   };
@@ -94,21 +91,10 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     ]);
   };
 
+  const postCardStyles = usePostCardStyles();
+
   return (
-    <TouchableOpacity
-      activeOpacity={0.9}
-      style={{
-        backgroundColor: COLORS.white,
-        borderRadius: 12,
-        marginVertical: 8,
-        overflow: "hidden",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 3,
-      }}
-    >
+    <TouchableOpacity activeOpacity={0.9} style={postCardStyles.postsContainer}>
       {/* User info */}
       <View style={{ flexDirection: "row", alignItems: "center", padding: 5 }}>
         <Image
@@ -219,7 +205,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         {isTheOwner ? (
           <TouchableOpacity
             onPress={handleDeletePost}
-            disabled={isDeletingImage}
+            disabled={isDeletingPost}
             style={{
               flexDirection: "row",
               alignItems: "center",
