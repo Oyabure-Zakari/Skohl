@@ -82,6 +82,12 @@ const usePostCardStyles = () => {
       borderRadius: 5,
       gap: 6,
     },
+
+    deleteText: {
+      color: COLORS.lightGrey,
+      fontSize: fontScale * 13,
+      fontFamily: "Segoe_UI_Bold",
+    },
   });
 };
 
