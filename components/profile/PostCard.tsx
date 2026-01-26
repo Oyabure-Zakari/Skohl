@@ -133,15 +133,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             {isDeletingPost ? (
               <ActivityIndicator size="small" color={COLORS.lightGrey} />
             ) : (
-              <Text
-                style={{
-                  color: COLORS.lightGrey,
-                  fontSize: 13,
-                  fontFamily: "Segoe_UI_Bold",
-                }}
-              >
-                Delete
-              </Text>
+              <Text style={postCardStyles.deleteText}>Delete</Text>
             )}
           </TouchableOpacity>
         ) : (
