@@ -1,5 +1,5 @@
-import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import usePostCardStyles from "@/styles/postCardStyles";
 import { BasePost } from "@/types/PostTypes";
 import { captilizeWord } from "@/utils/captilizeWord";
 import { Image } from "expo-image";
@@ -33,57 +33,35 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
     ? new Date(post.createdAt.seconds * 1000 + (post.createdAt.nanoseconds || 0) / 1000000)
     : new Date(); // fallback to now
 
+  const postCardStyles = usePostCardStyles();
+
   return (
-    <>
-      {/* User info */}
-      <View style={{ flexDirection: "row", alignItems: "center", padding: 5 }}>
-        <Image
-          source={{ uri: post.postedBy.image }}
-          style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
-          placeholder={{ blurhash }}
-        />
+    <View style={postCardStyles.postHeaderContainer}>
+      <Image
+        source={{ uri: post.postedBy.image }}
+        style={postCardStyles.userImage}
+        placeholder={{ blurhash }}
+      />
 
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Text
-            numberOfLines={1}
-            style={{
-              fontSize: 12,
-              color: COLORS.darkBlue,
-              fontFamily: "Segoe_UI_Bold",
-              width: "50%",
-            }}
-          >
-            {getFirstName}
-          </Text>
+      {/* Post Owner */}
+      <View style={postCardStyles.postHeaderInfo}>
+        <Text numberOfLines={1} style={postCardStyles.userName}>
+          {getFirstName}
+        </Text>
 
-          {/* Safe TimeAgo */}
-          <Text
-            numberOfLines={1}
-            style={{
-              fontSize: 10,
-              fontFamily: "Segoe_UI_Bold",
-              color: COLORS.darkGrey,
-            }}
-          >
-            <ReactTimeAgo
-              key={refreshKey} // Forces re-mount/re-calc every 20s
-              date={postDate}
-              locale="en-US"
-              component={Time}
-              timeStyle="twitter"
-              tick={false} // Turn off internal tick
-            />
-          </Text>
-        </View>
+        {/* Post Time */}
+        <Text numberOfLines={1} style={postCardStyles.postTime}>
+          <ReactTimeAgo
+            key={refreshKey} // Forces re-mount/re-calc every 20s
+            date={postDate}
+            locale="en-US"
+            component={Time}
+            timeStyle="twitter"
+            tick={false} // Turn off internal tick
+          />
+        </Text>
       </View>
-    </>
+    </View>
   );
 };
 
