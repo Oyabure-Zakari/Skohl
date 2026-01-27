@@ -27,11 +27,12 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
 
   return (
     <View style={postCardStyles.postHeaderContainer}>
-      {/* Avatar */}
+      {/* User Image */}
       <Image
         source={{ uri: post.postedBy.image }}
         style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
         placeholder={{ blurhash }}
+        alt="User Profile Picture"
       />
 
       {/* Post Header Info */}
