@@ -59,17 +59,8 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
           {getFirstName} {"Oyabure"}
         </Text>
 
-        {/* Date with ReactTimeAgo */}
-        <Text
-          numberOfLines={1}
-          style={{
-            fontSize: 10,
-            fontFamily: "Segoe_UI_Bold",
-            color: COLORS.darkGrey,
-            //backgroundColor: "blue",
-            //width: "50%",
-          }}
-        >
+        {/* Post Time */}
+        <Text numberOfLines={1} style={postCardStyles.postTime}>
           <ReactTimeAgo
             date={postDate}
             locale="en-US"
