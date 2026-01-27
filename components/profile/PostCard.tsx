@@ -12,6 +12,7 @@ import PostHeader from "../postsCard/PostHeader";
 import PostImage from "../postsCard/PostImage";
 import PostPrice from "../postsCard/PostPrice";
 import PostTitle from "../postsCard/PostTitle";
+
 interface PostCardProps {
   post: Post;
 }

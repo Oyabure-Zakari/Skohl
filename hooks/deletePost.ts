@@ -21,7 +21,7 @@ export const useDeletePost = ({ post }: UseDeletePost) => {
       await deletePostImageFromCloudinary(post?.photo);
 
       // Delete post from firestore
-      await deleteDoc(doc(db, "posts", post.id));
+      await deleteDoc(doc(db, "posts", post?.id));
     },
 
     // Success callback runs after mutation is successful
