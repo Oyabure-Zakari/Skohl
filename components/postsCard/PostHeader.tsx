@@ -1,4 +1,3 @@
-import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import usePostCardStyles from "@/styles/postCardStyles";
 import { BasePost } from "@/types/PostTypes";
@@ -45,17 +44,8 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
           //backgroundColor: "green",
         }}
       >
-        {/* Name */}
-        <Text
-          numberOfLines={1}
-          style={{
-            fontSize: 12,
-            color: COLORS.darkBlue,
-            fontFamily: "Segoe_UI_Bold",
-            //backgroundColor: "red",
-            width: "50%",
-          }}
-        >
+        {/* Post Owner */}
+        <Text numberOfLines={1} style={postCardStyles.userName}>
           {getFirstName} {"Oyabure"}
         </Text>
 

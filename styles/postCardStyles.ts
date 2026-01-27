@@ -41,7 +41,7 @@ const usePostCardStyles = () => {
       fontSize: fontScale * 12,
       color: COLORS.darkBlue,
       fontFamily: "Segoe_UI_Bold",
-      width: width * 0.5,
+      width: "50%",
     },
 
     postTime: {
