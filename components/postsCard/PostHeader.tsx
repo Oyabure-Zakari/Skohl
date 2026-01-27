@@ -1,9 +1,10 @@
+import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import usePostCardStyles from "@/styles/postCardStyles";
 import { BasePost } from "@/types/PostTypes";
 import { captilizeWord } from "@/utils/captilizeWord";
 import { Image } from "expo-image";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Text, View } from "react-native";
 import ReactTimeAgo from "react-time-ago";
 
@@ -16,16 +17,6 @@ function Time({ children }: { children: string }) {
 }
 
 const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRefreshKey((prev) => prev + 1); // Forces re-render of TimeAgo
-    }, 30000); // every 30 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
   const getFirstName = captilizeWord(post.postedBy.fullName.split(" ")[1] || "");
 
   // Safe timestamp conversion with fallback
@@ -35,32 +26,56 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
 
   const postCardStyles = usePostCardStyles();
 
-  console.log("Post createdAt:", post.createdAt);
-  console.log("Converted date:", postDate);
-  console.log("Date is valid:", !isNaN(postDate.getTime()));
-
   return (
     <View style={postCardStyles.postHeaderContainer}>
+      {/* Avatar */}
       <Image
         source={{ uri: post.postedBy.image }}
-        style={postCardStyles.userImage}
+        style={{ width: 28, height: 28, borderRadius: 14, marginRight: 8 }}
         placeholder={{ blurhash }}
       />
 
-      {/* Post Owner */}
-      <View style={postCardStyles.postHeaderInfo}>
-        <Text numberOfLines={1} style={postCardStyles.userName}>
-          {getFirstName}
+      {/* Name and date */}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          //backgroundColor: "green",
+        }}
+      >
+        {/* Name */}
+        <Text
+          numberOfLines={1}
+          style={{
+            fontSize: 12,
+            color: COLORS.darkBlue,
+            fontFamily: "Segoe_UI_Bold",
+            //backgroundColor: "red",
+            width: "50%",
+          }}
+        >
+          {getFirstName} {"Oyabure"}
         </Text>
 
-        {/* Post Time */}
-        <Text numberOfLines={1} style={postCardStyles.postTime}>
+        {/* Date with ReactTimeAgo */}
+        <Text
+          numberOfLines={1}
+          style={{
+            fontSize: 10,
+            fontFamily: "Segoe_UI_Bold",
+            color: COLORS.darkGrey,
+            //backgroundColor: "blue",
+            //width: "50%",
+          }}
+        >
           <ReactTimeAgo
             date={postDate}
             locale="en-US"
             component={Time}
             timeStyle="twitter"
-            // Remove key and tick — let the library handle auto-refresh
+            tick={true} // Auto-update enabled (this is the default)
           />
         </Text>
       </View>
