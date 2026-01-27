@@ -34,16 +34,8 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
         placeholder={{ blurhash }}
       />
 
-      {/* Name and date */}
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          //backgroundColor: "green",
-        }}
-      >
+      {/* Post Header Info */}
+      <View style={postCardStyles.postHeaderInfo}>
         {/* Post Owner */}
         <Text numberOfLines={1} style={postCardStyles.userName}>
           {getFirstName} {"Oyabure"}
