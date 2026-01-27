@@ -1,15 +1,11 @@
-import deleteCloudinaryImage from "@/app/apis/deleteCloudinaryImage";
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
-import { db } from "@/firebase/firebase.config";
+import { useDeletePost } from "@/hooks/deletePost";
 import usePostCardStyles from "@/styles/postCardStyles";
 import { Post } from "@/types/PostTypes";
-import extractPublicId from "@/utils/extractPublicId";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { deleteDoc, doc } from "firebase/firestore";
-import React, { useState } from "react";
+import React from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-toast-message";
 import PostCatergory from "../postsCard/PostCatergory";
 import PostDescription from "../postsCard/PostDescription";
 import PostHeader from "../postsCard/PostHeader";
@@ -21,56 +17,23 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  // Current user
   const { userUid } = useAuth();
+
+  // Check if the post is owned by the current user
   const isTheOwner = post.postedBy.userUid === userUid;
 
-  const [isDeletingPost, setIsDeletingPost] = useState(false);
+  // Tanstack Query hook to delete a post
+  const { deletePost, isDeletingPost } = useDeletePost({ post });
 
-  const deleteImageFromCloudinary = async () => {
-    // Check if the post has an image
-    if (post?.photo) {
-      try {
-        const publicId = extractPublicId(post.photo);
-        if (publicId) await deleteCloudinaryImage(publicId);
-      } catch (deleteError: any) {
-        //console.error("Failed to delete old image:", deleteError.message);
-        // Don't throw here - profile update was successful
-      }
-    }
-  };
-
-  const deletePost = async () => {
-    setIsDeletingPost(true);
-    try {
-      await deleteImageFromCloudinary();
-      await deleteDoc(doc(db, "posts", post.id));
-      Toast.show({
-        type: "success",
-        text1: "Post deleted",
-        text2: "Post deleted successfully",
-        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
-        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
-      });
-    } catch (error: any) {
-      Toast.show({
-        type: "error",
-        text1: "Post not deleted",
-        text2: "Failed to delete post. Try again.",
-        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
-        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
-      });
-    } finally {
-      setIsDeletingPost(false);
-    }
-  };
-
-  const handleDeletePost = () => {
+  const handleDeletePost = (): void => {
     Alert.alert("Delete Post", `Are you sure you want to delete "${post.title}"?`, [
       { text: "Cancel", style: "cancel" },
       { text: "Delete", style: "destructive", onPress: deletePost },
     ]);
   };
 
+  // Styles
   const postCardStyles = usePostCardStyles();
 
   return (
