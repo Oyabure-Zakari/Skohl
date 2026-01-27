@@ -39,7 +39,7 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
       <View style={postCardStyles.postHeaderInfo}>
         {/* Post Owner */}
         <Text numberOfLines={1} style={postCardStyles.userName}>
-          {getFirstName} {"Oyabure"}
+          {getFirstName}
         </Text>
 
         {/* Post Time */}
@@ -48,8 +48,9 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
             date={postDate}
             locale="en-US"
             component={Time}
-            timeStyle="twitter"
+            timeStyle="round"
             tick={true} // Auto-update enabled (this is the default)
+            updateInterval={60000} // Update every minute
           />
         </Text>
       </View>
