@@ -35,6 +35,10 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
 
   const postCardStyles = usePostCardStyles();
 
+  console.log("Post createdAt:", post.createdAt);
+  console.log("Converted date:", postDate);
+  console.log("Date is valid:", !isNaN(postDate.getTime()));
+
   return (
     <View style={postCardStyles.postHeaderContainer}>
       <Image
@@ -52,12 +56,11 @@ const PostHeader: React.FC<PostHeaderProps> = ({ post }) => {
         {/* Post Time */}
         <Text numberOfLines={1} style={postCardStyles.postTime}>
           <ReactTimeAgo
-            key={refreshKey} // Forces re-mount/re-calc every 20s
             date={postDate}
             locale="en-US"
             component={Time}
             timeStyle="twitter"
-            tick={false} // Turn off internal tick
+            // Remove key and tick — let the library handle auto-refresh
           />
         </Text>
       </View>
