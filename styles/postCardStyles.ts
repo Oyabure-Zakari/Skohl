@@ -25,8 +25,8 @@ const usePostCardStyles = () => {
 
     postHeaderInfo: {
       flex: 1,
-      flexDirection: "row",
-      alignItems: "center",
+      //flexDirection: "row",
+      //alignItems: "center",
       justifyContent: "space-between",
     },
 
