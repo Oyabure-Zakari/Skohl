@@ -19,7 +19,6 @@ import useReuseableStyles from "@/styles/reuable.styles";
 // Contexts
 import { useAuth } from "@/contexts/AuthContext";
 // Custom Hook
-import { useListenForPostsChanges } from "@/hooks/listenForPostsChanges";
 import { useUserPosts } from "@/hooks/userPosts";
 import { useUserProfile } from "@/hooks/userProfile";
 
@@ -30,7 +29,7 @@ export default function ProfileScreen() {
   // States
   const [activeButton, setActiveButton] = useState<"Posts" | "Bookmarks">("Posts");
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
-    "Create Post"
+    "Create Post",
   );
 
   // Refs
@@ -50,11 +49,8 @@ export default function ProfileScreen() {
   // Fetch user via TanStack Query instead of local state
   const { data: user, isPending: isLoading } = useUserProfile(userUid);
 
-  // Use TanStack Query to manage the posts data (caching, loading, error states)
+  // Custom hook to manage the posts data (caching, loading, error states, real-time listener)
   const { posts, isLoadingCreatedPosts, isError, error } = useUserPosts(userUid);
-
-  // Real-time listener runs once per userUid change, listens for changes in posts collection (add/update/delete)
-  useListenForPostsChanges(userUid);
 
   if (isError && error) return Alert.alert("Error", error.message);
 
