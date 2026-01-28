@@ -9,7 +9,7 @@ import Toast from "react-native-toast-message";
 export const useUserPosts = (userUid: string | null | undefined) => {
   const { fontScale } = useWindowDimensions();
 
-  //
+  // Gives us access to tanstack query methods
   const queryClient = useQueryClient();
 
   const {
