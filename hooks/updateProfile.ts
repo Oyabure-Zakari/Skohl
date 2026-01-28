@@ -138,8 +138,8 @@ async function updateUserImageInPosts(userId: string, newImageUrl: string) {
 
     // Execute all batched updates at once
     await batch.commit();
-    console.log(`Updated ${snapshot.size} posts with new profile image`);
-  } catch (error:any) {
+    // console.log(`Updated ${snapshot.size} posts with new profile image`);
+  } catch (error: any) {
     //console.error("Error updating posts:", error);
     throw new Error("Failed to update posts with new profile image");
   }
