@@ -42,6 +42,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       {/* Post Header */}
       <PostHeader post={post} />
 
+      {/* Post Title */}
+      <PostTitle title={post.title} />
+
       {/* Image or description */}
       {post.photo ? (
         <PostImage postImage={post?.photo} />
@@ -53,9 +56,6 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       <View style={{ paddingHorizontal: 10 }}>
         {/* Post Catergory */}
         <PostCatergory catergory={post?.category} />
-
-        {/* Post Title */}
-        <PostTitle title={post.title} />
 
         {/* Post Price */}
         {(post.postType === "service" || post.postType === "product") && post.price && (

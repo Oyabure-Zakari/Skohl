@@ -20,7 +20,8 @@ const usePostCardStyles = () => {
     postHeaderContainer: {
       flexDirection: "row",
       alignItems: "center",
-      padding: 5,
+      paddingHorizontal: 10,
+      paddingTop: 4,
     },
 
     postHeaderInfo: {
@@ -51,9 +52,8 @@ const usePostCardStyles = () => {
     },
 
     postDescription: {
-      marginTop: 8,
       paddingHorizontal: 10,
-      fontSize: 13,
+      fontSize: fontScale * 12,
       fontFamily: "Segoe_UI_Bold",
       color: COLORS.darkGrey,
       borderBottomWidth: 1,
@@ -61,7 +61,7 @@ const usePostCardStyles = () => {
     },
 
     postCatergory: {
-      fontSize: 12,
+      fontSize: fontScale * 12,
       color: COLORS.darkGrey,
       marginTop: 4,
       fontFamily: "Segoe_UI_Bold",

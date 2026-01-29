@@ -10,7 +10,7 @@ const PostImage: React.FC<PostImageProps> = ({ postImage }) => {
   return (
     <Image
       source={{ uri: postImage }}
-      style={{ width: "100%", height: 120 }}
+      style={{ width: "100%", height: 120, marginTop: 8 }}
       placeholder={{ blurhash }}
       transition={300}
       contentFit="cover"
