@@ -10,14 +10,18 @@ import FloatingActionButton from "@/components/reuseableComponents/FloatingActio
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
 
 export default function HomeScreen() {
+  // States
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
-    "Create Post"
+    "Create Post",
   );
 
-  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
-
+  // Refs
   const sheetRef = useRef<BottomSheet>(null);
 
+  // Bottom Sheet snap points
+  const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
+
+  // Handlers
   const handleSnapPress = useCallback(() => {
     sheetRef.current?.snapToIndex(2);
   }, []);
@@ -26,12 +30,14 @@ export default function HomeScreen() {
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
       <Text>Home Screen</Text>
 
+      {/* Bottom Sheet */}
       <BottomSheetComponent
         sheetRef={sheetRef}
         snapPoints={snapPoints}
         activeBottomSheet={activeBottomSheet}
       />
 
+      {/* Floating Action Button */}
       <FloatingActionButton
         setActiveBottomSheet={setActiveBottomSheet}
         handleSnapPress={handleSnapPress}
