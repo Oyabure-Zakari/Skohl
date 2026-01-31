@@ -4,6 +4,7 @@ import { useDeletePost } from "@/hooks/deletePost";
 import usePostCardStyles from "@/styles/postCardStyles";
 import { Post } from "@/types/PostTypes";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import PostCatergory from "../postsCard/PostCatergory";
@@ -20,6 +21,8 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   // Current user
   const { userUid } = useAuth();
+
+  const router = useRouter();
 
   // Check if the post is owned by the current user
   const isTheOwner = post.postedBy.userUid === userUid;
@@ -38,7 +41,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const postCardStyles = usePostCardStyles();
 
   return (
-    <TouchableOpacity activeOpacity={0.9} style={postCardStyles.postsContainer}>
+    <TouchableOpacity
+      onPress={() => router.push(`/(private)/postDetails/${post.id}`)}
+      activeOpacity={0.9}
+      style={postCardStyles.postsContainer}
+    >
       {/* Post Header */}
       <PostHeader post={post} />
 
