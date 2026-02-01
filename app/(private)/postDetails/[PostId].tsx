@@ -2,6 +2,7 @@ import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoa
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
+import usePostDetailsStyles from "@/styles/postDetails.styles";
 import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -9,7 +10,8 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+
 import ReactTimeAgo from "react-time-ago";
 
 function Time({ children }: { children: string }) {
@@ -21,7 +23,7 @@ const PostDetails = () => {
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [isLaoding, setIsLoading] = useState<boolean>(true);
 
-  const { fontScale, width } = useWindowDimensions();
+  const postDetailsStyles = usePostDetailsStyles();
 
   const router = useRouter();
 
@@ -64,6 +66,7 @@ const PostDetails = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+      {/* Post Image */}
       {postDetails.photo && (
         <Image
           source={{ uri: postDetails?.photo }}
@@ -73,30 +76,16 @@ const PostDetails = () => {
           contentFit="cover"
         />
       )}
+
       {/* Back Button */}
-      <TouchableOpacity
-        onPress={() => router.back()}
-        style={{
-          backgroundColor: COLORS.white,
-          borderRadius: 40,
-          padding: 2,
-          margin: 16,
-          position: "absolute",
-          top: 0,
-          left: 0,
-        }}
-      >
+      <TouchableOpacity onPress={() => router.back()} style={postDetailsStyles.backButton}>
         <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
       </TouchableOpacity>
+
       <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
-        <View
-          style={{
-            marginTop: 20,
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
+        {/* Post User's Details */}
+        <View style={postDetailsStyles.userInfoContainer}>
+          {/* Profile Image */}
           <Image
             source={{ uri: postDetails?.postedBy?.image }}
             style={{ width: 50, height: 50, borderRadius: 25 }}
@@ -104,70 +93,42 @@ const PostDetails = () => {
             transition={300}
             contentFit="cover"
           />
-          <View>
-            <Text
-              style={{
-                fontSize: fontScale * 14,
-                fontFamily: "Segoe_UI_Bold",
-                color: COLORS.darkBlue,
-              }}
-            >
-              {formatFullName(postDetails?.postedBy.fullName)}
-            </Text>
-            <Text
-              style={{
-                fontSize: fontScale * 12,
-                color: COLORS.darkGrey,
-                fontFamily: "Segoe_UI_Bold",
-              }}
-            >
-              Posted{" • "}
-              <ReactTimeAgo
-                date={postDate}
-                locale="en-US"
-                component={Time}
-                timeStyle="round"
-                tick={true} // Auto-update enabled (this is the default)
-                updateInterval={60000} // Update every minute
-              />
-            </Text>
-          </View>
+
+          {/* User Name and Posted Time */}
+          <Text style={postDetailsStyles.userNameText}>
+            {formatFullName(postDetails?.postedBy.fullName)}
+          </Text>
+
+          {/* Posted Time */}
+          <Text style={postDetailsStyles.postTimeText}>
+            Posted{" • "}
+            <ReactTimeAgo
+              date={postDate}
+              locale="en-US"
+              component={Time}
+              timeStyle="round"
+              tick={true} // Auto-update enabled (this is the default)
+              updateInterval={60000} // Update every minute
+            />
+          </Text>
         </View>
 
+        {/* Post Content Container*/}
         <View style={{ marginTop: 10 }}>
-          <Text
-            style={{
-              width: width * 0.8,
-              fontSize: fontScale * 20,
-              fontFamily: "Segoe_UI_Bold_Italic",
-              color: COLORS.darkBlue,
-            }}
-          >
-            {postDetails?.title}
-          </Text>
-          <Text
-            style={{
-              fontSize: fontScale * 14,
-              color: COLORS.darkGrey,
-              fontFamily: "Segoe_UI_Bold",
-            }}
-          >
-            {`${postDetails?.category}`}
-          </Text>
+          <Text style={postDetailsStyles.postTitle}>{postDetails?.title}</Text>
+          <Text style={postDetailsStyles.postCategory}>{`${postDetails?.category}`}</Text>
+
+          {/* Post Info */}
           <View style={{ marginTop: 10 }}>
             {postDetails?.postType === "product" && (
               <>
-                <Text style={{ fontSize: fontScale * 14, fontFamily: "Segoe_UI_Bold" }}>
-                  💵 Price:{postDetails?.price}
-                </Text>
+                <Text style={postDetailsStyles.infoText}>💵 Price:{postDetails?.price}</Text>
               </>
             )}
             {postDetails?.postType === "service" && (
               <>
-                <Text style={{ fontSize: fontScale * 14, fontFamily: "Segoe_UI_Regular" }}>
-                  💵 Price: {postDetails?.price}
-                </Text>
-                <Text style={{ fontSize: fontScale * 14, fontFamily: "Segoe_UI_Bold" }}>
+                <Text style={postDetailsStyles.infoText}>💵 Price: {postDetails?.price}</Text>
+                <Text style={postDetailsStyles.infoText}>
                   🗓️ Schedule: {postDetails?.serviceSchedule}
                 </Text>
               </>
@@ -175,82 +136,26 @@ const PostDetails = () => {
 
             {postDetails?.postType === "event" && (
               <>
-                <Text style={{ fontSize: fontScale * 14, fontFamily: "Segoe_UI_Bold" }}>
-                  🗓️ Date: {postDetails?.eventDate}
-                </Text>
-                <Text style={{ fontSize: fontScale * 14, fontFamily: "Segoe_UI_Bold" }}>
-                  🕒 Time: {postDetails?.eventTime}
-                </Text>
-                <Text style={{ fontSize: fontScale * 14, fontFamily: "Segoe_UI_Bold" }}>
-                  📍 Venue: {postDetails?.eventVenue}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: fontScale * 14,
-                    fontFamily: "Segoe_UI_Bold_Italic",
-                    color: COLORS.darkGrey,
-                  }}
-                >
+                <Text style={postDetailsStyles.infoText}>🗓️ Date: {postDetails?.eventDate}</Text>
+                <Text style={postDetailsStyles.infoText}>🕒 Time: {postDetails?.eventTime}</Text>
+                <Text style={postDetailsStyles.infoText}>📍 Venue: {postDetails?.eventVenue}</Text>
+                <Text style={postDetailsStyles.infoText2}>
                   {" • "}
                   {postDetails?.eventType}
                 </Text>
               </>
             )}
           </View>
-          <Text
-            style={{
-              width: width * 0.3,
-              fontSize: fontScale * 16,
-              fontFamily: "Segoe_UI_Bold_Italic",
-              color: COLORS.purple,
-              marginTop: 20,
-              backgroundColor: COLORS.lightGrey,
-              paddingHorizontal: 8,
-              borderRadius: 6,
-              textAlign: "center",
-              height: 30,
-            }}
-          >
-            Description
-          </Text>
-          <Text
-            style={{
-              fontSize: fontScale * 14,
-              fontFamily: "Segoe_UI_Bold",
-              color: COLORS.darkBlue,
-              marginTop: 8,
-            }}
-          >
-            {postDetails?.description}
-          </Text>
+
+          {/* Post Description */}
+          <Text style={postDetailsStyles.postDescriptionTitle}>Description</Text>
+          <Text style={postDetailsStyles.postDescription}>{postDetails?.description}</Text>
         </View>
 
-        <TouchableOpacity
-          style={{
-            width: width * 0.92,
-            paddingVertical: 8,
-            backgroundColor: COLORS.darkBlue,
-            borderRadius: 10,
-            alignSelf: "center",
-            elevation: 6,
-            marginVertical: 40,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
+        {/* Chat Button */}
+        <TouchableOpacity style={postDetailsStyles.chatBtn}>
           <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />
-          <Text
-            style={{
-              color: COLORS.lightGrey,
-              fontFamily: "Segoe_UI_Bold",
-              fontSize: fontScale * 18,
-              textAlign: "center",
-            }}
-          >
-            Chat
-          </Text>
+          <Text style={postDetailsStyles.chatBtnText}>Chat</Text>
         </TouchableOpacity>
       </ScrollView>
     </View>
