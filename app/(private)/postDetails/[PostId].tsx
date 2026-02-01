@@ -9,7 +9,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { getDocs, query, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 import ReactTimeAgo from "react-time-ago";
@@ -85,32 +85,34 @@ const PostDetails = () => {
       <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
         {/* Post User's Details */}
         <View style={postDetailsStyles.userInfoContainer}>
-          {/* Profile Image */}
-          <Image
-            source={{ uri: postDetails?.postedBy?.image }}
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            placeholder={{ blurhash }}
-            transition={300}
-            contentFit="cover"
-          />
-
-          {/* User Name and Posted Time */}
-          <Text style={postDetailsStyles.userNameText}>
-            {formatFullName(postDetails?.postedBy.fullName)}
-          </Text>
-
-          {/* Posted Time */}
-          <Text style={postDetailsStyles.postTimeText}>
-            Posted{" • "}
-            <ReactTimeAgo
-              date={postDate}
-              locale="en-US"
-              component={Time}
-              timeStyle="round"
-              tick={true} // Auto-update enabled (this is the default)
-              updateInterval={60000} // Update every minute
+          <>
+            {/* Profile Image */}
+            <Image
+              source={{ uri: postDetails?.postedBy?.image }}
+              style={{ width: 50, height: 50, borderRadius: 25 }}
+              placeholder={{ blurhash }}
+              transition={300}
+              contentFit="cover"
             />
-          </Text>
+
+            {/* User Name and Posted Time */}
+            <Text style={postDetailsStyles.userNameText}>
+              {formatFullName(postDetails?.postedBy.fullName)}
+            </Text>
+
+            {/* Posted Time */}
+            <Text style={postDetailsStyles.postTimeText}>
+              Posted{" • "}
+              <ReactTimeAgo
+                date={postDate}
+                locale="en-US"
+                component={Time}
+                timeStyle="round"
+                tick={true} // Auto-update enabled (this is the default)
+                updateInterval={60000} // Update every minute
+              />
+            </Text>
+          </>
         </View>
 
         {/* Post Content Container*/}
