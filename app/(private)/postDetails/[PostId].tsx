@@ -1,16 +1,13 @@
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
-import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
+import usePostDetails from "@/hooks/postDetails";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
-import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { getDocs, query, where } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 import ReactTimeAgo from "react-time-ago";
 
@@ -20,42 +17,22 @@ function Time({ children }: { children: string }) {
 
 const PostDetails = () => {
   const { PostId } = useLocalSearchParams();
-  const [postDetails, setPostDetails] = useState<Post | null>(null);
-  const [isLaoding, setIsLoading] = useState<boolean>(true);
 
   const postDetailsStyles = usePostDetailsStyles();
 
   const router = useRouter();
 
-  const postInfo = async () => {
-    try {
-      const q = query(postsCollectionRef, where("id", "==", PostId));
-      const snapshot = await getDocs(q);
+  // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
+  const { postDetails, isLoadingPostsDetails, isError, error } = usePostDetails(PostId as string);
 
-      let fetchedPost: Post | null = null;
-      snapshot.forEach((doc) => {
-        fetchedPost = doc.data() as Post;
-      });
+  // Loading indicator
+  if (isLoadingPostsDetails) return <OverlayLoadingIndicator />;
 
-      setPostDetails(fetchedPost);
-    } catch (error) {
-      console.log("Error fetching post details: ", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Error handling
+  if (isError) return Alert.alert("Error", (error as Error).message);
 
-  useEffect(() => {
-    postInfo();
-  }, []);
-
-  if (isLaoding) {
-    return <OverlayLoadingIndicator />;
-  }
-
-  if (!postDetails) {
-    return <Text>Post not found</Text>;
-  }
+  // Post not found
+  if (!postDetails) return Alert.alert("Error", "Post not found");
 
   // Safe timestamp conversion with fallback
   const postDate = postDetails?.createdAt?.seconds
@@ -98,7 +75,7 @@ const PostDetails = () => {
           <View>
             {/* User Name */}
             <Text style={postDetailsStyles.userNameText}>
-              {formatFullName(postDetails?.postedBy.fullName)}
+              {formatFullName(postDetails?.postedBy?.fullName)}
             </Text>
 
             {/* Posted Time */}
