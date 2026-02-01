@@ -52,7 +52,7 @@ function AppLayout() {
   const verificationFingerprint = useVerificationStore((state) => state.verificationFingerprint);
   const studentInfo = useVerificationStore((state) => state.studentInfo);
   const loadVerificationFingerprint = useVerificationStore(
-    (state) => state.loadVerificationFingerprint
+    (state) => state.loadVerificationFingerprint,
   );
   const loadVerifiedStudentInfo = useVerificationStore((state) => state.loadVerifiedStudentInfo);
 
@@ -114,7 +114,7 @@ function AppLayout() {
             },
           },
         ],
-        { cancelable: false }
+        { cancelable: false },
       );
     }
   }, [userUid, verificationFingerprint, studentInfo, userDoc, refetch]);
@@ -133,7 +133,7 @@ function AppLayout() {
             },
           },
         ],
-        { cancelable: false }
+        { cancelable: false },
       );
     }
   }, [userError, userErrorDetails, refetch]);
