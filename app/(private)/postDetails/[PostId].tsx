@@ -85,17 +85,18 @@ const PostDetails = () => {
       <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
         {/* Post User's Details */}
         <View style={postDetailsStyles.userInfoContainer}>
-          <>
-            {/* Profile Image */}
-            <Image
-              source={{ uri: postDetails?.postedBy?.image }}
-              style={{ width: 50, height: 50, borderRadius: 25 }}
-              placeholder={{ blurhash }}
-              transition={300}
-              contentFit="cover"
-            />
+          {/* Profile Image */}
+          <Image
+            source={{ uri: postDetails?.postedBy?.image }}
+            style={{ width: 50, height: 50, borderRadius: 25 }}
+            placeholder={{ blurhash }}
+            transition={300}
+            contentFit="cover"
+          />
 
-            {/* User Name and Posted Time */}
+          {/* User Name and Posted Time */}
+          <View>
+            {/* User Name */}
             <Text style={postDetailsStyles.userNameText}>
               {formatFullName(postDetails?.postedBy.fullName)}
             </Text>
@@ -112,7 +113,7 @@ const PostDetails = () => {
                 updateInterval={60000} // Update every minute
               />
             </Text>
-          </>
+          </View>
         </View>
 
         {/* Post Content Container*/}
@@ -135,7 +136,6 @@ const PostDetails = () => {
                 </Text>
               </>
             )}
-
             {postDetails?.postType === "event" && (
               <>
                 <Text style={postDetailsStyles.infoText}>🗓️ Date: {postDetails?.eventDate}</Text>
