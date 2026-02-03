@@ -1,3 +1,4 @@
+import PostDetailsBackBtn from "@/components/postDetails/PostDetailsBackBtn";
 import PostDetailsImage from "@/components/postDetails/PostDetailsImage";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
@@ -5,7 +6,7 @@ import blurhash from "@/constants/expoBlurImage";
 import usePostDetails from "@/hooks/postDetails";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
 import formatFullName from "@/utils/formatUserFullname";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -48,9 +49,7 @@ const PostDetails = () => {
       {postDetails.photo && <PostDetailsImage postImage={postDetails?.photo} />}
 
       {/* Back Button */}
-      <TouchableOpacity onPress={() => router.back()} style={postDetailsStyles.backButton}>
-        <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
-      </TouchableOpacity>
+      <PostDetailsBackBtn />
 
       <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
         {/* Post User's Details */}
