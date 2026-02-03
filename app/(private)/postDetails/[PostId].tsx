@@ -28,13 +28,6 @@ const PostDetails = () => {
   // Post not found
   if (!postDetails) return Alert.alert("Error", "Post not found");
 
-  // Safe timestamp conversion with fallback
-  const postDate = postDetails?.createdAt?.seconds
-    ? new Date(
-        postDetails.createdAt.seconds * 1000 + (postDetails.createdAt.nanoseconds || 0) / 1000000,
-      )
-    : new Date(); // fallback to now
-
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       {/* Post Image */}
@@ -54,7 +47,7 @@ const PostDetails = () => {
             {/* User Name */}
             <PostDetailsUserName fullName={postDetails?.postedBy?.fullName} />
             {/* Posted Time */}
-            <PostDetailsTime postDate={postDate} />
+            <PostDetailsTime postTime={postDetails?.createdAt} />
           </View>
         </View>
 

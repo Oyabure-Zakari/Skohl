@@ -4,15 +4,24 @@ import { Text } from "react-native";
 import ReactTimeAgo from "react-time-ago";
 
 type PostDetailsTimeProps = {
-  postDate: Date;
+  postTime: {
+    seconds: number;
+    nanoseconds: number;
+    type: string;
+  };
 };
 
 function Time({ children }: { children: string }) {
   return <Text>{children}</Text>;
 }
 
-const PostDetailsTime: React.FC<PostDetailsTimeProps> = ({ postDate }) => {
+const PostDetailsTime: React.FC<PostDetailsTimeProps> = ({ postTime }) => {
   const postDetailsStyles = usePostDetailsStyles();
+
+  // Safe timestamp conversion with fallback
+  const postDate = postTime?.seconds
+    ? new Date(postTime?.seconds * 1000 + (postTime?.nanoseconds || 0) / 1000000)
+    : new Date(); // fallback to now
 
   return (
     <Text style={postDetailsStyles.postTimeText}>
