@@ -1,5 +1,6 @@
 import PostDetailsBackBtn from "@/components/postDetails/PostDetailsBackBtn";
 import PostDetailsImage from "@/components/postDetails/PostDetailsImage";
+import PostDetailsTime from "@/components/postDetails/PostDetailsTime";
 import PostDetailsUserImage from "@/components/postDetails/PostDetailsUserImage";
 import PostDetailsUserName from "@/components/postDetails/PostDetailsUserName";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
@@ -7,21 +8,13 @@ import COLORS from "@/constants/colors";
 import usePostDetails from "@/hooks/postDetails";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
-
-import ReactTimeAgo from "react-time-ago";
-
-function Time({ children }: { children: string }) {
-  return <Text>{children}</Text>;
-}
 
 const PostDetails = () => {
   const { PostId } = useLocalSearchParams();
 
   const postDetailsStyles = usePostDetailsStyles();
-
-  const router = useRouter();
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
   const { postDetails, isLoadingPostsDetails, isError, error } = usePostDetails(PostId as string);
@@ -60,26 +53,17 @@ const PostDetails = () => {
           <View>
             {/* User Name */}
             <PostDetailsUserName fullName={postDetails?.postedBy?.fullName} />
-
             {/* Posted Time */}
-            <Text style={postDetailsStyles.postTimeText}>
-              Posted{" • "}
-              <ReactTimeAgo
-                date={postDate}
-                locale="en-US"
-                component={Time}
-                timeStyle="round"
-                tick={true} // Auto-update enabled (this is the default)
-                updateInterval={60000} // Update every minute
-              />
-            </Text>
+            <PostDetailsTime postDate={postDate} />
           </View>
         </View>
 
         {/* Post Content Container*/}
         <View style={{ marginTop: 10 }}>
+          {/* Post Title*/}
           <Text style={postDetailsStyles.postTitle}>{postDetails?.title}</Text>
-          <Text style={postDetailsStyles.postCategory}>{`${postDetails?.category}`}</Text>
+          {/* Post Category*/}
+          <Text style={postDetailsStyles.postCategory}>{postDetails?.category}</Text>
 
           {/* Post Info */}
           <View style={{ marginTop: 10 }}>
