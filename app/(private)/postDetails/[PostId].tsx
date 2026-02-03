@@ -1,5 +1,6 @@
 import PostDetailsBackBtn from "@/components/postDetails/PostDetailsBackBtn";
 import PostDetailsImage from "@/components/postDetails/PostDetailsImage";
+import PostDetailsInfo from "@/components/postDetails/PostDetailsInfo";
 import PostDetailsTime from "@/components/postDetails/PostDetailsTime";
 import PostDetailsUserImage from "@/components/postDetails/PostDetailsUserImage";
 import PostDetailsUserName from "@/components/postDetails/PostDetailsUserName";
@@ -55,36 +56,12 @@ const PostDetails = () => {
         <View style={{ marginTop: 10 }}>
           {/* Post Title*/}
           <Text style={postDetailsStyles.postTitle}>{postDetails?.title}</Text>
+
           {/* Post Category*/}
           <Text style={postDetailsStyles.postCategory}>{postDetails?.category}</Text>
 
           {/* Post Info */}
-          <View style={{ marginTop: 10 }}>
-            {postDetails?.postType === "product" && (
-              <>
-                <Text style={postDetailsStyles.infoText}>💵 Price:{postDetails?.price}</Text>
-              </>
-            )}
-            {postDetails?.postType === "service" && (
-              <>
-                <Text style={postDetailsStyles.infoText}>💵 Price: {postDetails?.price}</Text>
-                <Text style={postDetailsStyles.infoText}>
-                  🗓️ Schedule: {postDetails?.serviceSchedule}
-                </Text>
-              </>
-            )}
-            {postDetails?.postType === "event" && (
-              <>
-                <Text style={postDetailsStyles.infoText}>🗓️ Date: {postDetails?.eventDate}</Text>
-                <Text style={postDetailsStyles.infoText}>🕒 Time: {postDetails?.eventTime}</Text>
-                <Text style={postDetailsStyles.infoText}>📍 Venue: {postDetails?.eventVenue}</Text>
-                <Text style={postDetailsStyles.infoText2}>
-                  {" • "}
-                  {postDetails?.eventType}
-                </Text>
-              </>
-            )}
-          </View>
+          <PostDetailsInfo postDetails={postDetails} />
 
           {/* Post Description */}
           <Text style={postDetailsStyles.postDescriptionTitle}>Description</Text>
