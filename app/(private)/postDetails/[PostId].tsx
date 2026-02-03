@@ -1,13 +1,12 @@
 import PostDetailsBackBtn from "@/components/postDetails/PostDetailsBackBtn";
 import PostDetailsImage from "@/components/postDetails/PostDetailsImage";
+import PostDetailsUserImage from "@/components/postDetails/PostDetailsUserImage";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
-import blurhash from "@/constants/expoBlurImage";
 import usePostDetails from "@/hooks/postDetails";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -55,13 +54,7 @@ const PostDetails = () => {
         {/* Post User's Details */}
         <View style={postDetailsStyles.userInfoContainer}>
           {/* Profile Image */}
-          <Image
-            source={{ uri: postDetails?.postedBy?.image }}
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            placeholder={{ blurhash }}
-            transition={300}
-            contentFit="cover"
-          />
+          <PostDetailsUserImage postUserImage={postDetails?.postedBy?.image} />
 
           {/* User Name and Posted Time */}
           <View>
