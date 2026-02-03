@@ -1,3 +1,4 @@
+import PostDetailsImage from "@/components/postDetails/PostDetailsImage";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
@@ -44,15 +45,7 @@ const PostDetails = () => {
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       {/* Post Image */}
-      {postDetails.photo && (
-        <Image
-          source={{ uri: postDetails?.photo }}
-          style={{ width: "100%", height: 300, position: "relative", top: 0 }}
-          placeholder={{ blurhash }}
-          transition={300}
-          contentFit="cover"
-        />
-      )}
+      {postDetails.photo && <PostDetailsImage postImage={postDetails?.photo} />}
 
       {/* Back Button */}
       <TouchableOpacity onPress={() => router.back()} style={postDetailsStyles.backButton}>

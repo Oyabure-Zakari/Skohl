@@ -20,7 +20,7 @@ export default function usePostDetails(postId: string | null | undefined) {
     gcTime: 1000 * 60 * 5, // Keep in cache 5 min after unmount
     queryFn: () => {
       // This is a placeholder — we never actually "fetch" here
-      return Promise.resolve({} as Post); // Its going to return a promise array
+      return Promise.resolve({} as Post); // Its going to return a promise which is an object
     },
   });
 
