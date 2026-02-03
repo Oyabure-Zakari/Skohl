@@ -1,3 +1,13 @@
+// React Native
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+// Expo
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
+// Constants
+import COLORS from "@/constants/colors";
+// Custom Hooks
+import usePostDetails from "@/hooks/postDetails";
+// Components
 import PostDetailsBackBtn from "@/components/postDetails/PostDetailsBackBtn";
 import PostDetailsImage from "@/components/postDetails/PostDetailsImage";
 import PostDetailsInfo from "@/components/postDetails/PostDetailsInfo";
@@ -5,16 +15,13 @@ import PostDetailsTime from "@/components/postDetails/PostDetailsTime";
 import PostDetailsUserImage from "@/components/postDetails/PostDetailsUserImage";
 import PostDetailsUserName from "@/components/postDetails/PostDetailsUserName";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
-import COLORS from "@/constants/colors";
-import usePostDetails from "@/hooks/postDetails";
+// Styles
 import usePostDetailsStyles from "@/styles/postDetails.styles";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const PostDetails = () => {
   const { PostId } = useLocalSearchParams();
 
+  // Styles
   const postDetailsStyles = usePostDetailsStyles();
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
