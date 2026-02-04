@@ -3,6 +3,7 @@ import VerificationStoreStore from "@/types/VerificationStoreStore";
 import { captilizeWord } from "@/utils/captilizeWord";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Crypto from "expo-crypto";
+import { Alert } from "react-native";
 import { create } from "zustand";
 
 const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
@@ -19,12 +20,12 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
   // Generate and store hashed fingerprint from verified student info
   setVerifiedStudent: async (info: StudentInfoType) => {
     // Create a unique fingerprint string
-    const fingerprintString = `${info.firstname}|${info.surname}|${info.othernames}|${info.faculty}|${info.religion}|${info.gender}`; 
+    const fingerprintString = `${info.firstname}|${info.surname}|${info.othernames}|${info.faculty}|${info.religion}|${info.gender}`;
 
     // Hash with SHA-256 using expo-crypto
     const hashedFingerprint = await Crypto.digestStringAsync(
       Crypto.CryptoDigestAlgorithm.SHA256,
-      fingerprintString
+      fingerprintString,
     );
 
     // Save to store and AsyncStorage
@@ -44,7 +45,7 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
       await AsyncStorage.setItem("@verificationFingerprint", hashedFingerprint);
       await AsyncStorage.setItem("@verifiedStudentInfo", JSON.stringify(info));
     } catch (error: any) {
-      console.error("Error saving fingerprint:", error.message);
+      Alert.alert("Error saving fingerprint:", error.message);
     }
   },
 
@@ -56,19 +57,19 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
         set({ verificationFingerprint: storedFingerprint });
       }
     } catch (error: any) {
-      console.error("Error loading fingerprint:", error.message);
+      Alert.alert("Error loading fingerprint:", error.message);
     }
   },
 
   // Load verified student info
-    loadVerifiedStudentInfo: async () => {
+  loadVerifiedStudentInfo: async () => {
     try {
       const storedStudentInfo = await AsyncStorage.getItem("@verifiedStudentInfo");
       if (storedStudentInfo) {
         set({ studentInfo: JSON.parse(storedStudentInfo) });
       }
     } catch (error: any) {
-      console.error("Error loading fingerprint:", error.message);
+      Alert.alert("Error loading fingerprint:", error.message);
     }
   },
 
@@ -89,7 +90,7 @@ const useVerificationStore = create<VerificationStoreStore>((set, get) => ({
         },
       });
     } catch (error: any) {
-      console.error("Error clearing verification:", error.message);
+      Alert.alert("Error clearing verification:", error.message);
     }
   },
 }));
