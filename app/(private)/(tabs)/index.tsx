@@ -111,7 +111,7 @@ export default function HomeScreen() {
 
   const PostCard = ({ item }: { item: (typeof dummyPosts)[0] }) => {
     return (
-      <View style={styles.card}>
+      <TouchableOpacity style={styles.card}>
         {/* Header: user image + name + time */}
         <View style={styles.header}>
           <Image
@@ -159,7 +159,7 @@ export default function HomeScreen() {
             <MaterialCommunityIcons name="chat-outline" size={22} color="#666" />
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -181,6 +181,9 @@ export default function HomeScreen() {
           />
         </TouchableOpacity>
       </View>
+
+      {/* Divider*/}
+      <View style={reUseableStyles.bottomSheetDivider} />
 
       {/* Category Container */}
       <View style={homeStyles.categoryContainer}>
