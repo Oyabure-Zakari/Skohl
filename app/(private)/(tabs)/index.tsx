@@ -45,7 +45,7 @@ export default function HomeScreen() {
   const router = useRouter();
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
-  const { posts, isLoadingPosts, isError, error } = useFetchPosts(activeProductCategory);
+  const { posts, isLoadingPosts, isError, error } = useFetchPosts("product", activeProductCategory);
 
   if (isError)
     return Alert.alert("Error", error?.message || "An error occurred while fetching posts.");
