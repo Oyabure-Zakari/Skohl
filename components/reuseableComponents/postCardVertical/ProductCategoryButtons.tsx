@@ -1,7 +1,8 @@
+import useHomeStyles from "@/styles/homeStyles";
 import useReuseableStyles from "@/styles/reuable.styles";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
 import React from "react";
-import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 type ProductCategoryButtonsProps = {
   activeProductCategory: ProductCategoryType;
@@ -16,36 +17,39 @@ const ProductCategoryButtons: React.FC<ProductCategoryButtonsProps> = ({
 }) => {
   // Styles
   const reUseableStyles = useReuseableStyles();
+  const homeStyles = useHomeStyles();
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ gap: 6 }}
-    >
-      {/* Category Buttons */}
-      {productCategories.map((category) => (
-        <TouchableOpacity
-          key={category}
-          style={[
-            activeProductCategory === category
-              ? reUseableStyles.activeButton
-              : reUseableStyles.inactiveButton,
-          ]}
-          onPress={() => setActiveProductCategory(category as ProductCategoryType)}
-        >
-          <Text
+    <View style={homeStyles.categoryContainer}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ gap: 6 }}
+      >
+        {/* Category Buttons */}
+        {productCategories.map((category) => (
+          <TouchableOpacity
+            key={category}
             style={[
               activeProductCategory === category
-                ? reUseableStyles.activeText
-                : reUseableStyles.inactiveText,
+                ? reUseableStyles.activeButton
+                : reUseableStyles.inactiveButton,
             ]}
+            onPress={() => setActiveProductCategory(category as ProductCategoryType)}
           >
-            {category === "none" ? "All" : category}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+            <Text
+              style={[
+                activeProductCategory === category
+                  ? reUseableStyles.activeText
+                  : reUseableStyles.inactiveText,
+              ]}
+            >
+              {category === "none" ? "All" : category}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 

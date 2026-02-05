@@ -1,7 +1,7 @@
 // React
 import React, { useCallback, useMemo, useRef, useState } from "react";
 // React Native
-import { Alert, Text, View } from "react-native";
+import { Alert } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Packages / Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -54,20 +54,12 @@ export default function HomeScreen() {
       {/* Header: User Name + User Image */}
       <HomeHeader />
 
-      {/* Divider*/}
-      <View style={homeStyles.divider} />
-
-      {/* Category Container */}
-      <View style={homeStyles.categoryContainer}>
-        {/* Category Title */}
-        <Text style={homeStyles.categoryTitle}>Category</Text>
-        {/* Category Buttons */}
-        <ProductCategoryButtons
-          activeProductCategory={activeProductCategory}
-          setActiveProductCategory={setActiveProductCategory}
-          productCategories={productCategories}
-        />
-      </View>
+      {/* Category Buttons */}
+      <ProductCategoryButtons
+        activeProductCategory={activeProductCategory}
+        setActiveProductCategory={setActiveProductCategory}
+        productCategories={productCategories}
+      />
 
       {/* Product List */}
       {isLoadingPosts ? <OverlayActivityIndicator /> : <PostsList posts={posts} />}
