@@ -46,32 +46,48 @@ export default function HomeScreen() {
   // Hooks
   const router = useRouter();
 
-  const fetchProductPosts = async () => {
-    if (activeProductCategory !== "none") return;
+  // States
+  const [isLoadingCreatedPosts, setIsLoadingCreatedPosts] = useState(true);
 
+  useEffect(() => {
+    fetchProductPosts();
+  }, [activeProductCategory]);
+
+  const fetchProductPosts = async () => {
     try {
-      const q = query(
-        postsCollectionRef,
-        where("postType", "==", "product"),
-        orderBy("createdAt", "desc"),
-      );
+      let q;
+
+      if (activeProductCategory === "none") {
+        // All products
+        q = query(
+          postsCollectionRef,
+          where("postType", "==", "product"),
+          orderBy("createdAt", "desc"),
+        );
+      } else {
+        // Filtered by category
+        q = query(
+          postsCollectionRef,
+          where("postType", "==", "product"),
+          where("category", "==", activeProductCategory),
+          orderBy("createdAt", "desc"),
+        );
+      }
 
       const snapshot = await getDocs(q);
 
       const fetchedPosts: ProductPost[] = snapshot.docs.map((doc) => ({
-        id: doc.id, // ← Critical: add document ID
+        id: doc.id,
         ...doc.data(),
       })) as ProductPost[];
 
       setProductPosts(fetchedPosts);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching product posts:", error);
+    } finally {
+      setIsLoadingCreatedPosts(false);
     }
   };
-
-  useEffect(() => {
-    if (activeProductCategory === "none") fetchProductPosts();
-  }, [activeProductCategory]);
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
