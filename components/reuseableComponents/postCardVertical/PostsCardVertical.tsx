@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import ReactTimeAgo from "react-time-ago";
+import PostUserImage from "./PostUserImage";
 
 type PostCardVerticalProps = {
   post: Post;
@@ -37,14 +38,8 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       {/* Post Card Header */}
       <View style={postCardVerticalStyles.header}>
         {/* User Image */}
-        <Image
-          source={{ uri: post?.postedBy?.image }}
-          style={postCardVerticalStyles.userAvatar}
-          placeholder={{ blurhash }}
-          contentFit="contain"
-          transition={1000}
-          alt="Profile Picture"
-        />
+        <PostUserImage image={post?.postedBy?.image} />
+
         {/* User Name + Post Time */}
         <View style={postCardVerticalStyles.userInfo}>
           <Text style={postCardVerticalStyles.userName}>
