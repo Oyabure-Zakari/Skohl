@@ -1,7 +1,7 @@
+import PostCardVertical from "@/components/reuseableComponents/postCardVertical/PostsCardVertical";
 import { Post } from "@/types/PostTypes";
 import React from "react";
 import { FlatList } from "react-native";
-import PostCardVertical from "../reuseableComponents/postCardVertical/PostsCardVertical";
 
 type PostListProps = {
   posts: Post[];

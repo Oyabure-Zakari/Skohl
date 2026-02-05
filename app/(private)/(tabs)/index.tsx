@@ -1,21 +1,25 @@
+// React
 import React, { useCallback, useMemo, useRef, useState } from "react";
+// React Native
 import { Alert, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-
+// Packages / Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
-
+// Component
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
-import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
-
-import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
-
 import HomeHeader from "@/components/home/HomeHeader";
 import PostsList from "@/components/home/PostsList";
+import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import ProductCategoryButtons from "@/components/reuseableComponents/postCardVertical/ProductCategoryButtons";
-import productCategories from "@/constants/postProductCategories";
-import { useFetchPosts } from "@/hooks/fetchPosts";
+// Styles
+import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
 import useHomeStyles from "@/styles/homeStyles";
+// Constants
+import productCategories from "@/constants/postProductCategories";
+// Hooks
+import { useFetchPosts } from "@/hooks/fetchPosts";
+// Types
 import { ProductCategoryType } from "@/types/ProductCategoryType";
 
 export default function HomeScreen() {
