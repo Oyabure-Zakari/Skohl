@@ -16,7 +16,7 @@ export interface BasePost {
 }
 
 // Event-specific fields
-interface EventPost extends BasePost {
+export interface EventPost extends BasePost {
   postType: "event";
   eventDate: string;
   eventTime?: string;
@@ -25,14 +25,14 @@ interface EventPost extends BasePost {
 }
 
 // Service-specific fields
-interface ServicePost extends BasePost {
+export interface ServicePost extends BasePost {
   postType: "service";
   price?: string;
   serviceSchedule?: string;
 }
 
 // Product-specific fields
-interface ProductPost extends BasePost {
+export interface ProductPost extends BasePost {
   postType: "product";
   price?: string;
 }
