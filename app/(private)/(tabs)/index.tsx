@@ -14,20 +14,8 @@ import useReuseableStyles from "@/styles/reuable.styles";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 
+import { ProductCategoryType } from "@/types/ProductCategoryType";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
-type ProductCategoryType =
-  | "none"
-  | "Books & Academic Materials"
-  | "Electronics & Gadgets"
-  | "Equipments"
-  | "Fashion & Clothing"
-  | "Hostel & Room Essentials"
-  | "Kitchen & Food Items"
-  | "Personal Care & Beauty"
-  | "Sportswear"
-  | "Stationery & Office Supplies"
-  | "Transportation & Mobility";
 
 // Dummy data (you can replace with real data later)
 const dummyPosts = [
@@ -183,7 +171,7 @@ export default function HomeScreen() {
       </View>
 
       {/* Divider*/}
-      <View style={reUseableStyles.bottomSheetDivider} />
+      <View style={homeStyles.divider} />
 
       {/* Category Container */}
       <View style={homeStyles.categoryContainer}>
@@ -255,6 +243,13 @@ const homeStyles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Segoe_UI_Bold",
     color: COLORS.darkBlue,
+  },
+
+  divider: {
+    width: "100%",
+    height: 2,
+    backgroundColor: COLORS.lightGrey,
+    marginTop: 10,
   },
 
   categoryContainer: {
