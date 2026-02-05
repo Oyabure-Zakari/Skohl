@@ -6,6 +6,8 @@ import UserProfileType from "@/types/userProfileTypes";
 import { captilizeWord } from "@/utils/captilizeWord";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { MotiView } from "moti";
+import { Skeleton } from "moti/skeleton";
 import React from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 
@@ -25,9 +27,18 @@ const HomeHeader: React.FC = () => {
   return (
     <View style={homeStyles.header}>
       {/* User Name */}
-      <Text style={homeStyles.userName}>
+      <Text numberOfLines={2} style={homeStyles.userName}>
         Hey,{"\n"}
-        <Text style={{ fontFamily: "Segoe_UI_Bold_Italic", fontSize: 20 }}>{getFirstName}</Text>
+        {isLoading ? (
+          <>
+            {/* Skeleton */}
+            <MotiView style={{ marginBottom: 6 }}>
+              <Skeleton show={isLoading} colorMode="light" width={"60%"} height={20}></Skeleton>
+            </MotiView>
+          </>
+        ) : (
+          <Text style={{ fontFamily: "Segoe_UI_Bold_Italic", fontSize: 20 }}>{getFirstName}</Text>
+        )}
       </Text>
 
       {/* User Image */}

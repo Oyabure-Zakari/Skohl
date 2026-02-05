@@ -7,12 +7,18 @@ export default function useHomeStyles() {
       flexDirection: "row",
       justifyContent: "space-between",
       paddingHorizontal: 16,
+      backgroundColor: COLORS.darkBlue,
+      paddingBottom: 20,
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+      alignItems: "center",
     },
 
     userName: {
       fontSize: 18,
       fontFamily: "Segoe_UI_Bold",
-      color: COLORS.darkBlue,
+      color: COLORS.lightGrey,
+      width: "80%",
     },
 
     divider: {

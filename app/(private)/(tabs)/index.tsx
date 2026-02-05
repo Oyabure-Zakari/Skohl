@@ -14,18 +14,16 @@ import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLo
 import ProductCategoryButtons from "@/components/reuseableComponents/postCardVertical/ProductCategoryButtons";
 // Styles
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
-import useHomeStyles from "@/styles/homeStyles";
 // Constants
 import productCategories from "@/constants/postProductCategories";
 // Hooks
 import { useFetchPosts } from "@/hooks/fetchPosts";
 // Types
+import COLORS from "@/constants/colors";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
+import { StatusBar } from "expo-status-bar";
 
 export default function HomeScreen() {
-  // Styles
-  const homeStyles = useHomeStyles();
-
   // States
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post",
@@ -50,32 +48,35 @@ export default function HomeScreen() {
     return Alert.alert("Error", error?.message || "An error occurred while fetching posts.");
 
   return (
-    <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
-      {/* Header: User Name + User Image */}
-      <HomeHeader />
+    <>
+      <StatusBar style="light" backgroundColor={COLORS.darkBlue} />
+      <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
+        {/* Header: User Name + User Image */}
+        <HomeHeader />
 
-      {/* Category Buttons */}
-      <ProductCategoryButtons
-        activeProductCategory={activeProductCategory}
-        setActiveProductCategory={setActiveProductCategory}
-        productCategories={productCategories}
-      />
+        {/* Category Buttons */}
+        <ProductCategoryButtons
+          activeProductCategory={activeProductCategory}
+          setActiveProductCategory={setActiveProductCategory}
+          productCategories={productCategories}
+        />
 
-      {/* Product List */}
-      {isLoadingPosts ? <OverlayActivityIndicator /> : <PostsList posts={posts} />}
+        {/* Product List */}
+        {isLoadingPosts ? <OverlayActivityIndicator /> : <PostsList posts={posts} />}
 
-      {/* Bottom Sheet */}
-      <BottomSheetComponent
-        sheetRef={sheetRef}
-        snapPoints={snapPoints}
-        activeBottomSheet={activeBottomSheet}
-      />
+        {/* Bottom Sheet */}
+        <BottomSheetComponent
+          sheetRef={sheetRef}
+          snapPoints={snapPoints}
+          activeBottomSheet={activeBottomSheet}
+        />
 
-      {/* Floating Action Button */}
-      <FloatingActionButton
-        setActiveBottomSheet={setActiveBottomSheet}
-        handleSnapPress={handleSnapPress}
-      />
-    </GestureHandlerRootView>
+        {/* Floating Action Button */}
+        <FloatingActionButton
+          setActiveBottomSheet={setActiveBottomSheet}
+          handleSnapPress={handleSnapPress}
+        />
+      </GestureHandlerRootView>
+    </>
   );
 }
