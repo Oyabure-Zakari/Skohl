@@ -48,21 +48,26 @@ export default function HomeScreen() {
 
   const fetchProductPosts = async () => {
     if (activeProductCategory !== "none") return;
-    // Fetch product posts
-    const q = query(
-      postsCollectionRef,
-      where("postType", "==", "product"),
-      orderBy("createdAt", "desc"),
-    );
-    const snapshot = await getDocs(q);
 
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      setProductPosts((prev) => [...prev, data as ProductPost]);
-    });
+    try {
+      const q = query(
+        postsCollectionRef,
+        where("postType", "==", "product"),
+        orderBy("createdAt", "desc"),
+      );
+
+      const snapshot = await getDocs(q);
+
+      const fetchedPosts: ProductPost[] = snapshot.docs.map((doc) => ({
+        id: doc.id, // ← Critical: add document ID
+        ...doc.data(),
+      })) as ProductPost[];
+
+      setProductPosts(fetchedPosts);
+    } catch (error) {
+      console.error("Error fetching product posts:", error);
+    }
   };
-
-  console.log(productPosts);
 
   useEffect(() => {
     if (activeProductCategory === "none") fetchProductPosts();
