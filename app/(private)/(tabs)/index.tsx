@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -14,19 +14,17 @@ import useReuseableStyles from "@/styles/reuable.styles";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 
+import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import PostCardVertical from "@/components/reuseableComponents/PostsCardVertical";
 import productCategories from "@/constants/postProductCategories";
-import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
-import { ProductPost } from "@/types/PostTypes";
+import { useFetchPosts } from "@/hooks/fetchPosts";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
-import { getDocs, orderBy, query, where } from "firebase/firestore";
 
 export default function HomeScreen() {
   // Styles
   const reUseableStyles = useReuseableStyles();
 
   // States
-  const [productPosts, setProductPosts] = useState<ProductPost[]>([]);
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post",
   );
@@ -46,48 +44,11 @@ export default function HomeScreen() {
   // Hooks
   const router = useRouter();
 
-  // States
-  const [isLoadingCreatedPosts, setIsLoadingCreatedPosts] = useState(true);
+  // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
+  const { posts, isLoadingPosts, isError, error } = useFetchPosts(activeProductCategory);
 
-  useEffect(() => {
-    fetchProductPosts();
-  }, [activeProductCategory]);
-
-  const fetchProductPosts = async () => {
-    try {
-      let q;
-
-      if (activeProductCategory === "none") {
-        // All products
-        q = query(
-          postsCollectionRef,
-          where("postType", "==", "product"),
-          orderBy("createdAt", "desc"),
-        );
-      } else {
-        // Filtered by category
-        q = query(
-          postsCollectionRef,
-          where("postType", "==", "product"),
-          where("category", "==", activeProductCategory),
-          orderBy("createdAt", "desc"),
-        );
-      }
-
-      const snapshot = await getDocs(q);
-
-      const fetchedPosts: ProductPost[] = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as ProductPost[];
-
-      setProductPosts(fetchedPosts);
-    } catch (error: any) {
-      console.error("Error fetching product posts:", error);
-    } finally {
-      setIsLoadingCreatedPosts(false);
-    }
-  };
+  if (isError)
+    return Alert.alert("Error", error?.message || "An error occurred while fetching posts.");
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
@@ -121,6 +82,7 @@ export default function HomeScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 6 }}
         >
+          {/* Category Buttons */}
           {productCategories.map((category) => (
             <TouchableOpacity
               key={category}
@@ -146,13 +108,17 @@ export default function HomeScreen() {
       </View>
 
       {/* Product List */}
-      <FlatList
-        data={productPosts}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <PostCardVertical post={item} />}
-        contentContainerStyle={{ paddingVertical: 16 }}
-        showsVerticalScrollIndicator={false}
-      />
+      {isLoadingPosts ? (
+        <OverlayActivityIndicator />
+      ) : (
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <PostCardVertical post={item} />}
+          contentContainerStyle={{ paddingVertical: 16 }}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
 
       {/* Bottom Sheet */}
       <BottomSheetComponent
