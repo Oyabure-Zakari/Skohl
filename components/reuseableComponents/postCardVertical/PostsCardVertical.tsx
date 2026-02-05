@@ -8,16 +8,12 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import ReactTimeAgo from "react-time-ago";
 import PostUserImage from "./PostUserImage";
+import PostUserNameAndTime from "./PostUserNameAndTime";
 
 type PostCardVerticalProps = {
   post: Post;
 };
-
-function Time({ children }: { children: string }) {
-  return <Text>{children}</Text>;
-}
 
 const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   const router = useRouter();
@@ -39,23 +35,11 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       <View style={postCardVerticalStyles.header}>
         {/* User Image */}
         <PostUserImage image={post?.postedBy?.image} />
-
         {/* User Name + Post Time */}
-        <View style={postCardVerticalStyles.userInfo}>
-          <Text style={postCardVerticalStyles.userName}>
-            {formatFullName(post?.postedBy?.fullName)}
-          </Text>
-          <Text style={postCardVerticalStyles.time}>
-            <ReactTimeAgo
-              date={postDate}
-              locale="en-US"
-              component={Time}
-              timeStyle="round"
-              tick={true} // Auto-update enabled (this is the default)
-              updateInterval={60000} // Update every minute
-            />
-          </Text>
-        </View>
+        <PostUserNameAndTime
+          fullName={formatFullName(post?.postedBy?.fullName)}
+          postDate={postDate}
+        />
       </View>
 
       {/* Product image */}
