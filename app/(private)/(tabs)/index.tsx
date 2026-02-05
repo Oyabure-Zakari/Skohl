@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { Alert, FlatList, Text, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -8,11 +8,10 @@ import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent"
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
-import { useRouter } from "expo-router";
 
 import HomeHeader from "@/components/home/HomeHeader";
+import PostsList from "@/components/home/PostsList";
 import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
-import PostCardVertical from "@/components/reuseableComponents/postCardVertical/PostsCardVertical";
 import ProductCategoryButtons from "@/components/reuseableComponents/postCardVertical/ProductCategoryButtons";
 import productCategories from "@/constants/postProductCategories";
 import { useFetchPosts } from "@/hooks/fetchPosts";
@@ -39,9 +38,6 @@ export default function HomeScreen() {
   const handleSnapPress = useCallback(() => {
     sheetRef.current?.snapToIndex(2);
   }, []);
-
-  // Hooks
-  const router = useRouter();
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
   const { posts, isLoadingPosts, isError, error } = useFetchPosts("product", activeProductCategory);
@@ -70,17 +66,7 @@ export default function HomeScreen() {
       </View>
 
       {/* Product List */}
-      {isLoadingPosts ? (
-        <OverlayActivityIndicator />
-      ) : (
-        <FlatList
-          data={posts}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <PostCardVertical post={item} />}
-          contentContainerStyle={{ paddingVertical: 16 }}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+      {isLoadingPosts ? <OverlayActivityIndicator /> : <PostsList posts={posts} />}
 
       {/* Bottom Sheet */}
       <BottomSheetComponent
