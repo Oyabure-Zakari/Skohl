@@ -1,7 +1,7 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
-import { ProductPost } from "@/types/PostTypes";
+import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -11,7 +11,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import ReactTimeAgo from "react-time-ago";
 
 type PostCardVerticalProps = {
-  post: ProductPost;
+  post: Post;
 };
 
 function Time({ children }: { children: string }) {
@@ -86,7 +86,9 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       </Text>
 
       {/* Product Price */}
-      <Text style={postCardVerticalStyles.price}>{post?.price}</Text>
+      <Text style={postCardVerticalStyles.price}>
+        {post?.postType === "product" && post?.price}
+      </Text>
 
       {/* Action buttons */}
       <View style={postCardVerticalStyles.actionBtnsContainer}>
