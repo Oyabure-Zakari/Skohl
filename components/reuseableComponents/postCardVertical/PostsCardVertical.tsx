@@ -1,13 +1,12 @@
 import COLORS from "@/constants/colors";
-import blurhash from "@/constants/expoBlurImage";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
 import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import PostCardImage from "./PostCardImage";
 import PostUserImage from "./PostUserImage";
 import PostUserNameAndTime from "./PostUserNameAndTime";
 
@@ -43,14 +42,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       </View>
 
       {/* Product image */}
-      <Image
-        source={{ uri: post?.photo }}
-        style={postCardVerticalStyles.productImage}
-        placeholder={{ blurhash }}
-        contentFit="cover"
-        transition={1000}
-        alt="Product Picture"
-      />
+      <PostCardImage image={post?.photo} />
 
       <Text style={postCardVerticalStyles.description} numberOfLines={2}>
         {post?.description}
