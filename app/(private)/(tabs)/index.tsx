@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -7,23 +7,21 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 
-import COLORS from "@/constants/colors";
-import blurhash from "@/constants/expoBlurImage";
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
-import useReuseableStyles from "@/styles/reuable.styles";
-import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 
+import HomeHeader from "@/components/home/HomeHeader";
 import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import PostCardVertical from "@/components/reuseableComponents/postCardVertical/PostsCardVertical";
 import ProductCategoryButtons from "@/components/reuseableComponents/postCardVertical/ProductCategoryButtons";
 import productCategories from "@/constants/postProductCategories";
 import { useFetchPosts } from "@/hooks/fetchPosts";
+import useHomeStyles from "@/styles/homeStyles";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
 
 export default function HomeScreen() {
   // Styles
-  const reUseableStyles = useReuseableStyles();
+  const homeStyles = useHomeStyles();
 
   // States
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
@@ -53,22 +51,8 @@ export default function HomeScreen() {
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
-      {/* Header */}
-      <View style={homeStyles.header}>
-        {/* User Name */}
-        <Text style={homeStyles.userName}>Hey,{"\n"}Halima</Text>
-        {/* User Image */}
-        <TouchableOpacity onPress={() => router.push("/(private)/(tabs)/Profile")}>
-          <Image
-            source={{ uri: "https://i.pravatar.cc/300" }}
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            placeholder={{ blurhash }}
-            contentFit="contain"
-            transition={1000}
-            alt="Profile Picture"
-          />
-        </TouchableOpacity>
-      </View>
+      {/* Header: User Name + User Image */}
+      <HomeHeader />
 
       {/* Divider*/}
       <View style={homeStyles.divider} />
@@ -113,37 +97,3 @@ export default function HomeScreen() {
     </GestureHandlerRootView>
   );
 }
-
-const homeStyles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-  },
-
-  userName: {
-    fontSize: 18,
-    fontFamily: "Segoe_UI_Bold",
-    color: COLORS.darkBlue,
-  },
-
-  divider: {
-    width: "100%",
-    height: 2,
-    backgroundColor: COLORS.lightGrey,
-    marginTop: 10,
-  },
-
-  categoryContainer: {
-    marginTop: 20,
-    paddingHorizontal: 4,
-  },
-
-  categoryTitle: {
-    fontSize: 18,
-    fontFamily: "Segoe_UI_Bold",
-    color: COLORS.purple,
-    paddingHorizontal: 16,
-    marginBottom: 6,
-  },
-});
