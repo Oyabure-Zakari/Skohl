@@ -15,7 +15,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 
 import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
-import PostCardVertical from "@/components/reuseableComponents/PostsCardVertical";
+import PostCardVertical from "@/components/reuseableComponents/postCardVertical/PostsCardVertical";
 import productCategories from "@/constants/postProductCategories";
 import { useFetchPosts } from "@/hooks/fetchPosts";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
