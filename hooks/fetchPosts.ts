@@ -1,57 +1,52 @@
 import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
-import { ProductPost } from "@/types/PostTypes";
+import { Post } from "@/types/PostTypes";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useEffect } from "react";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
-export const useFetchPosts = (activeProductCategory: string) => {
+export const useFetchPosts = (
+  postType: "product" | "service" | "event",
+  categoryFilter: string,
+) => {
   const { fontScale } = useWindowDimensions();
 
   // Gives us access to tanstack query methods
   const queryClient = useQueryClient();
+
+  // Unique query key based on postType + optional category
+  // const queryKey = categoryFilter
+  //   ? [postType, "posts", categoryFilter]
+  //   : [postType, "posts"];
 
   const {
     data: posts = [],
     isLoading: isLoadingPosts,
     isError,
     error,
-  } = useQuery<ProductPost[]>({
-    queryKey: ["productPosts", activeProductCategory], // Unique key per category
-    enabled: !!activeProductCategory, // Don't run if no category
-    staleTime: Infinity, // Never consider it stale — onSnapshot keeps it fresh
-    gcTime: 1000 * 60 * 5, // Keep in cache 5 min after unmount
-    queryFn: () => {
-      // This is a placeholder — we never actually "fetch" here
-      return Promise.resolve([]); // Its going to return a promise array
-    },
+  } = useQuery<Post[]>({
+    queryKey: [postType, "posts", categoryFilter], // Unique key for caching
+    staleTime: Infinity, // Never stale — onSnapshot keeps it fresh
+    gcTime: 5 * 60 * 1000, // Cache 5 min after unmount
+    queryFn: () => Promise.resolve([]), // This is a placeholder — we never actually "fetch" here Its going to return a promise array
   });
 
-  // Real-time listener runs once per activeProductCategory change, listens for changes in posts collection (add/update/delete)
+  // Real-time listener runs once per categoryFilter change and postType, listens for changes in posts collection (add/update/delete)
   useEffect(() => {
-    // If no category, clear cache
-    if (!activeProductCategory) {
-      // Clear cache
-      queryClient.setQueryData(["productPosts", activeProductCategory], []);
-      return;
-    }
+    // Query all posts i.e products, services, or events based on postType
+    let q = query(
+      postsCollectionRef,
+      where("postType", "==", postType),
+      orderBy("createdAt", "desc"),
+    );
 
-    // Fetch posts
-    let q;
-    if (activeProductCategory === "none") {
-      // All products
+    // Add category filter if provided, query posts by category i.e fashion, electronics etc
+    if (categoryFilter && categoryFilter !== "none") {
       q = query(
         postsCollectionRef,
-        where("postType", "==", "product"),
-        orderBy("createdAt", "desc"),
-      );
-    } else {
-      // Filtered by category
-      q = query(
-        postsCollectionRef,
-        where("postType", "==", "product"),
-        where("category", "==", activeProductCategory),
+        where("postType", "==", postType),
+        where("category", "==", categoryFilter),
         orderBy("createdAt", "desc"),
       );
     }
@@ -60,20 +55,20 @@ export const useFetchPosts = (activeProductCategory: string) => {
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const fetchedPosts: ProductPost[] = snapshot.docs.map((doc) => ({
+        const freshPosts: Post[] = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        })) as ProductPost[];
+        })) as Post[];
 
-        // setQueryData will update TanStack Query's cache with the fresh data from Firestore
-        queryClient.setQueryData(["productPosts", activeProductCategory], fetchedPosts);
+        // Update TanStack Query cache → UI auto-refreshes
+        queryClient.setQueryData([postType, "posts", categoryFilter], freshPosts);
       },
-      (error) => {
-        console.error("Product posts real-time error:", error);
+      (err) => {
+        console.error(`${postType} posts real-time error:`, err);
         Toast.show({
           type: "error",
-          text1: "Error fetching posts",
-          text2: error.message || "An error occurred while fetching posts.",
+          text1: `Failed to load ${postType} posts`,
+          text2: err.message || "Check connection",
           text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
           text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
         });
@@ -81,7 +76,7 @@ export const useFetchPosts = (activeProductCategory: string) => {
     );
 
     return () => unsubscribe();
-  }, [activeProductCategory]);
+  }, [postType, categoryFilter]);
 
   return {
     posts,
