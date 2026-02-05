@@ -56,7 +56,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
         {post?.title}
       </Text>
 
-      {/* Product Price */}
+      {/* Price */}
       <Text style={postCardVerticalStyles.price}>
         {post?.postType === "product" && post?.price}
       </Text>

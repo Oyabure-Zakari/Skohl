@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import BottomSheet from "@gorhom/bottom-sheet";
 
@@ -16,6 +16,7 @@ import { useRouter } from "expo-router";
 
 import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import PostCardVertical from "@/components/reuseableComponents/postCardVertical/PostsCardVertical";
+import ProductCategoryButtons from "@/components/reuseableComponents/postCardVertical/ProductCategoryButtons";
 import productCategories from "@/constants/postProductCategories";
 import { useFetchPosts } from "@/hooks/fetchPosts";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
@@ -77,34 +78,11 @@ export default function HomeScreen() {
         {/* Category Title */}
         <Text style={homeStyles.categoryTitle}>Category</Text>
         {/* Category Buttons */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 6 }}
-        >
-          {/* Category Buttons */}
-          {productCategories.map((category) => (
-            <TouchableOpacity
-              key={category}
-              style={[
-                activeProductCategory === category
-                  ? reUseableStyles.activeButton
-                  : reUseableStyles.inactiveButton,
-              ]}
-              onPress={() => setActiveProductCategory(category as ProductCategoryType)}
-            >
-              <Text
-                style={[
-                  activeProductCategory === category
-                    ? reUseableStyles.activeText
-                    : reUseableStyles.inactiveText,
-                ]}
-              >
-                {category === "none" ? "All" : category}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        <ProductCategoryButtons
+          activeProductCategory={activeProductCategory}
+          setActiveProductCategory={setActiveProductCategory}
+          productCategories={productCategories}
+        />
       </View>
 
       {/* Product List */}
