@@ -53,7 +53,8 @@ const usePostCardVerticalStyles = () => {
     },
 
     title: {
-      width: width * 0.9,
+      width: width * 0.8,
+      marginBottom: 12,
       fontSize: fontScale * 20,
       fontFamily: "Segoe_UI_Bold_Italic",
     },
