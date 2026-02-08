@@ -15,11 +15,6 @@ export const useFetchPosts = (
   // Gives us access to tanstack query methods
   const queryClient = useQueryClient();
 
-  // Unique query key based on postType + optional category
-  // const queryKey = categoryFilter
-  //   ? [postType, "posts", categoryFilter]
-  //   : [postType, "posts"];
-
   const {
     data: posts = [],
     isLoading: isLoadingPosts,
@@ -34,14 +29,14 @@ export const useFetchPosts = (
 
   // Real-time listener runs once per categoryFilter change and postType, listens for changes in posts collection (add/update/delete)
   useEffect(() => {
-    // Query all posts i.e products, services, or events based on postType
+    // Query all posts based on post type e.g query all products or all services posts
     let q = query(
       postsCollectionRef,
       where("postType", "==", postType),
       orderBy("createdAt", "desc"),
     );
 
-    // Add category filter if provided, query posts by category i.e fashion, electronics etc
+    // Query posts based on post type and category e.g query products posts by equipments category
     if (categoryFilter && categoryFilter !== "none") {
       q = query(
         postsCollectionRef,
@@ -60,7 +55,7 @@ export const useFetchPosts = (
           ...doc.data(),
         })) as Post[];
 
-        // Update TanStack Query cache → UI auto-refreshes
+        // Update TanStack Query cache
         queryClient.setQueryData([postType, "posts", categoryFilter], freshPosts);
       },
       (err) => {
