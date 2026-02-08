@@ -41,25 +41,25 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
         />
       </View>
 
-      {/* Product image */}
-      <PostCardImage image={post?.photo} />
+      {/* Title */}
+      <Text style={postCardVerticalStyles.title} numberOfLines={2}>
+        {post?.title}
+      </Text>
 
-      <Text style={postCardVerticalStyles.description} numberOfLines={2}>
+      {/* Product image */}
+      {post?.photo && <PostCardImage image={post?.photo} />}
+
+      <Text style={postCardVerticalStyles.description} numberOfLines={post?.photo ? 2 : 4}>
         {post?.description}
       </Text>
 
       {/* Category */}
       <Text style={postCardVerticalStyles.category}>ℹ️ {post?.category}</Text>
 
-      {/* Title */}
-      <Text style={postCardVerticalStyles.title} numberOfLines={2}>
-        {post?.title}
-      </Text>
-
       {/* Price */}
-      <Text style={postCardVerticalStyles.price}>
-        {post?.postType === "product" && post?.price}
-      </Text>
+      {post?.postType !== "event" && (
+        <Text style={postCardVerticalStyles.price}>{post?.price}</Text>
+      )}
 
       {/* Action buttons */}
       <View style={postCardVerticalStyles.actionBtnsContainer}>
