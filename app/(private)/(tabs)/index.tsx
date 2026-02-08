@@ -3,32 +3,37 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 // React Native
 import { Alert } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+// Expo
+import { StatusBar } from "expo-status-bar";
 // Packages / Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
 // Component
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
 import HomeHeader from "@/components/home/HomeHeader";
-import PostsList from "@/components/home/PostsList";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
-import ProductCategoryButtons from "@/components/reuseableComponents/postCardVertical/ProductCategoryButtons";
+import PostCategoryButtons from "@/components/reuseableComponents/postCardVertical/PostCategoryButtons";
+import PostsList from "@/components/reuseableComponents/PostsList";
 // Styles
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
 // Constants
+import COLORS from "@/constants/colors";
 import productCategories from "@/constants/postProductCategories";
 // Hooks
 import { useFetchPosts } from "@/hooks/fetchPosts";
 // Types
-import COLORS from "@/constants/colors";
+import { EventCategoryType } from "@/types/EventCategoryType";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
-import { StatusBar } from "expo-status-bar";
+import { ServiceCategoryType } from "@/types/ServiceCategoryType";
 
 export default function HomeScreen() {
   // States
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post",
   );
-  const [activeProductCategory, setActiveProductCategory] = useState<ProductCategoryType>("none");
+  const [activePostCategory, setActivePostCategory] = useState<
+    ProductCategoryType | ServiceCategoryType | EventCategoryType
+  >("none");
 
   // Refs
   const sheetRef = useRef<BottomSheet>(null);
@@ -42,7 +47,7 @@ export default function HomeScreen() {
   }, []);
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
-  const { posts, isLoadingPosts, isError, error } = useFetchPosts("product", activeProductCategory);
+  const { posts, isLoadingPosts, isError, error } = useFetchPosts("product", activePostCategory);
 
   if (isError)
     return Alert.alert("Error", error?.message || "An error occurred while fetching posts.");
@@ -55,10 +60,11 @@ export default function HomeScreen() {
         <HomeHeader />
 
         {/* Category Buttons */}
-        <ProductCategoryButtons
-          activeProductCategory={activeProductCategory}
-          setActiveProductCategory={setActiveProductCategory}
-          productCategories={productCategories}
+        <PostCategoryButtons
+          activePostCategory={activePostCategory}
+          setActivePostCategory={setActivePostCategory}
+          postCategories={productCategories}
+          screen={"Home Screen"}
         />
 
         {/* Product List */}
