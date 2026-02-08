@@ -1,0 +1,25 @@
+const postEventCategories = [
+  "none",
+  "Arts & Culture",
+  "Business & Entrepreneurship",
+  "Concerts & Music Shows",
+  "Debates & Intellectual Forums",
+  "Educational & Academic Events",
+  "Freshers’ & Orientation Events",
+  "General Meetups & Networking",
+  "Health & Wellness",
+  "Innovation & Hackathons",
+  "Justice, Advocacy & Awareness",
+  "Knowledge Sharing & Workshops",
+  "Leadership & Student Politics",
+  "NGO & Community Outreach",
+  "Parties & Social Events",
+  "Quizzes & Competitions",
+  "Research & Conferences",
+  "Religious Programs",
+  "Sports & Games",
+  "Tech & Coding Events",
+  "Undergraduate-Focused Events",
+];
+
+export default postEventCategories;
