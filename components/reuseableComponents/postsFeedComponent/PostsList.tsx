@@ -1,0 +1,51 @@
+import IMAGES from "@/constants/images";
+import { Post } from "@/types/PostTypes";
+import { Image } from "expo-image";
+import React from "react";
+import { FlatList, useWindowDimensions, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
+import PostCardVertical from "./postCardVertical/PostsCardVertical";
+
+type PostListProps = {
+  posts: Post[];
+};
+
+const PostsList: React.FC<PostListProps> = ({ posts }) => {
+  const { fontScale } = useWindowDimensions();
+
+  return (
+    <>
+      {posts.length === 0 ? (
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <Image
+            source={IMAGES.noRecord}
+            style={{ width: 200, height: 200 }}
+            contentFit="contain"
+            transition={1000}
+            alt="No Record"
+          />
+          <Animated.Text
+            entering={FadeInDown.delay(400)}
+            style={{
+              fontSize: fontScale * 16,
+              fontFamily: "Segoe_UI_Bold_Italic",
+              textAlign: "center",
+            }}
+          >
+            No posts found{"\n"}for this category
+          </Animated.Text>
+        </View>
+      ) : (
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <PostCardVertical post={item} />}
+          contentContainerStyle={{ paddingVertical: 16 }}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
+    </>
+  );
+};
+
+export default PostsList;
