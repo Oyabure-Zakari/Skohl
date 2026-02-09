@@ -2,25 +2,14 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 // React Native
 import { Alert } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-// Expo
-import { StatusBar } from "expo-status-bar";
 // Packages / Libraries
 import BottomSheet from "@gorhom/bottom-sheet";
-// Component
-import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
-import HomeHeader from "@/components/home/HomeHeader";
-import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
-import OverlayActivityIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
-import PostCategoryButtons from "@/components/reuseableComponents/postCardVertical/PostCategoryButtons";
-import PostsList from "@/components/reuseableComponents/PostsList";
-// Styles
-import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
-// Constants
-import COLORS from "@/constants/colors";
-import postEventCategories from "@/constants/postEventCategories";
 // Hooks
 import { useFetchPosts } from "@/hooks/fetchPosts";
+// Components
+import PostsFeed from "@/components/reuseableComponents/postsFeedComponent/PostsFeed";
+//Constants
+import postEventCategories from "@/constants/postEventCategories";
 // Types
 import { EventCategoryType } from "@/types/EventCategoryType";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
@@ -53,36 +42,18 @@ export default function EventScreen() {
     return Alert.alert("Error", error?.message || "An error occurred while fetching posts.");
 
   return (
-    <>
-      <StatusBar style="light" backgroundColor={COLORS.darkBlue} />
-      <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
-        {/* Header: User Name + User Image */}
-        <HomeHeader />
-
-        {/* Category Buttons */}
-        <PostCategoryButtons
-          activePostCategory={activePostCategory}
-          setActivePostCategory={setActivePostCategory}
-          postCategories={postEventCategories}
-          screen={"Event Screen"}
-        />
-
-        {/* Product List */}
-        {isLoadingPosts ? <OverlayActivityIndicator /> : <PostsList posts={posts} />}
-
-        {/* Bottom Sheet */}
-        <BottomSheetComponent
-          sheetRef={sheetRef}
-          snapPoints={snapPoints}
-          activeBottomSheet={activeBottomSheet}
-        />
-
-        {/* Floating Action Button */}
-        <FloatingActionButton
-          setActiveBottomSheet={setActiveBottomSheet}
-          handleSnapPress={handleSnapPress}
-        />
-      </GestureHandlerRootView>
-    </>
+    <PostsFeed
+      activePostCategory={activePostCategory}
+      setActivePostCategory={setActivePostCategory}
+      postCategories={postEventCategories}
+      screen={"Event Screen"}
+      isLoadingPosts={isLoadingPosts}
+      posts={posts}
+      sheetRef={sheetRef}
+      snapPoints={snapPoints}
+      activeBottomSheet={activeBottomSheet}
+      setActiveBottomSheet={setActiveBottomSheet}
+      handleSnapPress={handleSnapPress}
+    />
   );
 }
