@@ -26,7 +26,10 @@ import useVerificationStore from "@/store/verificatonStore";
 import COLORS from "@/constants/colors";
 import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { db } from "@/firebase/firebase.config";
-import { doc, getDocs, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import { doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+
+// Assuming this is your hook — adjust the import path if needed
+import { useUserPosts } from "@/hooks/userPosts";
 
 // Initialize the library with English locale
 TimeAgo.addDefaultLocale(en);
@@ -79,6 +82,35 @@ function AppLayout() {
     enabled: !!userUid, // Only fetch if userUid is defined
     retry: false, // Disable automatic retries
   });
+
+  // Fetch user's posts
+  const { posts, isLoadingCreatedPosts } = useUserPosts(userUid);
+
+  // Sync profile image from first post if missing
+  const firstPost = posts?.[0] ?? null;
+
+  // Sync profile image from first post if user has no image yet
+  const syncProfileImage = useCallback(async () => {
+    if (!userDoc?.uid) return;
+    if (userDoc.image) return; // already has image
+    if (!firstPost?.postedBy?.image) return; // no usable image found
+
+    try {
+      await updateDoc(doc(db, "users", userDoc.uid), {
+        image: firstPost.postedBy.image,
+      });
+    } catch (err: any) {
+      Alert.alert("Error", `Failed to sync profile image: ${err.message || "Unknown error"}`);
+    }
+  }, [userDoc, firstPost]);
+
+  // Effect to sync profile image when userDoc or posts change
+  useEffect(() => {
+    if (!userDoc || userLoading || isLoadingCreatedPosts) return;
+    if (!userDoc.image) {
+      syncProfileImage();
+    }
+  }, [userDoc, userLoading, isLoadingCreatedPosts, syncProfileImage]);
 
   // Auto-create Firestore user if missing but we have auth + verification data
   const createUserIfMissing = useCallback(async () => {
