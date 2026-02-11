@@ -25,10 +25,11 @@ import useVerificationStore from "@/store/verificatonStore";
 // Firebase
 import COLORS from "@/constants/colors";
 import { db } from "@/firebase/firebase.config";
-import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 // Assuming this is your hook — adjust the import path if needed
 import useFetchUserDoc from "@/hooks/fetchUserDoc";
+import useSyncProfileImage from "@/hooks/syncProfileImage";
 import { useUserPosts } from "@/hooks/userPosts";
 
 // Initialize the library with English locale
@@ -72,19 +73,7 @@ function AppLayout() {
   const firstPost = posts?.[0] ?? null;
 
   // Sync profile image from first post if user has no image yet
-  const syncProfileImage = useCallback(async () => {
-    if (!userDoc?.uid) return;
-    if (userDoc.image) return; // already has image
-    if (!firstPost?.postedBy?.image) return; // no usable image found
-
-    try {
-      await updateDoc(doc(db, "users", userDoc.uid), {
-        image: firstPost.postedBy.image,
-      });
-    } catch (err: any) {
-      Alert.alert("Error", `Failed to sync profile image: ${err.message || "Unknown error"}`);
-    }
-  }, [userDoc, firstPost]);
+  const { syncProfileImage } = useSyncProfileImage(userDoc, firstPost);
 
   // Effect to sync profile image when userDoc or posts change
   useEffect(() => {
