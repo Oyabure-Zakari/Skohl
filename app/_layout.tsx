@@ -12,7 +12,7 @@ import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 // Libraries
-import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 // Components
@@ -24,11 +24,11 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import useVerificationStore from "@/store/verificatonStore";
 // Firebase
 import COLORS from "@/constants/colors";
-import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { db } from "@/firebase/firebase.config";
-import { doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
 // Assuming this is your hook — adjust the import path if needed
+import useFetchUserDoc from "@/hooks/fetchUserDoc";
 import { useUserPosts } from "@/hooks/userPosts";
 
 // Initialize the library with English locale
@@ -63,25 +63,7 @@ function AppLayout() {
   const { userUid, loading: authLoading } = useAuth();
 
   // Fetch user doc from Firestore
-  const {
-    data: userDoc,
-    isLoading: userLoading,
-    isError: userError,
-    error: userErrorDetails,
-    refetch,
-  } = useQuery({
-    queryKey: ["userDoc", userUid],
-    queryFn: async () => {
-      if (!userUid) return null;
-      // Check if user doc exists
-      const q = query(usersCollectionRef, where("uid", "==", userUid));
-      const snapshot = await getDocs(q);
-      // If user doc doesn't exist, return null
-      return snapshot.empty ? null : snapshot.docs[0].data();
-    },
-    enabled: !!userUid, // Only fetch if userUid is defined
-    retry: false, // Disable automatic retries
-  });
+  const { userDoc, userLoading, userError, userErrorDetails, refetch } = useFetchUserDoc(userUid);
 
   // Fetch user's posts
   const { posts, isLoadingCreatedPosts } = useUserPosts(userUid);
