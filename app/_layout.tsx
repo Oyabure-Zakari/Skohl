@@ -1,5 +1,5 @@
 // React
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 // React Native
 import { Alert } from "react-native";
 // Expo
@@ -22,12 +22,10 @@ import SafeScreen from "@/components/SafeScreen";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 // Zustand
 import useVerificationStore from "@/store/verificatonStore";
-// Firebase
+// Constants
 import COLORS from "@/constants/colors";
-import { db } from "@/firebase/firebase.config";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-
-// Assuming this is your hook — adjust the import path if needed
+// Hooks
+import useCreateUserIfMissing from "@/hooks/createUserIfMissing";
 import useFetchUserDoc from "@/hooks/fetchUserDoc";
 import useSyncProfileImage from "@/hooks/syncProfileImage";
 import { useUserPosts } from "@/hooks/userPosts";
@@ -84,43 +82,13 @@ function AppLayout() {
   }, [userDoc, userLoading, isLoadingCreatedPosts, syncProfileImage]);
 
   // Auto-create Firestore user if missing but we have auth + verification data
-  const createUserIfMissing = useCallback(async () => {
-    if (!userUid || !verificationFingerprint || !studentInfo) return;
-
-    // Check if user doc already exists
-    if (userDoc) return; // Already created
-
-    try {
-      await setDoc(doc(db, "users", userUid), {
-        uid: userUid,
-        image: "",
-        firstname: studentInfo.firstname,
-        surname: studentInfo.surname,
-        faculty: studentInfo.faculty,
-        gender: studentInfo.gender,
-        religion: studentInfo.religion,
-        bio: "",
-        verificationFingerprint,
-        joinedAt: serverTimestamp(),
-      });
-      refetch(); // Refresh query
-    } catch (error: any) {
-      // Show alert with retry option
-      Alert.alert(
-        "Error Creating User",
-        `Failed to create your user profile: ${error.message || "Unknown error"}`,
-        [
-          {
-            text: "Retry",
-            onPress: () => {
-              refetch(); // This will trigger the query again
-            },
-          },
-        ],
-        { cancelable: false },
-      );
-    }
-  }, [userUid, verificationFingerprint, studentInfo, userDoc, refetch]);
+  const { createUserIfMissing } = useCreateUserIfMissing(
+    userUid,
+    verificationFingerprint,
+    studentInfo,
+    userDoc,
+    refetch,
+  );
 
   // Show alert for query errors (e.g., fetching user doc)
   useEffect(() => {
