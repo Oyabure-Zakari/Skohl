@@ -1,4 +1,5 @@
 import COLORS from "@/constants/colors";
+import { useAuth } from "@/contexts/AuthContext";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
 import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
@@ -24,6 +25,12 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
 
   // Styles
   const postCardVerticalStyles = usePostCardVerticalStyles();
+
+  // Context
+  const { userUid } = useAuth();
+
+  // Check if the post is owned by the current user
+  const isTheOwner = post.postedBy.userUid === userUid;
 
   return (
     <TouchableOpacity
@@ -67,10 +74,13 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
           <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={postCardVerticalStyles.chatBtn}>
-          <MaterialCommunityIcons name="chat-outline" size={22} color={COLORS.lightGrey} />
-          <Text style={postCardVerticalStyles.chatBtnText}>Chat</Text>
-        </TouchableOpacity>
+        {/* Only show chat button if the post is not owned by the current user */}
+        {!isTheOwner && (
+          <TouchableOpacity style={postCardVerticalStyles.chatBtn}>
+            <MaterialCommunityIcons name="chat-outline" size={22} color={COLORS.lightGrey} />
+            <Text style={postCardVerticalStyles.chatBtnText}>Chat</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
