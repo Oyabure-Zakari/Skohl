@@ -54,6 +54,7 @@ export default function HomeScreen() {
       activeBottomSheet={activeBottomSheet}
       setActiveBottomSheet={setActiveBottomSheet}
       handleSnapPress={handleSnapPress}
+      screenText={"Products"}
     />
   );
 }

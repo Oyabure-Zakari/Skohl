@@ -14,11 +14,11 @@ export default function useHomeStyles() {
       alignItems: "center",
     },
 
-    userName: {
+    screenText: {
       fontSize: 18,
       fontFamily: "Segoe_UI_Bold",
       color: COLORS.lightGrey,
-      width: "80%",
+      width: "40%",
     },
 
     divider: {

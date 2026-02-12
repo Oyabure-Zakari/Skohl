@@ -29,6 +29,7 @@ type PostsFeedProps = {
   activeBottomSheet: "Create Post" | "Send Feedback";
   setActiveBottomSheet: React.Dispatch<React.SetStateAction<"Create Post" | "Send Feedback">>;
   handleSnapPress: () => void;
+  screenText: string;
 };
 
 const PostsFeed: React.FC<PostsFeedProps> = ({
@@ -43,13 +44,14 @@ const PostsFeed: React.FC<PostsFeedProps> = ({
   activeBottomSheet,
   setActiveBottomSheet,
   handleSnapPress,
+  screenText,
 }) => {
   return (
     <>
       <StatusBar style="light" backgroundColor={COLORS.darkBlue} />
       <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
         {/* Header: User Name + User Image */}
-        <PostFeedHeader />
+        <PostFeedHeader screenText={screenText} />
 
         {/* Category Buttons */}
         <PostCategoryButtons

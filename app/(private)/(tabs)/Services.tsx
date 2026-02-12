@@ -54,6 +54,7 @@ export default function ServiceScreen() {
       activeBottomSheet={activeBottomSheet}
       setActiveBottomSheet={setActiveBottomSheet}
       handleSnapPress={handleSnapPress}
+      screenText={"Services"}
     />
   );
 }

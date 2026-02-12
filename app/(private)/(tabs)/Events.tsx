@@ -54,6 +54,7 @@ export default function EventScreen() {
       activeBottomSheet={activeBottomSheet}
       setActiveBottomSheet={setActiveBottomSheet}
       handleSnapPress={handleSnapPress}
+      screenText={"Events"}
     />
   );
 }
