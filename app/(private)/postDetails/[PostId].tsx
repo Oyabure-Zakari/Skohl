@@ -16,6 +16,7 @@ import PostDetailsUserImage from "@/components/postDetails/PostDetailsUserImage"
 import PostDetailsUserName from "@/components/postDetails/PostDetailsUserName";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 // Styles
+import { useAuth } from "@/contexts/AuthContext";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
 
 const PostDetails = () => {
@@ -26,6 +27,12 @@ const PostDetails = () => {
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
   const { postDetails, isLoadingPostsDetails, isError, error } = usePostDetails(PostId as string);
+
+  // Context
+  const { userUid } = useAuth();
+
+  // Check if the post is owned by the current user
+  const isTheOwner = postDetails?.postedBy?.userUid === userUid;
 
   // Loading indicator
   if (isLoadingPostsDetails) return <OverlayLoadingIndicator />;
@@ -75,11 +82,14 @@ const PostDetails = () => {
           <Text style={postDetailsStyles.postDescription}>{postDetails?.description}</Text>
         </View>
 
-        {/* Chat Button */}
-        <TouchableOpacity style={postDetailsStyles.chatBtn}>
-          <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />
-          <Text style={postDetailsStyles.chatBtnText}>Chat</Text>
-        </TouchableOpacity>
+        {/* Only show chat button if the post is not owned by the current user */}
+        {!isTheOwner && (
+          // Chat Button
+          <TouchableOpacity style={postDetailsStyles.chatBtn}>
+            <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />
+            <Text style={postDetailsStyles.chatBtnText}>Chat</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </View>
   );
