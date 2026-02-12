@@ -102,8 +102,8 @@ export default function EditProfile() {
             />
 
             {/* Full Name */}
-            {isLoading || isUpdating ? (
-              <FullnameSkeletonUI isLoading={isLoading || isUpdating} />
+            {isLoading ? (
+              <FullnameSkeletonUI isLoading={isLoading} />
             ) : (
               <Fullname fullName={fullName} />
             )}
@@ -112,15 +112,20 @@ export default function EditProfile() {
             <PhotoOptions openCamera={() => setIsCameraOpen(true)} clearImage={clearImage} />
 
             {/* Text Input */}
-            {isLoading || isUpdating ? (
-              <BioSkeletonUI isLoading={isLoading || isUpdating} />
+            {isLoading ? (
+              <BioSkeletonUI isLoading={isLoading} />
             ) : (
-              <BioTextInput
-                textInputRef={textInputRef}
-                bioMaxLength={bioMaxLength}
-                user={user}
-                userBioTextRef={userBioTextRef}
-              />
+              <>
+                {/* Only render BioTextInput when not updating to prevent user from editing while update is in progress */}
+                {!isUpdating && (
+                  <BioTextInput
+                    textInputRef={textInputRef}
+                    bioMaxLength={bioMaxLength}
+                    user={user}
+                    userBioTextRef={userBioTextRef}
+                  />
+                )}
+              </>
             )}
 
             {/* Save Button */}
