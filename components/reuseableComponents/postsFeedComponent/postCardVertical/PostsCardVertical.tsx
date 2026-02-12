@@ -1,12 +1,14 @@
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
+import { useDeletePost } from "@/hooks/deletePost";
+import usePostCardStyles from "@/styles/postCardStyles";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
 import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import PostCardImage from "./PostCardImage";
 import PostUserImage from "./PostUserImage";
 import PostUserNameAndTime from "./PostUserNameAndTime";
@@ -25,12 +27,23 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
 
   // Styles
   const postCardVerticalStyles = usePostCardVerticalStyles();
+  const postCardStyles = usePostCardStyles();
 
   // Context
   const { userUid } = useAuth();
 
   // Check if the post is owned by the current user
   const isTheOwner = post.postedBy.userUid === userUid;
+
+  // Tanstack Query hook to delete a post
+  const { deletePost, isDeletingPost } = useDeletePost({ post });
+
+  const handleDeletePost = (): void => {
+    Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", style: "destructive", onPress: deletePost },
+    ]);
+  };
 
   return (
     <TouchableOpacity
@@ -70,15 +83,38 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
 
       {/* Action buttons */}
       <View style={postCardVerticalStyles.actionBtnsContainer}>
-        <TouchableOpacity>
-          <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", gap: 20 }}>
+          {/* Bookmark Button */}
+          <TouchableOpacity>
+            <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
+          </TouchableOpacity>
+
+          {/* Only show edit button if the post is owned by the current user */}
+          {isTheOwner && (
+            // Edit Button
+            <TouchableOpacity>
+              <MaterialIcons name="edit-note" size={22} color={COLORS.darkGrey} />
+            </TouchableOpacity>
+          )}
+        </View>
 
         {/* Only show chat button if the post is not owned by the current user */}
-        {!isTheOwner && (
+        {!isTheOwner ? (
           <TouchableOpacity style={postCardVerticalStyles.chatBtn}>
             <MaterialCommunityIcons name="chat-outline" size={22} color={COLORS.lightGrey} />
             <Text style={postCardVerticalStyles.chatBtnText}>Chat</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={handleDeletePost}
+            disabled={isDeletingPost}
+            style={postCardStyles.deletePostContainer}
+          >
+            {isDeletingPost ? (
+              <ActivityIndicator size="small" color={COLORS.lightGrey} />
+            ) : (
+              <Text style={postCardStyles.deleteText}>Delete</Text>
+            )}
           </TouchableOpacity>
         )}
       </View>

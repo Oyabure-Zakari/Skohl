@@ -1,8 +1,8 @@
 // React Native
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 // Expo
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
 // Constants
 import COLORS from "@/constants/colors";
 // Custom Hooks
@@ -17,6 +17,8 @@ import PostDetailsUserName from "@/components/postDetails/PostDetailsUserName";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 // Styles
 import { useAuth } from "@/contexts/AuthContext";
+import { useDeletePost } from "@/hooks/deletePost";
+import usePostCardStyles from "@/styles/postCardStyles";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
 
 const PostDetails = () => {
@@ -24,6 +26,7 @@ const PostDetails = () => {
 
   // Styles
   const postDetailsStyles = usePostDetailsStyles();
+  const postCardStyles = usePostCardStyles();
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
   const { postDetails, isLoadingPostsDetails, isError, error } = usePostDetails(PostId as string);
@@ -34,6 +37,9 @@ const PostDetails = () => {
   // Check if the post is owned by the current user
   const isTheOwner = postDetails?.postedBy?.userUid === userUid;
 
+  // Tanstack Query hook to delete a post
+  const { deletePost, isDeletingPost } = useDeletePost({ post: postDetails });
+
   // Loading indicator
   if (isLoadingPostsDetails) return <OverlayLoadingIndicator />;
 
@@ -41,7 +47,14 @@ const PostDetails = () => {
   if (isError) return Alert.alert("Error", (error as Error).message);
 
   // Post not found
-  if (!postDetails) return Alert.alert("Error", "Post not found");
+  if (!postDetails) router.back();
+
+  const handleDeletePost = (): void => {
+    Alert.alert("Delete Post", `Are you sure you want to delete "${postDetails?.title}"?`, [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", style: "destructive", onPress: deletePost },
+    ]);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -83,12 +96,51 @@ const PostDetails = () => {
         </View>
 
         {/* Only show chat button if the post is not owned by the current user */}
-        {!isTheOwner && (
-          // Chat Button
-          <TouchableOpacity style={postDetailsStyles.chatBtn}>
-            <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />
-            <Text style={postDetailsStyles.chatBtnText}>Chat</Text>
-          </TouchableOpacity>
+        {!isTheOwner ? (
+          <>
+            {/* Bookmark Button */}
+            <TouchableOpacity>
+              <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
+            </TouchableOpacity>
+            {/* Chat Button */}
+            <TouchableOpacity style={postDetailsStyles.chatBtn}>
+              <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />
+              <Text style={postDetailsStyles.chatBtnText}>Chat</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginVertical: 40,
+            }}
+          >
+            <View style={{ flexDirection: "row", gap: 20 }}>
+              {/* Bookmark Button */}
+              <TouchableOpacity>
+                <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
+              </TouchableOpacity>
+
+              {/* Edit Button */}
+              <TouchableOpacity>
+                <MaterialIcons name="edit-note" size={22} color={COLORS.darkGrey} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Delete Post Button */}
+            <TouchableOpacity
+              onPress={handleDeletePost}
+              disabled={isDeletingPost}
+              style={postCardStyles.deletePostContainer}
+            >
+              {isDeletingPost ? (
+                <ActivityIndicator size="small" color={COLORS.lightGrey} />
+              ) : (
+                <Text style={postCardStyles.deleteText}>Delete</Text>
+              )}
+            </TouchableOpacity>
+          </View>
         )}
       </ScrollView>
     </View>
