@@ -1,8 +1,9 @@
 import IMAGES from "@/constants/images";
 import { Post } from "@/types/PostTypes";
+import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import React from "react";
-import { FlatList, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import PostCardVertical from "./postCardVertical/PostsCardVertical";
 
@@ -36,7 +37,7 @@ const PostsList: React.FC<PostListProps> = ({ posts }) => {
           </Animated.Text>
         </View>
       ) : (
-        <FlatList
+        <FlashList
           data={posts}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => <PostCardVertical post={item} />}
