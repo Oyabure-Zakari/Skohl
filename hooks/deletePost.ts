@@ -38,6 +38,7 @@ export const useDeletePost = ({ post, screenName, router }: UseDeletePost) => {
         text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
       });
 
+      // This is to go back to the previous screen, because when the user deletes a post in the post details screen, the post is still visible there and the user is still on that particular post details screen.
       if (screenName === "Post Details Screen") router?.back();
     },
 
