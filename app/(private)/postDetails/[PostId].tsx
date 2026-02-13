@@ -2,7 +2,7 @@
 import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 // Expo
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 // Constants
 import COLORS from "@/constants/colors";
 // Custom Hooks
@@ -24,6 +24,11 @@ import usePostDetailsStyles from "@/styles/postDetails.styles";
 const PostDetails = () => {
   const { PostId } = useLocalSearchParams();
 
+  // Router
+  const router = useRouter();
+
+  const screenName = "Post Details Screen";
+
   // Styles
   const postDetailsStyles = usePostDetailsStyles();
   const postCardStyles = usePostCardStyles();
@@ -38,7 +43,7 @@ const PostDetails = () => {
   const isTheOwner = postDetails?.postedBy?.userUid === userUid;
 
   // Tanstack Query hook to delete a post
-  const { deletePost, isDeletingPost } = useDeletePost({ post: postDetails });
+  const { deletePost, isDeletingPost } = useDeletePost({ post: postDetails, screenName, router });
 
   // Loading indicator
   if (isLoadingPostsDetails) return <OverlayLoadingIndicator />;

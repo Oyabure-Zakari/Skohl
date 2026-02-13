@@ -2,15 +2,18 @@ import { db } from "@/firebase/firebase.config";
 import { Post } from "@/types/PostTypes";
 import deletePostImageFromCloudinary from "@/utils/cloudinary/deletePostImage";
 import { useMutation } from "@tanstack/react-query";
+import { Router } from "expo-router";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
 type UseDeletePost = {
   post: Post;
+  screenName?: string;
+  router?: Router;
 };
 
-export const useDeletePost = ({ post }: UseDeletePost) => {
+export const useDeletePost = ({ post, screenName, router }: UseDeletePost) => {
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
 
@@ -34,6 +37,8 @@ export const useDeletePost = ({ post }: UseDeletePost) => {
         text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
         text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
       });
+
+      if (screenName === "Post Details Screen") router?.back();
     },
 
     // Error callback runs after mutation fails
