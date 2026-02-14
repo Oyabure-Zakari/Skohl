@@ -72,10 +72,12 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
     else removeFromBookmarks();
   };
 
+  // BookmarkIds loading
   if (isLoadingBookmarkIds) {
     return <OverlayLoadingIndicator />;
   }
 
+  // BookmarkIds error
   if (isBookmarkIdsError) {
     Alert.alert(`${bookmarkIdsError?.message}`);
     return null;
