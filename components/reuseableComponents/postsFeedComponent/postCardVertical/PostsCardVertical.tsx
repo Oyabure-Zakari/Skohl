@@ -1,5 +1,6 @@
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
+import bookmarksCollectionRef from "@/firebase/collectionRef/bookmarksCollectionRef";
 import { db } from "@/firebase/firebase.config";
 import { useDeletePost } from "@/hooks/deletePost";
 import usePostCardStyles from "@/styles/postCardStyles";
@@ -8,7 +9,7 @@ import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -55,8 +56,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   const fetchBookmarkIds = async () => {
     try {
       setLoading(true);
-      const bookmarksRef = collection(db, "bookmarks");
-      const q = query(bookmarksRef, where("bookmarkedBy", "==", userUid));
+      const q = query(bookmarksCollectionRef, where("bookmarkedBy", "==", userUid));
       const querySnapshot = await getDocs(q);
 
       const bookmarkIds: string[] = [];
