@@ -1,5 +1,6 @@
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
+import { db } from "@/firebase/firebase.config";
 import { useDeletePost } from "@/hooks/deletePost";
 import usePostCardStyles from "@/styles/postCardStyles";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
@@ -7,8 +8,10 @@ import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
+import { doc, setDoc } from "firebase/firestore";
+import React, { useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
+import OverlayLoadingIndicator from "../../OverlayLoadingIndicator";
 import PostCardImage from "./PostCardImage";
 import PostUserImage from "./PostUserImage";
 import PostUserNameAndTime from "./PostUserNameAndTime";
@@ -44,6 +47,24 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       { text: "Delete", style: "destructive", onPress: deletePost },
     ]);
   };
+  const [loading, setLoading] = useState(false);
+
+  const handleBookmark = async () => {
+    setLoading(true);
+    try {
+      await setDoc(doc(db, "bookmarks", post?.id), {
+        bookmarkId: post.id,
+        bookmarkedBy: userUid,
+      });
+      console.log("Bookmark added with ID: ", post?.id);
+    } catch (error: any) {
+      console.log(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <OverlayLoadingIndicator />;
 
   return (
     <TouchableOpacity
@@ -85,7 +106,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       <View style={postCardVerticalStyles.actionBtnsContainer}>
         <View style={{ flexDirection: "row", gap: 20 }}>
           {/* Bookmark Button */}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleBookmark}>
             <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
           </TouchableOpacity>
 
