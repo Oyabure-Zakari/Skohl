@@ -43,13 +43,6 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   // Tanstack Query hook to delete a post
   const { deletePost, isDeletingPost } = useDeletePost({ post });
 
-  const handleDeletePost = (): void => {
-    Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: deletePost },
-    ]);
-  };
-
   // Fetching bookmarkIds via tanstack query + firebase onSnapshot listener (real-time updates)
   const { bookmarkIds, isLoadingBookmarkIds, isBookmarkIdsError, bookmarkIdsError } =
     useFetchBookmarkIds(userUid);
@@ -64,6 +57,14 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
 
   // Checks if post is bookmarked
   const isBookmarked = bookmarkIds?.includes(post?.id);
+
+  // Handles deleting a post
+  const handleDeletePost = (): void => {
+    Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", style: "destructive", onPress: deletePost },
+    ]);
+  };
 
   // Handles bookmarking a post
   const handleBookmark = () => {
