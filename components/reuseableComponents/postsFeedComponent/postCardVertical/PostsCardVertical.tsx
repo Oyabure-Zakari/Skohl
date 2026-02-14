@@ -10,9 +10,9 @@ import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-toast-message";
+import BookmarkBtn from "../../BookmarkBtn";
 import OverlayLoadingIndicator from "../../OverlayLoadingIndicator";
 import PostCardImage from "./PostCardImage";
 import PostUserImage from "./PostUserImage";
@@ -43,9 +43,6 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   // Tanstack Query hook to delete a post
   const { deletePost, isDeletingPost } = useDeletePost({ post });
 
-  const [loading, setLoading] = useState(false);
-  //const [bookmarkIds, setBookmarkIds] = useState<string[]>([]);
-
   const handleDeletePost = (): void => {
     Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
       { text: "Cancel", style: "cancel" },
@@ -68,23 +65,10 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   // Checks if post is bookmarked
   const isBookmarked = bookmarkIds?.includes(post?.id);
 
-  const handleBookmark = async () => {
-    setLoading(true);
-    try {
-      if (!isBookmarked) await addToBookmarks();
-      else await removeFromBookmarks();
-    } catch (error: any) {
-      // Show success toast
-      Toast.show({
-        type: "error",
-        text1: "Bookmark",
-        text2: `${error.message}`,
-        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
-        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
-      });
-    } finally {
-      setLoading(false);
-    }
+  // Handles bookmarking a post
+  const handleBookmark = () => {
+    if (!isBookmarked) addToBookmarks();
+    else removeFromBookmarks();
   };
 
   if (isLoadingBookmarkIds) {
@@ -136,16 +120,10 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       <View style={postCardVerticalStyles.actionBtnsContainer}>
         <View style={{ flexDirection: "row", gap: 20 }}>
           {/* Bookmark Button */}
-          {loading || isAddingToBookmarks || isRemovingFromBookmarks ? (
+          {isAddingToBookmarks || isRemovingFromBookmarks ? (
             <ActivityIndicator size="small" color={COLORS.darkBlue} />
           ) : (
-            <TouchableOpacity onPress={handleBookmark}>
-              <MaterialCommunityIcons
-                name={isBookmarked ? "bookmark" : "bookmark-outline"}
-                size={22}
-                color={COLORS.yellow}
-              />
-            </TouchableOpacity>
+            <BookmarkBtn handleBookmark={handleBookmark} isBookmarked={isBookmarked} />
           )}
 
           {/* Only show edit button if the post is owned by the current user */}
