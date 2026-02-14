@@ -86,6 +86,7 @@ const usePostCardVerticalStyles = () => {
     },
 
     actionBtnsContainer: {
+      alignItems: "center",
       flexDirection: "row",
       justifyContent: "space-between",
       marginTop: 10,
