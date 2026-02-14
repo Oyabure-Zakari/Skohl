@@ -1,6 +1,6 @@
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
-import { db } from "@/firebase/firebase.config";
+import useAddToBookmarks from "@/hooks/addToBookmarks";
 import { useDeletePost } from "@/hooks/deletePost";
 import useFetchBookmarkIds from "@/hooks/fetchBookmarkIds";
 import { useRemoveFromBookmark } from "@/hooks/removeFromBookmarks";
@@ -10,7 +10,6 @@ import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { doc, setDoc } from "firebase/firestore";
 import React, { useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -57,26 +56,9 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   // Fetching bookmarkIds via tanstack query + firebase onSnapshot listener (real-time updates)
   const { bookmarkIds, isLoadingBookmarkIds, isBookmarkIdsError, bookmarkIdsError } =
     useFetchBookmarkIds(userUid);
-  const addToBookmarks = async () => {
-    try {
-      await setDoc(doc(db, "bookmarks", post?.id), {
-        bookmarkId: post.id,
-        bookmarkedBy: userUid,
-      });
-      // Refresh bookmarks after adding or deleting
-      //await fetchBookmarkIds();
-      // Show success toast
-      Toast.show({
-        type: "success",
-        text1: "Bookmark",
-        text2: "Post added to your bookmarks",
-        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
-        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
-      });
-    } catch (error: any) {
-      throw new Error(error.message);
-    }
-  };
+
+  // Tanstack query hook to add a post to bookmarks
+  const { addToBookmarks, isAddingToBookmarks } = useAddToBookmarks({ postId: post?.id, userUid });
 
   // Tanstack query hook to remove a post from bookmarks
   const { removeFromBookmarks, isRemovingFromBookmarks } = useRemoveFromBookmark({
@@ -154,7 +136,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       <View style={postCardVerticalStyles.actionBtnsContainer}>
         <View style={{ flexDirection: "row", gap: 20 }}>
           {/* Bookmark Button */}
-          {loading || isRemovingFromBookmarks ? (
+          {loading || isAddingToBookmarks || isRemovingFromBookmarks ? (
             <ActivityIndicator size="small" color={COLORS.darkBlue} />
           ) : (
             <TouchableOpacity onPress={handleBookmark}>

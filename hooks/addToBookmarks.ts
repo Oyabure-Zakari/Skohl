@@ -1,22 +1,21 @@
-import { db } from "@/firebase/firebase.config";
+import addBookmarks from "@/firebase/bookmarks/addBookmarks";
 import { useMutation } from "@tanstack/react-query";
-import { deleteDoc, doc } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
-type UseRemoveFromBookmark = {
+type UseAddToBookmarks = {
   postId: string;
+  userUid: string | null;
 };
 
-export const useRemoveFromBookmark = ({ postId }: UseRemoveFromBookmark) => {
+export default function useAddToBookmarks({ postId, userUid }: UseAddToBookmarks) {
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
 
   // useMutation gives us methods and states which is saved in mutation variable
   const mutation = useMutation({
     mutationFn: async () => {
-      // Delete bookmark from firestore
-      await deleteDoc(doc(db, "bookmarks", postId));
+      await addBookmarks(postId, userUid);
     },
 
     // Success callback runs after mutation is successful
@@ -25,7 +24,7 @@ export const useRemoveFromBookmark = ({ postId }: UseRemoveFromBookmark) => {
       Toast.show({
         type: "success",
         text1: "Bookmark",
-        text2: "Post removed from your bookmarks",
+        text2: "Post added to your bookmarks",
         text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
         text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
       });
@@ -36,18 +35,18 @@ export const useRemoveFromBookmark = ({ postId }: UseRemoveFromBookmark) => {
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: error.message || "Failed to remove bookmark",
+        text2: error.message || "Failed to add bookmark",
         text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
         text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
       });
     },
   });
 
-  // A function to trigger the mutation, so that in the component we just call removeFromBookmarks instead of mutation.mutate()
-  const removeFromBookmarks = () => mutation.mutate();
+  // A function to trigger the mutation, so that in the component we just call addToBookmarks instead of mutation.mutate()
+  const addToBookmarks = () => mutation.mutate();
 
   return {
-    removeFromBookmarks,
-    isRemovingFromBookmarks: mutation.isPending, // So that in the component we use isRemovingFromBookmarks instead of mutation.isPending
+    addToBookmarks,
+    isAddingToBookmarks: mutation.isPending, // So that in the component we use isAddingToBookmarks instead of mutation.isPending
   };
-};
+}
