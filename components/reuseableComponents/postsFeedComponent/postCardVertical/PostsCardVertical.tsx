@@ -8,8 +8,8 @@ import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { doc, setDoc } from "firebase/firestore";
-import React, { useState } from "react";
+import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import OverlayLoadingIndicator from "../../OverlayLoadingIndicator";
 import PostCardImage from "./PostCardImage";
@@ -41,13 +41,41 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   // Tanstack Query hook to delete a post
   const { deletePost, isDeletingPost } = useDeletePost({ post });
 
+  const [loading, setLoading] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  // Function to query all bookmarks id by the user
+  const fetchBookmarkIds = async () => {
+    try {
+      const bookmarksRef = collection(db, "bookmarks");
+      const q = query(bookmarksRef, where("bookmarkedBy", "==", userUid));
+      const querySnapshot = await getDocs(q);
+
+      const bookmarkIds: string[] = [];
+      querySnapshot.forEach((doc) => {
+        const bookmarkId = doc.data().bookmarkId;
+        if (bookmarkId) {
+          bookmarkIds.push(bookmarkId);
+        }
+      });
+
+      setIsBookmarked(bookmarkIds.includes(post.id));
+    } catch (error: any) {
+      console.log("Error fetching bookmarks:", error.message);
+    }
+  };
+
+  // Fetch user bookmarks on component mount
+  useEffect(() => {
+    fetchBookmarkIds();
+  }, []);
+
   const handleDeletePost = (): void => {
     Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
       { text: "Cancel", style: "cancel" },
       { text: "Delete", style: "destructive", onPress: deletePost },
     ]);
   };
-  const [loading, setLoading] = useState(false);
 
   const handleBookmark = async () => {
     setLoading(true);
@@ -57,6 +85,8 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
         bookmarkedBy: userUid,
       });
       console.log("Bookmark added with ID: ", post?.id);
+      // Refresh bookmarks after adding
+      await fetchBookmarkIds();
     } catch (error: any) {
       console.log(error.message);
     } finally {
@@ -107,7 +137,11 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
         <View style={{ flexDirection: "row", gap: 20 }}>
           {/* Bookmark Button */}
           <TouchableOpacity onPress={handleBookmark}>
-            <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
+            <MaterialCommunityIcons
+              name={isBookmarked ? "bookmark" : "bookmark-outline"}
+              size={22}
+              color={COLORS.yellow}
+            />
           </TouchableOpacity>
 
           {/* Only show edit button if the post is owned by the current user */}
