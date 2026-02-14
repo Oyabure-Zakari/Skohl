@@ -8,10 +8,10 @@ import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { collection, doc, getDocs, query, setDoc, where } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
-import OverlayLoadingIndicator from "../../OverlayLoadingIndicator";
+import Toast from "react-native-toast-message";
 import PostCardImage from "./PostCardImage";
 import PostUserImage from "./PostUserImage";
 import PostUserNameAndTime from "./PostUserNameAndTime";
@@ -42,11 +42,19 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   const { deletePost, isDeletingPost } = useDeletePost({ post });
 
   const [loading, setLoading] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkIds, setBookmarkIds] = useState<string[]>([]);
+
+  const handleDeletePost = (): void => {
+    Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", style: "destructive", onPress: deletePost },
+    ]);
+  };
 
   // Function to query all bookmarks id by the user
   const fetchBookmarkIds = async () => {
     try {
+      setLoading(true);
       const bookmarksRef = collection(db, "bookmarks");
       const q = query(bookmarksRef, where("bookmarkedBy", "==", userUid));
       const querySnapshot = await getDocs(q);
@@ -58,10 +66,18 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
           bookmarkIds.push(bookmarkId);
         }
       });
-
-      setIsBookmarked(bookmarkIds.includes(post.id));
+      setBookmarkIds(bookmarkIds);
     } catch (error: any) {
-      console.log("Error fetching bookmarks:", error.message);
+      // Show success toast
+      Toast.show({
+        type: "success",
+        text1: "Bookmark",
+        text2: `Error fetching bookmarks ${error.message}`,
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,31 +86,67 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
     fetchBookmarkIds();
   }, []);
 
-  const handleDeletePost = (): void => {
-    Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: deletePost },
-    ]);
-  };
-
-  const handleBookmark = async () => {
-    setLoading(true);
+  const addToBookmarks = async () => {
     try {
       await setDoc(doc(db, "bookmarks", post?.id), {
         bookmarkId: post.id,
         bookmarkedBy: userUid,
       });
-      console.log("Bookmark added with ID: ", post?.id);
-      // Refresh bookmarks after adding
+      // Refresh bookmarks after adding or deleting
       await fetchBookmarkIds();
+      // Show success toast
+      Toast.show({
+        type: "success",
+        text1: "Bookmark",
+        text2: "Post added to bookmarks",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
     } catch (error: any) {
-      console.log(error.message);
+      throw new Error(error.message);
+    }
+  };
+
+  const removeFromBookmarks = async () => {
+    try {
+      // Delete post from firestore
+      await deleteDoc(doc(db, "bookmarks", post?.id));
+      // Refresh bookmarks after adding or deleting
+      await fetchBookmarkIds();
+      // Show success toast
+      Toast.show({
+        type: "success",
+        text1: "Bookmark",
+        text2: "Post remove from bookmarks",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  };
+
+  // Checks if post is bookmarked
+  const isBookmarked = bookmarkIds.includes(post?.id);
+
+  const handleBookmark = async () => {
+    setLoading(true);
+    try {
+      if (!isBookmarked) await addToBookmarks();
+      else await removeFromBookmarks();
+    } catch (error: any) {
+      // Show success toast
+      Toast.show({
+        type: "error",
+        text1: "Bookmark",
+        text2: `${error.message}`,
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
     } finally {
       setLoading(false);
     }
   };
-
-  if (loading) return <OverlayLoadingIndicator />;
 
   return (
     <TouchableOpacity
@@ -136,13 +188,17 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       <View style={postCardVerticalStyles.actionBtnsContainer}>
         <View style={{ flexDirection: "row", gap: 20 }}>
           {/* Bookmark Button */}
-          <TouchableOpacity onPress={handleBookmark}>
-            <MaterialCommunityIcons
-              name={isBookmarked ? "bookmark" : "bookmark-outline"}
-              size={22}
-              color={COLORS.yellow}
-            />
-          </TouchableOpacity>
+          {loading ? (
+            <ActivityIndicator size="small" color={COLORS.darkBlue} />
+          ) : (
+            <TouchableOpacity onPress={handleBookmark}>
+              <MaterialCommunityIcons
+                name={isBookmarked ? "bookmark" : "bookmark-outline"}
+                size={22}
+                color={COLORS.yellow}
+              />
+            </TouchableOpacity>
+          )}
 
           {/* Only show edit button if the post is owned by the current user */}
           {isTheOwner && (
