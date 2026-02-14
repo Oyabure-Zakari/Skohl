@@ -6,14 +6,15 @@ import { TouchableOpacity } from "react-native";
 type BookmarkBtnProps = {
   handleBookmark: () => void;
   isBookmarked: boolean;
+  size: number;
 };
 
-const BookmarkBtn: React.FC<BookmarkBtnProps> = ({ handleBookmark, isBookmarked }) => {
+const BookmarkBtn: React.FC<BookmarkBtnProps> = ({ handleBookmark, isBookmarked, size }) => {
   return (
     <TouchableOpacity onPress={handleBookmark}>
       <MaterialCommunityIcons
         name={isBookmarked ? "bookmark" : "bookmark-outline"}
-        size={22}
+        size={size}
         color={COLORS.yellow}
       />
     </TouchableOpacity>

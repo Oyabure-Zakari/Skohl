@@ -123,7 +123,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
           {isAddingToBookmarks || isRemovingFromBookmarks ? (
             <ActivityIndicator size="small" color={COLORS.darkBlue} />
           ) : (
-            <BookmarkBtn handleBookmark={handleBookmark} isBookmarked={isBookmarked} />
+            <BookmarkBtn handleBookmark={handleBookmark} isBookmarked={isBookmarked} size={22} />
           )}
 
           {/* Only show edit button if the post is owned by the current user */}
