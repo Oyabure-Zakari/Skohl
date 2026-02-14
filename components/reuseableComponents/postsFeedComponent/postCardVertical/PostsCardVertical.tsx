@@ -1,18 +1,19 @@
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
-import bookmarksCollectionRef from "@/firebase/collectionRef/bookmarksCollectionRef";
 import { db } from "@/firebase/firebase.config";
 import { useDeletePost } from "@/hooks/deletePost";
+import useFetchBookmarkIds from "@/hooks/fetchBookmarkIds";
 import usePostCardStyles from "@/styles/postCardStyles";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
 import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { deleteDoc, doc, getDocs, query, setDoc, where } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import React, { useState } from "react";
 import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
+import OverlayLoadingIndicator from "../../OverlayLoadingIndicator";
 import PostCardImage from "./PostCardImage";
 import PostUserImage from "./PostUserImage";
 import PostUserNameAndTime from "./PostUserNameAndTime";
@@ -43,7 +44,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   const { deletePost, isDeletingPost } = useDeletePost({ post });
 
   const [loading, setLoading] = useState(false);
-  const [bookmarkIds, setBookmarkIds] = useState<string[]>([]);
+  //const [bookmarkIds, setBookmarkIds] = useState<string[]>([]);
 
   const handleDeletePost = (): void => {
     Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
@@ -52,40 +53,9 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
     ]);
   };
 
-  // Function to query all bookmarks id by the user
-  const fetchBookmarkIds = async () => {
-    try {
-      setLoading(true);
-      const q = query(bookmarksCollectionRef, where("bookmarkedBy", "==", userUid));
-      const querySnapshot = await getDocs(q);
-
-      const bookmarkIds: string[] = [];
-      querySnapshot.forEach((doc) => {
-        const bookmarkId = doc.data().bookmarkId;
-        if (bookmarkId) {
-          bookmarkIds.push(bookmarkId);
-        }
-      });
-      setBookmarkIds(bookmarkIds);
-    } catch (error: any) {
-      // Show success toast
-      Toast.show({
-        type: "success",
-        text1: "Bookmark",
-        text2: `Error fetching bookmarks ${error.message}`,
-        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
-        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch user bookmarks on component mount
-  useEffect(() => {
-    fetchBookmarkIds();
-  }, []);
-
+  // Fetching bookmarkIds via tanstack query + firebase onSnapshot listener (real-time updates)
+  const { bookmarkIds, isLoadingBookmarkIds, isBookmarkIdsError, bookmarkIdsError } =
+    useFetchBookmarkIds(userUid);
   const addToBookmarks = async () => {
     try {
       await setDoc(doc(db, "bookmarks", post?.id), {
@@ -93,7 +63,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
         bookmarkedBy: userUid,
       });
       // Refresh bookmarks after adding or deleting
-      await fetchBookmarkIds();
+      //await fetchBookmarkIds();
       // Show success toast
       Toast.show({
         type: "success",
@@ -112,7 +82,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       // Delete post from firestore
       await deleteDoc(doc(db, "bookmarks", post?.id));
       // Refresh bookmarks after adding or deleting
-      await fetchBookmarkIds();
+      // await fetchBookmarkIds();
       // Show success toast
       Toast.show({
         type: "success",
@@ -127,7 +97,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
   };
 
   // Checks if post is bookmarked
-  const isBookmarked = bookmarkIds.includes(post?.id);
+  const isBookmarked = bookmarkIds?.includes(post?.id);
 
   const handleBookmark = async () => {
     setLoading(true);
@@ -147,6 +117,15 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       setLoading(false);
     }
   };
+
+  if (isLoadingBookmarkIds) {
+    return <OverlayLoadingIndicator />;
+  }
+
+  if (isBookmarkIdsError) {
+    Alert.alert(`${bookmarkIdsError?.message}`);
+    return null;
+  }
 
   return (
     <TouchableOpacity
