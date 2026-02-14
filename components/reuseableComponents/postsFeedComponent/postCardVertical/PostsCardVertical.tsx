@@ -98,7 +98,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       Toast.show({
         type: "success",
         text1: "Bookmark",
-        text2: "Post added to bookmarks",
+        text2: "Post added to your bookmarks",
         text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
         text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
       });
@@ -117,7 +117,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       Toast.show({
         type: "success",
         text1: "Bookmark",
-        text2: "Post remove from bookmarks",
+        text2: "Post remove from your bookmarks",
         text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
         text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
       });
