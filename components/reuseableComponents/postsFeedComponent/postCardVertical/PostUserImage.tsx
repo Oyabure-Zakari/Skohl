@@ -1,4 +1,5 @@
 import blurhash from "@/constants/expoBlurImage";
+import { useAuth } from "@/contexts/AuthContext";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -11,10 +12,22 @@ type PostUserImageProps = {
 };
 
 const PostUserImage: React.FC<PostUserImageProps> = ({ image, userUid }) => {
-  const postCardVerticalStyles = usePostCardVerticalStyles();
   const router = useRouter();
+  const { userUid: currentlyLoggedInUser } = useAuth();
+  const postCardVerticalStyles = usePostCardVerticalStyles();
+
+  const isLoggedInUser = userUid === currentlyLoggedInUser;
+
+  const navigateToProfile = () => {
+    if (isLoggedInUser) {
+      router.push("/(private)/(tabs)/Profile");
+    } else {
+      //router.push("/(private)/(tabs)/Profile");
+    }
+  };
+
   return (
-    <TouchableOpacity onPress={() => router.push(`/(private)/userProfilePicture/${userUid}`)}>
+    <TouchableOpacity onPress={navigateToProfile}>
       <Image
         source={{ uri: image }}
         style={postCardVerticalStyles.userAvatar}
