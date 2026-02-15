@@ -50,7 +50,7 @@ export default function ProfilePicture() {
         {/* Header */}
         <View style={profilePictureStyles.header}>
           {/* Back Button */}
-          <TouchableOpacity onPress={() => router.push("/(private)/(tabs)/Profile")}>
+          <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back-sharp" size={24} color={COLORS.lightGrey} />
           </TouchableOpacity>
 
