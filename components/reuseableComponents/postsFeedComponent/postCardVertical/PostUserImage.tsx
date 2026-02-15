@@ -11,18 +11,21 @@ type PostUserImageProps = {
   userUid: string | undefined;
 };
 
-const PostUserImage: React.FC<PostUserImageProps> = ({ image, userUid }) => {
+const PostUserImage: React.FC<PostUserImageProps> = ({ image, userUid: otherUser }) => {
   const router = useRouter();
   const { userUid: currentlyLoggedInUser } = useAuth();
   const postCardVerticalStyles = usePostCardVerticalStyles();
 
-  const isLoggedInUser = userUid === currentlyLoggedInUser;
+  // Check if the user is the currently logged in user
+  const isLoggedInUser = otherUser === currentlyLoggedInUser;
 
   const navigateToProfile = () => {
     if (isLoggedInUser) {
+      // If the user is the currently logged in user, navigate to the Profile screen
       router.push("/(private)/(tabs)/Profile");
     } else {
-      //router.push("/(private)/(tabs)/Profile");
+      // If the user is not the currently logged in user, navigate to the Other User's Profile screen
+      router.push(`/(private)/otherUserProfile/${otherUser}`);
     }
   };
 
