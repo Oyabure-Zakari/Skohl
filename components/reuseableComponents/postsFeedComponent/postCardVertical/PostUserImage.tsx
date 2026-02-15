@@ -15,7 +15,7 @@ type PostUserImageProps = {
 const PostUserImage: React.FC<PostUserImageProps> = ({
   image,
   userUid: otherUser,
-  isInOtherUserProfile,
+  isInOtherUserProfile, // Is to prevent the user from navigating to the other user's profile if we're already on the user's profile
 }) => {
   const router = useRouter();
   const { userUid: currentlyLoggedInUser } = useAuth();
@@ -29,7 +29,7 @@ const PostUserImage: React.FC<PostUserImageProps> = ({
       // If the user is the currently logged in user, navigate to the Profile screen
       router.push("/(private)/(tabs)/Profile");
     } else if (otherUser && !isInOtherUserProfile) {
-      // If the user is not the currently logged in user and isInOtherUserProfile is false, navigate to the OtherUserProfile screen
+      // If the user is not the currently logged in user and is not in isInOtherUserProfile, navigate to the OtherUserProfile screen
       router.push(`/(private)/otherUserProfile/${otherUser}`);
     }
   };
