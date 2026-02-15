@@ -9,9 +9,10 @@ import PostCardVertical from "./postCardVertical/PostsCardVertical";
 
 type PostListProps = {
   posts: Post[];
+  isInOtherUserProfile?: boolean; // Is to prevent the user from navigating to the other user's profile if we're already on the user's profile
 };
 
-const PostsList: React.FC<PostListProps> = ({ posts }) => {
+const PostsList: React.FC<PostListProps> = ({ posts, isInOtherUserProfile }) => {
   const { fontScale } = useWindowDimensions();
 
   return (
@@ -40,7 +41,9 @@ const PostsList: React.FC<PostListProps> = ({ posts }) => {
         <FlashList
           data={posts}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <PostCardVertical post={item} />}
+          renderItem={({ item }) => (
+            <PostCardVertical post={item} isInOtherUserProfile={isInOtherUserProfile} />
+          )}
           contentContainerStyle={{ paddingVertical: 16 }}
           showsVerticalScrollIndicator={false}
         />

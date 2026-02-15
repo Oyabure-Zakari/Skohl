@@ -20,9 +20,10 @@ import PostUserNameAndTime from "./PostUserNameAndTime";
 
 type PostCardVerticalProps = {
   post: Post;
+  isInOtherUserProfile?: boolean | undefined; // Is to prevent the user from navigating to the other user's profile if we're already on the user's profile
 };
 
-const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
+const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUserProfile }) => {
   const router = useRouter();
 
   // Safe timestamp conversion with fallback
@@ -90,7 +91,11 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       {/* Post Card Header */}
       <View style={postCardVerticalStyles.header}>
         {/* User Image */}
-        <PostUserImage image={post?.postedBy?.image} userUid={post?.postedBy?.userUid} />
+        <PostUserImage
+          image={post?.postedBy?.image}
+          userUid={post?.postedBy?.userUid}
+          isInOtherUserProfile={isInOtherUserProfile}
+        />
         {/* User Name + Post Time */}
         <PostUserNameAndTime
           fullName={formatFullName(post?.postedBy?.fullName)}
