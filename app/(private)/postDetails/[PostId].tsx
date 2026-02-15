@@ -6,7 +6,11 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 // Constants
 import COLORS from "@/constants/colors";
 // Custom Hooks
+import useAddToBookmarks from "@/hooks/addToBookmarks";
+import { useDeletePost } from "@/hooks/deletePost";
+import useFetchBookmarkIds from "@/hooks/fetchBookmarkIds";
 import usePostDetails from "@/hooks/postDetails";
+import { useRemoveFromBookmark } from "@/hooks/removeFromBookmarks";
 // Components
 import PostDetailsBackBtn from "@/components/postDetails/PostDetailsBackBtn";
 import PostDetailsImage from "@/components/postDetails/PostDetailsImage";
@@ -14,10 +18,12 @@ import PostDetailsInfo from "@/components/postDetails/PostDetailsInfo";
 import PostDetailsTime from "@/components/postDetails/PostDetailsTime";
 import PostDetailsUserImage from "@/components/postDetails/PostDetailsUserImage";
 import PostDetailsUserName from "@/components/postDetails/PostDetailsUserName";
+import BookmarkBtn from "@/components/reuseableComponents/BookmarkBtn";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
-// Styles
+import PostCardVerticalDeleteBtn from "@/components/reuseableComponents/postsFeedComponent/postCardVertical/PostCardVerticalDeleteBtn";
+// Context
 import { useAuth } from "@/contexts/AuthContext";
-import { useDeletePost } from "@/hooks/deletePost";
+// Styles
 import usePostCardStyles from "@/styles/postCardStyles";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
 
@@ -45,6 +51,30 @@ const PostDetails = () => {
   // Tanstack Query hook to delete a post
   const { deletePost, isDeletingPost } = useDeletePost({ post: postDetails, screenName, router });
 
+  // Fetching bookmarkIds via tanstack query + firebase onSnapshot listener (real-time updates)
+  const { bookmarkIds, isLoadingBookmarkIds, isBookmarkIdsError, bookmarkIdsError } =
+    useFetchBookmarkIds(userUid);
+
+  // Tanstack query hook to add a post to bookmarks
+  const { addToBookmarks, isAddingToBookmarks } = useAddToBookmarks({
+    postId: postDetails?.id,
+    userUid,
+  });
+
+  // Tanstack query hook to remove a post from bookmarks
+  const { removeFromBookmarks, isRemovingFromBookmarks } = useRemoveFromBookmark({
+    postId: postDetails?.id,
+  });
+
+  // Checks if post is bookmarked
+  const isBookmarked = bookmarkIds?.includes(postDetails?.id);
+
+  // Handles bookmarking a post
+  const handleBookmark = () => {
+    if (!isBookmarked) addToBookmarks();
+    else removeFromBookmarks();
+  };
+
   // Loading indicator
   if (isLoadingPostsDetails) return <OverlayLoadingIndicator />;
 
@@ -53,6 +83,17 @@ const PostDetails = () => {
 
   // Post not found
   if (!postDetails) router.back();
+
+  // BookmarkIds loading
+  if (isLoadingBookmarkIds) {
+    return <OverlayLoadingIndicator />;
+  }
+
+  // BookmarkIds error
+  if (isBookmarkIdsError) {
+    Alert.alert(`${bookmarkIdsError?.message}`);
+    return null;
+  }
 
   const handleDeletePost = (): void => {
     Alert.alert("Delete Post", `Are you sure you want to delete "${postDetails?.title}"?`, [
@@ -104,9 +145,15 @@ const PostDetails = () => {
         {!isTheOwner ? (
           <>
             {/* Bookmark Button */}
-            <TouchableOpacity>
-              <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
-            </TouchableOpacity>
+            {isAddingToBookmarks || isRemovingFromBookmarks ? (
+              <ActivityIndicator
+                size="small"
+                color={COLORS.darkBlue}
+                style={{ position: "relative", right: 170 }}
+              />
+            ) : (
+              <BookmarkBtn handleBookmark={handleBookmark} isBookmarked={isBookmarked} size={22} />
+            )}
             {/* Chat Button */}
             <TouchableOpacity style={postDetailsStyles.chatBtn}>
               <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />
@@ -123,9 +170,15 @@ const PostDetails = () => {
           >
             <View style={{ flexDirection: "row", gap: 20 }}>
               {/* Bookmark Button */}
-              <TouchableOpacity>
-                <MaterialCommunityIcons name="bookmark-outline" size={22} color={COLORS.yellow} />
-              </TouchableOpacity>
+              {isAddingToBookmarks || isRemovingFromBookmarks ? (
+                <ActivityIndicator size="small" color={COLORS.darkBlue} />
+              ) : (
+                <BookmarkBtn
+                  handleBookmark={handleBookmark}
+                  isBookmarked={isBookmarked}
+                  size={22}
+                />
+              )}
 
               {/* Edit Button */}
               <TouchableOpacity>
@@ -134,17 +187,10 @@ const PostDetails = () => {
             </View>
 
             {/* Delete Post Button */}
-            <TouchableOpacity
-              onPress={handleDeletePost}
-              disabled={isDeletingPost}
-              style={postCardStyles.deletePostContainer}
-            >
-              {isDeletingPost ? (
-                <ActivityIndicator size="small" color={COLORS.lightGrey} />
-              ) : (
-                <Text style={postCardStyles.deleteText}>Delete</Text>
-              )}
-            </TouchableOpacity>
+            <PostCardVerticalDeleteBtn
+              handleDeletePost={handleDeletePost}
+              isDeletingPost={isDeletingPost}
+            />
           </View>
         )}
       </ScrollView>
