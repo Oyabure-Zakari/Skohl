@@ -4,7 +4,6 @@ import useAddToBookmarks from "@/hooks/addToBookmarks";
 import { useDeletePost } from "@/hooks/deletePost";
 import useFetchBookmarkIds from "@/hooks/fetchBookmarkIds";
 import { useRemoveFromBookmark } from "@/hooks/removeFromBookmarks";
-import usePostCardStyles from "@/styles/postCardStyles";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
 import { Post } from "@/types/PostTypes";
 import formatFullName from "@/utils/formatUserFullname";
@@ -15,6 +14,7 @@ import { ActivityIndicator, Alert, Text, TouchableOpacity, View } from "react-na
 import BookmarkBtn from "../../BookmarkBtn";
 import OverlayLoadingIndicator from "../../OverlayLoadingIndicator";
 import PostCardImage from "./PostCardImage";
+import PostCardVerticalDeleteBtn from "./PostCardVerticalDeleteBtn";
 import PostUserImage from "./PostUserImage";
 import PostUserNameAndTime from "./PostUserNameAndTime";
 
@@ -32,7 +32,6 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
 
   // Styles
   const postCardVerticalStyles = usePostCardVerticalStyles();
-  const postCardStyles = usePostCardStyles();
 
   // Context
   const { userUid } = useAuth();
@@ -55,6 +54,17 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
     postId: post?.id,
   });
 
+  // BookmarkIds loading
+  if (isLoadingBookmarkIds) {
+    return <OverlayLoadingIndicator />;
+  }
+
+  // BookmarkIds error
+  if (isBookmarkIdsError) {
+    Alert.alert(`${bookmarkIdsError?.message}`);
+    return null;
+  }
+
   // Checks if post is bookmarked
   const isBookmarked = bookmarkIds?.includes(post?.id);
 
@@ -71,17 +81,6 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
     if (!isBookmarked) addToBookmarks();
     else removeFromBookmarks();
   };
-
-  // BookmarkIds loading
-  if (isLoadingBookmarkIds) {
-    return <OverlayLoadingIndicator />;
-  }
-
-  // BookmarkIds error
-  if (isBookmarkIdsError) {
-    Alert.alert(`${bookmarkIdsError?.message}`);
-    return null;
-  }
 
   return (
     <TouchableOpacity
@@ -145,17 +144,10 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
             <Text style={postCardVerticalStyles.chatBtnText}>Chat</Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            onPress={handleDeletePost}
-            disabled={isDeletingPost}
-            style={postCardStyles.deletePostContainer}
-          >
-            {isDeletingPost ? (
-              <ActivityIndicator size="small" color={COLORS.lightGrey} />
-            ) : (
-              <Text style={postCardStyles.deleteText}>Delete</Text>
-            )}
-          </TouchableOpacity>
+          <PostCardVerticalDeleteBtn
+            handleDeletePost={handleDeletePost}
+            isDeletingPost={isDeletingPost}
+          />
         )}
       </View>
     </TouchableOpacity>
