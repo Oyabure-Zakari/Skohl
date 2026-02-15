@@ -51,7 +51,7 @@ export default function OtherUserProfile() {
   // Custom hook to manage the posts data (caching, loading, error states, real-time listener)
   const { posts, isLoadingCreatedPosts, isError, error } = useUserPosts(otherUserId as string);
 
-  // Is to prevent the user from navigating to the other user's profile if we're already on the user's profile
+  // Is to prevent the user from navigating to the other user's profile if we're already in the other user's profile
   const isInOtherUserProfile = true;
 
   if (isError && error) return Alert.alert("Error", error.message);

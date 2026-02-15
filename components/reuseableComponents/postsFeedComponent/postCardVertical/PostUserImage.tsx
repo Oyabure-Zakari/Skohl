@@ -9,13 +9,13 @@ import { TouchableOpacity } from "react-native";
 type PostUserImageProps = {
   image: string | undefined;
   userUid: string | undefined;
-  isInOtherUserProfile?: boolean | undefined; // Is to prevent the user from navigating to the other user's profile if we're already on the user's profile
+  isInOtherUserProfile?: boolean | undefined; // Is to prevent the user from navigating to the other user's profile if we're already in the other user's profile
 };
 
 const PostUserImage: React.FC<PostUserImageProps> = ({
   image,
   userUid: otherUser,
-  isInOtherUserProfile, // Is to prevent the user from navigating to the other user's profile if we're already on the user's profile
+  isInOtherUserProfile, // Is to prevent the user from navigating to the other user's profile if we're already in the other user's profile
 }) => {
   const router = useRouter();
   const { userUid: currentlyLoggedInUser } = useAuth();
