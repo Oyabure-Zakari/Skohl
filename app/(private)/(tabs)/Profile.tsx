@@ -73,9 +73,7 @@ export default function ProfileScreen() {
         {posts.length === 0 && <NoPostsOrBookmarks activeButton={activeButton} />}
 
         {/* Created Posts  */}
-        {activeButton === "Posts" && !isLoadingCreatedPosts && posts.length > 0 && (
-          <PostsList posts={posts} />
-        )}
+        {activeButton === "Posts" && !isLoadingCreatedPosts && <PostsList posts={posts} />}
       </ScrollView>
 
       {/* Bottom Sheet */}
