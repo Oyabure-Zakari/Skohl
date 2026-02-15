@@ -114,7 +114,10 @@ const PostDetails = () => {
         {/* Post User's Details */}
         <View style={postDetailsStyles.userInfoContainer}>
           {/* Profile Image */}
-          <PostDetailsUserImage postUserImage={postDetails?.postedBy?.image} />
+          <PostDetailsUserImage
+            postUserImage={postDetails?.postedBy?.image}
+            userUid={postDetails?.postedBy?.userUid}
+          />
 
           {/* User Name and Posted Time */}
           <View>
