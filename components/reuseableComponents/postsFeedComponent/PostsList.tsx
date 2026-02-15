@@ -33,7 +33,7 @@ const PostsList: React.FC<PostListProps> = ({ posts }) => {
               textAlign: "center",
             }}
           >
-            No posts found{"\n"}for this category
+            No posts found
           </Animated.Text>
         </View>
       ) : (
