@@ -75,6 +75,9 @@ const PostDetails = () => {
     else removeFromBookmarks();
   };
 
+  // check if the post has a photo which will be used to determine the position of the back button
+  const isPostPhotoAvaliable = postDetails?.photo ? true : false;
+
   // Loading indicator
   if (isLoadingPostsDetails) return <OverlayLoadingIndicator />;
 
@@ -108,7 +111,7 @@ const PostDetails = () => {
       {postDetails.photo && <PostDetailsImage postImage={postDetails?.photo} />}
 
       {/* Back Button */}
-      <PostDetailsBackBtn />
+      <PostDetailsBackBtn isPostPhotoAvaliable={isPostPhotoAvaliable} />
 
       <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
         {/* Post User's Details */}
