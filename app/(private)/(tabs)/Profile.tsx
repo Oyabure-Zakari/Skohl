@@ -11,8 +11,8 @@ import Header from "@/components/profile/Header";
 import NoPostsOrBookmarks from "@/components/profile/NoPostsOrBookmarks";
 import PostAndBookmarksBtn from "@/components/profile/PostAndBookmarksBtn";
 import UserBio from "@/components/profile/UserBio";
-import UserPosts from "@/components/profile/UserPosts";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
+import PostsList from "@/components/reuseableComponents/postsFeedComponent/PostsList";
 // Styles
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
@@ -74,7 +74,7 @@ export default function ProfileScreen() {
 
         {/* Created Posts  */}
         {activeButton === "Posts" && !isLoadingCreatedPosts && posts.length > 0 && (
-          <UserPosts posts={posts} />
+          <PostsList posts={posts} />
         )}
       </ScrollView>
 
