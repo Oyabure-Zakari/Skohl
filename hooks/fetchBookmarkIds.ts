@@ -39,6 +39,7 @@ export default function useFetchBookmarkIds(userUid: string | null) {
       q,
       (snapshot) => {
         const fetchedBookmarkIds: string[] = snapshot.docs.map((doc) => doc.id);
+        // Update TanStack Query cache
         queryClient.setQueryData(["bookmarkIds", userUid], fetchedBookmarkIds);
       },
       (error) => {
