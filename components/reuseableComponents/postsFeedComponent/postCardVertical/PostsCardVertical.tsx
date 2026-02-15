@@ -90,7 +90,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post }) => {
       {/* Post Card Header */}
       <View style={postCardVerticalStyles.header}>
         {/* User Image */}
-        <PostUserImage image={post?.postedBy?.image} />
+        <PostUserImage image={post?.postedBy?.image} userUid={post?.postedBy?.userUid} />
         {/* User Name + Post Time */}
         <PostUserNameAndTime
           fullName={formatFullName(post?.postedBy?.fullName)}
