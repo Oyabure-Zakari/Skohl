@@ -8,7 +8,7 @@ import COLORS from "@/constants/colors";
 // Custom Hooks
 import useAddToBookmarks from "@/hooks/addToBookmarks";
 import { useDeletePost } from "@/hooks/deletePost";
-import useFetchBookmarkIds from "@/hooks/fetchBookmarkIds";
+import useFetchBookmarkIds from "@/hooks/fetchBookmarks";
 import usePostDetails from "@/hooks/postDetails";
 import { useRemoveFromBookmark } from "@/hooks/removeFromBookmarks";
 // Components

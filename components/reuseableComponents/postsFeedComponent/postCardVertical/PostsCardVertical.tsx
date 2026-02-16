@@ -2,7 +2,7 @@ import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
 import useAddToBookmarks from "@/hooks/addToBookmarks";
 import { useDeletePost } from "@/hooks/deletePost";
-import useFetchBookmarkIds from "@/hooks/fetchBookmarkIds";
+import useFetchBookmarks from "@/hooks/fetchBookmarks";
 import { useRemoveFromBookmark } from "@/hooks/removeFromBookmarks";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
 import { Post } from "@/types/PostTypes";
@@ -44,8 +44,8 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
   const { deletePost, isDeletingPost } = useDeletePost({ post });
 
   // Fetching bookmarkIds via tanstack query + firebase onSnapshot listener (real-time updates)
-  const { bookmarkIds, isLoadingBookmarkIds, isBookmarkIdsError, bookmarkIdsError } =
-    useFetchBookmarkIds(userUid);
+  const { bookmarks, isLoadingBookmarks, isBookmarksError, bookmarksError } =
+    useFetchBookmarks(userUid);
 
   // Tanstack query hook to add a post to bookmarks
   const { addToBookmarks, isAddingToBookmarks } = useAddToBookmarks({
@@ -59,19 +59,22 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
     postId: post?.id,
   });
 
+  // Get bookmarkIds
+  const bookmarkIds = bookmarks?.map((bookmark) => bookmark.bookmarkId);
+
+  // Checks if post is bookmarked
+  const isBookmarked = bookmarkIds?.includes(post?.id);
+
   // BookmarkIds loading
-  if (isLoadingBookmarkIds) {
+  if (isLoadingBookmarks) {
     return <OverlayLoadingIndicator />;
   }
 
   // BookmarkIds error
-  if (isBookmarkIdsError) {
-    Alert.alert(`${bookmarkIdsError?.message}`);
+  if (isBookmarksError) {
+    Alert.alert(`${bookmarksError?.message}`);
     return null;
   }
-
-  // Checks if post is bookmarked
-  const isBookmarked = bookmarkIds?.includes(post?.id);
 
   // Handles deleting a post
   const handleDeletePost = (): void => {
