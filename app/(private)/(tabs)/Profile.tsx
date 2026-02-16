@@ -58,7 +58,9 @@ export default function ProfileScreen() {
   const { bookmarks, isLoadingBookmarks, isBookmarksError, bookmarksError } =
     useFetchBookmarks(userUid);
 
-  if (isError && error) return Alert.alert("Error", error.message);
+  // Error handling
+  if ((isError || isBookmarksError) && (error || bookmarksError))
+    return Alert.alert("Error", (error || bookmarksError)?.message);
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
