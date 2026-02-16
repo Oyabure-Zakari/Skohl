@@ -66,15 +66,24 @@ const PostDetails = () => {
   });
 
   // Get bookmarkIds
-  const bookmarkIds = bookmarks?.map((bookmark) => bookmark.bookmarkId);
+  const bookmarkIds = bookmarks?.map((bookmark) => bookmark?.bookmarkId);
+
+  // Get bookmarkedBy
+  const bookmarkedBy = bookmarks?.map((bookmark) => bookmark?.bookmarkedBy);
 
   // Checks if post is bookmarked
   const isBookmarked = bookmarkIds?.includes(postDetails?.id);
 
+  // Checks if the post is bookmarked by the current user
+  const isOwnerOfTheBookmark = bookmarkedBy?.includes(userUid!);
+
   // Handles bookmarking a post
   const handleBookmark = () => {
-    if (!isBookmarked) addToBookmarks();
-    else removeFromBookmarks();
+    if (!isBookmarked) {
+      addToBookmarks(); // Add to bookmarks if not bookmarked
+    } else {
+      isOwnerOfTheBookmark && removeFromBookmarks(); // Remove from bookmarks if bookmarked by the current user
+    }
   };
 
   // check if the post has a photo which will be used to determine the position of the back button
