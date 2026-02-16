@@ -24,7 +24,6 @@ import PostCardVerticalDeleteBtn from "@/components/reuseableComponents/postsFee
 // Context
 import { useAuth } from "@/contexts/AuthContext";
 // Styles
-import usePostCardStyles from "@/styles/postCardStyles";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
 
 const PostDetails = () => {
@@ -37,7 +36,6 @@ const PostDetails = () => {
 
   // Styles
   const postDetailsStyles = usePostDetailsStyles();
-  const postCardStyles = usePostCardStyles();
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
   const { postDetails, isLoadingPostsDetails, isError, error } = usePostDetails(PostId as string);
@@ -59,6 +57,7 @@ const PostDetails = () => {
   const { addToBookmarks, isAddingToBookmarks } = useAddToBookmarks({
     postId: postDetails?.id,
     userUid,
+    post: postDetails,
   });
 
   // Tanstack query hook to remove a post from bookmarks
