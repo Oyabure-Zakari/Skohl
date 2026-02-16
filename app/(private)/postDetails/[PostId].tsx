@@ -8,7 +8,6 @@ import COLORS from "@/constants/colors";
 // Custom Hooks
 import useAddToBookmarks from "@/hooks/addToBookmarks";
 import { useDeletePost } from "@/hooks/deletePost";
-import useFetchBookmarkIds from "@/hooks/fetchBookmarks";
 import usePostDetails from "@/hooks/postDetails";
 import { useRemoveFromBookmark } from "@/hooks/removeFromBookmarks";
 // Components
@@ -24,6 +23,7 @@ import PostCardVerticalDeleteBtn from "@/components/reuseableComponents/postsFee
 // Context
 import { useAuth } from "@/contexts/AuthContext";
 // Styles
+import useFetchBookmarks from "@/hooks/fetchBookmarks";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
 
 const PostDetails = () => {
@@ -49,9 +49,9 @@ const PostDetails = () => {
   // Tanstack Query hook to delete a post
   const { deletePost, isDeletingPost } = useDeletePost({ post: postDetails, screenName, router });
 
-  // Fetching bookmarkIds via tanstack query + firebase onSnapshot listener (real-time updates)
-  const { bookmarkIds, isLoadingBookmarkIds, isBookmarkIdsError, bookmarkIdsError } =
-    useFetchBookmarkIds(userUid);
+  // Fetching bookmarks via tanstack query + firebase onSnapshot listener (real-time updates)
+  const { bookmarks, isLoadingBookmarks, isBookmarksError, bookmarksError } =
+    useFetchBookmarks(userUid);
 
   // Tanstack query hook to add a post to bookmarks
   const { addToBookmarks, isAddingToBookmarks } = useAddToBookmarks({
@@ -64,6 +64,9 @@ const PostDetails = () => {
   const { removeFromBookmarks, isRemovingFromBookmarks } = useRemoveFromBookmark({
     postId: postDetails?.id,
   });
+
+  // Get bookmarkIds
+  const bookmarkIds = bookmarks?.map((bookmark) => bookmark.bookmarkId);
 
   // Checks if post is bookmarked
   const isBookmarked = bookmarkIds?.includes(postDetails?.id);
@@ -87,13 +90,13 @@ const PostDetails = () => {
   if (!postDetails) router.back();
 
   // BookmarkIds loading
-  if (isLoadingBookmarkIds) {
+  if (isLoadingBookmarks) {
     return <OverlayLoadingIndicator />;
   }
 
   // BookmarkIds error
-  if (isBookmarkIdsError) {
-    Alert.alert(`${bookmarkIdsError?.message}`);
+  if (isBookmarksError) {
+    Alert.alert(`${bookmarksError?.message}`);
     return null;
   }
 
