@@ -1,5 +1,5 @@
 import { Post } from "@/types/PostTypes";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 const addBookmarks = async (postId: string, userUid: string | null, post: Post) => {
@@ -11,6 +11,7 @@ const addBookmarks = async (postId: string, userUid: string | null, post: Post) 
       ...post,
       bookmarkId: postId,
       bookmarkedBy: userUid,
+      bookmarkedAt: serverTimestamp(),
     });
   } catch (error: any) {
     throw new Error(error.message);
