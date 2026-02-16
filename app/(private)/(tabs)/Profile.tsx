@@ -19,6 +19,8 @@ import useReuseableStyles from "@/styles/reuable.styles";
 // Contexts
 import { useAuth } from "@/contexts/AuthContext";
 // Custom Hook
+import BookmarksLists from "@/components/bookmarkComponents/BookmarksLists";
+import useFetchBookmarks from "@/hooks/fetchBookmarks";
 import { useUserPosts } from "@/hooks/userPosts";
 import { useUserProfile } from "@/hooks/userProfile";
 
@@ -52,6 +54,10 @@ export default function ProfileScreen() {
   // Custom hook to manage the posts data (caching, loading, error states, real-time listener)
   const { posts, isLoadingCreatedPosts, isError, error } = useUserPosts(userUid);
 
+  // Fetching bookmarkIds via tanstack query + firebase onSnapshot listener (real-time updates)
+  const { bookmarks, isLoadingBookmarks, isBookmarksError, bookmarksError } =
+    useFetchBookmarks(userUid);
+
   if (isError && error) return Alert.alert("Error", error.message);
 
   return (
@@ -74,6 +80,11 @@ export default function ProfileScreen() {
 
         {/* Created Posts  */}
         {activeButton === "Posts" && !isLoadingCreatedPosts && <PostsList posts={posts} />}
+
+        {/* Bookmarks */}
+        {activeButton === "Bookmarks" && !isLoadingBookmarks && (
+          <BookmarksLists bookmarks={bookmarks} />
+        )}
       </ScrollView>
 
       {/* Bottom Sheet */}

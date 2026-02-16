@@ -1,13 +1,8 @@
 import bookmarksCollectionRef from "@/firebase/collectionRef/bookmarksCollectionRef";
-import { Post } from "@/types/PostTypes";
+import Bookmarks from "@/types/BookmarksType";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { onSnapshot, query, where } from "firebase/firestore";
 import { useEffect } from "react";
-
-type Bookmarks = {
-  bookmarkId: string;
-  bookmarkedBy: string;
-} & Post; // Spread all Post fields at the root level
 
 export default function useFetchBookmarks(userUid: string | null) {
   // Gives us access to tanstack query methods
