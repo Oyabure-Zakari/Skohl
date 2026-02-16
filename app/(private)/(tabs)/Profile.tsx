@@ -6,6 +6,7 @@ import { Alert, ScrollView, View } from "react-native";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 // Components
+import BookmarksLists from "@/components/bookmarkComponents/BookmarksLists";
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
 import Header from "@/components/profile/Header";
 import NoPostsOrBookmarks from "@/components/profile/NoPostsOrBookmarks";
@@ -19,7 +20,6 @@ import useReuseableStyles from "@/styles/reuable.styles";
 // Contexts
 import { useAuth } from "@/contexts/AuthContext";
 // Custom Hook
-import BookmarksLists from "@/components/bookmarkComponents/BookmarksLists";
 import useFetchBookmarks from "@/hooks/fetchBookmarks";
 import { useUserPosts } from "@/hooks/userPosts";
 import { useUserProfile } from "@/hooks/userProfile";
