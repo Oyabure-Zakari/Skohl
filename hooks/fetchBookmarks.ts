@@ -1,7 +1,7 @@
 import bookmarksCollectionRef from "@/firebase/collectionRef/bookmarksCollectionRef";
 import Bookmarks from "@/types/BookmarksType";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { onSnapshot, query, where } from "firebase/firestore";
+import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useEffect } from "react";
 
 export default function useFetchBookmarks(userUid: string | null) {
@@ -29,7 +29,11 @@ export default function useFetchBookmarks(userUid: string | null) {
     }
 
     // Fetch bookmarks
-    const q = query(bookmarksCollectionRef, where("bookmarkedBy", "==", userUid));
+    const q = query(
+      bookmarksCollectionRef,
+      where("bookmarkedBy", "==", userUid),
+      orderBy("bookmarkedAt", "desc"),
+    );
 
     // Real-time listener lists for changes in bookmarks collection (add/update/delete)
     const unsubscribe = onSnapshot(
@@ -42,8 +46,8 @@ export default function useFetchBookmarks(userUid: string | null) {
         // Update TanStack Query cache with fetched bookmarks
         queryClient.setQueryData(["bookmarks", userUid], fetchedBookmarks);
       },
-      (error) => {
-        throw new Error("Error fetching bookmarks:", error);
+      (error: any) => {
+        throw new Error(`Error fetching bookmarks: ${error.message}`);
       },
     );
 
