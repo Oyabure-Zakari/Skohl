@@ -34,7 +34,7 @@ const BookmarksLists: React.FC<BookmarksListsProps> = ({ bookmarks, isInOtherUse
               textAlign: "center",
             }}
           >
-            No posts found
+            No bookmarks found
           </Animated.Text>
         </View>
       ) : (
