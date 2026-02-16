@@ -48,7 +48,11 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
     useFetchBookmarkIds(userUid);
 
   // Tanstack query hook to add a post to bookmarks
-  const { addToBookmarks, isAddingToBookmarks } = useAddToBookmarks({ postId: post?.id, userUid });
+  const { addToBookmarks, isAddingToBookmarks } = useAddToBookmarks({
+    postId: post?.id,
+    userUid,
+    post,
+  });
 
   // Tanstack query hook to remove a post from bookmarks
   const { removeFromBookmarks, isRemovingFromBookmarks } = useRemoveFromBookmark({

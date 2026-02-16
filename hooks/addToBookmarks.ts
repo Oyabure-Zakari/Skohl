@@ -1,4 +1,5 @@
 import addBookmarks from "@/firebase/bookmarks/addBookmarks";
+import { Post } from "@/types/PostTypes";
 import { useMutation } from "@tanstack/react-query";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
@@ -6,16 +7,17 @@ import Toast from "react-native-toast-message";
 type UseAddToBookmarks = {
   postId: string;
   userUid: string | null;
+  post: Post;
 };
 
-export default function useAddToBookmarks({ postId, userUid }: UseAddToBookmarks) {
+export default function useAddToBookmarks({ postId, userUid, post }: UseAddToBookmarks) {
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
 
   // useMutation gives us methods and states which is saved in mutation variable
   const mutation = useMutation({
     mutationFn: async () => {
-      await addBookmarks(postId, userUid);
+      await addBookmarks(postId, userUid, post);
     },
 
     // Success callback runs after mutation is successful
