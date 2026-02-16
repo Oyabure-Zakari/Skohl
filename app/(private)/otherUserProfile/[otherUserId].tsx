@@ -1,23 +1,30 @@
 // React
+import React, { useCallback, useMemo, useRef, useState } from "react";
+// React Native
+import { Alert, Text, TouchableOpacity } from "react-native";
+// Expo
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { useLocalSearchParams, useRouter } from "expo-router";
+// Packages / Libraries
+import BottomSheet from "@gorhom/bottom-sheet";
+import { ScrollView, View } from "moti";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+// Components
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
 import UserBio from "@/components/profile/UserBio";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import PostsList from "@/components/reuseableComponents/postsFeedComponent/PostsList";
+// Constants
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+// Hooks
 import { useUserPosts } from "@/hooks/userPosts";
 import { useUserProfile } from "@/hooks/userProfile";
+// Styles
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
+import useOtherUserProfileStyles from "@/styles/otherUserProfile.styles";
 import useReuseableStyles from "@/styles/reuable.styles";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import BottomSheet from "@gorhom/bottom-sheet";
-import { Image } from "expo-image";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { ScrollView, View } from "moti";
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity } from "react-native";
-
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function OtherUserProfile() {
   // Router
@@ -53,6 +60,9 @@ export default function OtherUserProfile() {
 
   // Is to prevent the user from navigating to the other user's profile if we're already in the other user's profile
   const isInOtherUserProfile = true;
+
+  // Styles
+  const otherUserProfileStyles = useOtherUserProfileStyles();
 
   if (isError && error) return Alert.alert("Error", error.message);
 
@@ -112,46 +122,3 @@ export default function OtherUserProfile() {
     </GestureHandlerRootView>
   );
 }
-
-const otherUserProfileStyles = StyleSheet.create({
-  profileHeaderContainer: {
-    paddingHorizontal: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-
-  chatBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: COLORS.darkBlue,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 5,
-    elevation: 6,
-  },
-
-  chatText: {
-    color: COLORS.lightGrey,
-    fontSize: 14,
-    fontFamily: "Segoe_UI_Bold",
-    textAlign: "center",
-  },
-
-  titleContainer: {
-    backgroundColor: COLORS.purple,
-    borderRadius: 5,
-    padding: 5,
-    marginTop: 10,
-    width: 100,
-    alignSelf: "center",
-  },
-
-  titleText: {
-    color: COLORS.white,
-    fontFamily: "Segoe_UI_Bold",
-    fontSize: 12,
-    textAlign: "center",
-  },
-});
