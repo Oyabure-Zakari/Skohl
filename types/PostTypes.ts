@@ -1,4 +1,4 @@
-type PostType = "event" | "service" | "product";
+export type PostType = "event" | "service" | "product";
 
 export interface BasePost {
   id: string;
