@@ -9,7 +9,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BookmarksLists from "@/components/bookmarkComponents/BookmarksLists";
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
 import Header from "@/components/profile/Header";
-import NoPostsOrBookmarks from "@/components/profile/NoPostsOrBookmarks";
 import PostAndBookmarksBtn from "@/components/profile/PostAndBookmarksBtn";
 import UserBio from "@/components/profile/UserBio";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
@@ -76,9 +75,6 @@ export default function ProfileScreen() {
 
         {/* Divider*/}
         <View style={reUseableStyles.bottomSheetDivider} />
-
-        {/* No Posts Or Bookmarks */}
-        {posts.length === 0 && <NoPostsOrBookmarks activeButton={activeButton} />}
 
         {/* Created Posts  */}
         {activeButton === "Posts" && !isLoadingCreatedPosts && <PostsList posts={posts} />}
