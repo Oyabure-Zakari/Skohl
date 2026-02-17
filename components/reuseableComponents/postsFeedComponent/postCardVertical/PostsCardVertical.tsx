@@ -6,6 +6,7 @@ import useFetchBookmarks from "@/hooks/fetchBookmarks";
 import { useRemoveFromBookmark } from "@/hooks/removeFromBookmarks";
 import usePostCardVerticalStyles from "@/styles/postCardVerticalStyles";
 import { Post } from "@/types/PostTypes";
+import bookmarkLogic from "@/utils/bookmark";
 import formatFullName from "@/utils/formatUserFullname";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -65,6 +66,12 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
   // Checks if post is bookmarked
   const isBookmarked = bookmarkIds?.includes(post?.id);
 
+  // Get bookmarkedBy
+  const bookmarkedBy = bookmarks?.map((bookmark) => bookmark?.bookmarkedBy);
+
+  // Checks if the post is bookmarked by the current user
+  const isOwnerOfTheBookmark = bookmarkedBy?.includes(userUid!);
+
   // BookmarkIds loading
   if (isLoadingBookmarks) {
     return <OverlayLoadingIndicator />;
@@ -76,18 +83,17 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
     return null;
   }
 
+  // Handles bookmarking a post
+  const handleBookmark = () => {
+    bookmarkLogic(isBookmarked, isOwnerOfTheBookmark, addToBookmarks, removeFromBookmarks);
+  };
+
   // Handles deleting a post
   const handleDeletePost = (): void => {
     Alert.alert("Delete Post", `Are you sure you want to delete "${post?.title}"?`, [
       { text: "Cancel", style: "cancel" },
       { text: "Delete", style: "destructive", onPress: deletePost },
     ]);
-  };
-
-  // Handles bookmarking a post
-  const handleBookmark = () => {
-    if (!isBookmarked) addToBookmarks();
-    else removeFromBookmarks();
   };
 
   return (

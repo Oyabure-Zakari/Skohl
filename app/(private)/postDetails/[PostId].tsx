@@ -25,6 +25,8 @@ import { useAuth } from "@/contexts/AuthContext";
 // Styles
 import useFetchBookmarks from "@/hooks/fetchBookmarks";
 import usePostDetailsStyles from "@/styles/postDetails.styles";
+// Utils
+import bookmarkLogic from "@/utils/bookmark";
 
 const PostDetails = () => {
   const { PostId } = useLocalSearchParams();
@@ -77,15 +79,6 @@ const PostDetails = () => {
   // Checks if the post is bookmarked by the current user
   const isOwnerOfTheBookmark = bookmarkedBy?.includes(userUid!);
 
-  // Handles bookmarking a post
-  const handleBookmark = () => {
-    if (!isBookmarked) {
-      addToBookmarks(); // Add to bookmarks if not bookmarked
-    } else {
-      isOwnerOfTheBookmark && removeFromBookmarks(); // Remove from bookmarks if bookmarked by the current user
-    }
-  };
-
   // check if the post has a photo which will be used to determine the position of the back button
   const isPostPhotoAvaliable = postDetails?.photo ? true : false;
 
@@ -109,6 +102,12 @@ const PostDetails = () => {
     return null;
   }
 
+  // Handles bookmarking a post
+  const handleBookmark = () => {
+    bookmarkLogic(isBookmarked, isOwnerOfTheBookmark, addToBookmarks, removeFromBookmarks);
+  };
+
+  // Handles deleting posts
   const handleDeletePost = (): void => {
     Alert.alert("Delete Post", `Are you sure you want to delete "${postDetails?.title}"?`, [
       { text: "Cancel", style: "cancel" },
