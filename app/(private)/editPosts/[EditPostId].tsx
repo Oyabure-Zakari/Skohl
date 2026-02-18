@@ -1,4 +1,8 @@
 import PhotoSection from "@/components/bottomSheet/createPostComponent/ImageSection";
+import EventCategoryPicker from "@/components/bottomSheet/EventCategoryPicker";
+import EventTypePicker from "@/components/bottomSheet/EventTypePicker";
+import ProductCategoryPicker from "@/components/bottomSheet/ProductCategoryPicker";
+import ServiceCategoryPicker from "@/components/bottomSheet/ServiceCategoryPicker";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
@@ -24,6 +28,10 @@ export default function EditPost() {
 
   // States
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [selectedProductCategory, setSelectedProductCategory] = useState("");
+  const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
+  const [selectedEventType, setSelectedEventType] = useState("");
+  const [selectedEventCategory, setSelectedEventCategory] = useState("");
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
   const { postDetails, isLoadingPostsDetails, isError, error } = usePostDetails(
@@ -126,6 +134,33 @@ export default function EditPost() {
         multiline={true}
       />
 
+      {postDetails?.postType === "product" && (
+        <ProductCategoryPicker
+          selectedCategory={selectedProductCategory}
+          setSelectedCategory={setSelectedProductCategory}
+        />
+      )}
+
+      {postDetails?.postType === "service" && (
+        <ServiceCategoryPicker
+          selectedCategory={selectedServiceCategory}
+          setSelectedCategory={setSelectedServiceCategory}
+        />
+      )}
+
+      {postDetails?.postType === "event" && (
+        <>
+          <EventTypePicker
+            selectedEventType={selectedEventType}
+            setSelectedEventType={setSelectedEventType}
+          />
+          <EventCategoryPicker
+            selectedCategory={selectedEventCategory}
+            setSelectedCategory={setSelectedEventCategory}
+          />
+        </>
+      )}
+
       {/* Save Post Button*/}
       <TouchableOpacity>
         <CustomButton text={"Done"} />
@@ -136,7 +171,6 @@ export default function EditPost() {
 
 const editPostStyles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: COLORS.white,
     alignItems: "center",
   },
