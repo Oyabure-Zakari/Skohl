@@ -194,7 +194,9 @@ const PostDetails = () => {
               )}
 
               {/* Edit Button */}
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => router.push(`/(private)/editPosts/${postDetails?.id}`)}
+              >
                 <MaterialIcons name="edit-note" size={22} color={COLORS.darkGrey} />
               </TouchableOpacity>
             </View>

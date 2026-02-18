@@ -151,7 +151,7 @@ const BookmarkCard: React.FC<BookmarkCardProps> = ({ bookmark, isInOtherUserProf
           {/* Only show edit button if the post is owned by the current user */}
           {isTheOwner && (
             // Edit Button
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push(`/(private)/editPosts/${bookmark?.id}`)}>
               <MaterialIcons name="edit-note" size={22} color={COLORS.darkGrey} />
             </TouchableOpacity>
           )}

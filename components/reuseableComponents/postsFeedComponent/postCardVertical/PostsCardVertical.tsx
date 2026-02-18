@@ -149,7 +149,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
           {/* Only show edit button if the post is owned by the current user */}
           {isTheOwner && (
             // Edit Button
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push(`/(private)/editPosts/${post?.id}`)}>
               <MaterialIcons name="edit-note" size={22} color={COLORS.darkGrey} />
             </TouchableOpacity>
           )}
