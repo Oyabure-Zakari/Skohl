@@ -7,7 +7,7 @@ import React from "react";
 import { Text, View } from "react-native";
 
 type PhotoSectionProps = {
-  photo: string;
+  photo: string | undefined;
   openCamera: () => void;
 };
 
