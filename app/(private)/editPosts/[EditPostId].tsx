@@ -171,10 +171,13 @@ export default function EditPost() {
 
           {postDetails?.postType === "event" && (
             <>
+              <Text style={editPostStyles.inputName}>Event Type:</Text>
               <EventTypePicker
                 selectedEventType={selectedEventType}
                 setSelectedEventType={setSelectedEventType}
               />
+
+              <Text style={[editPostStyles.inputName, { marginTop: 15 }]}>Event Category:</Text>
               <EventCategoryPicker
                 selectedCategory={selectedEventCategory}
                 setSelectedCategory={setSelectedEventCategory}
