@@ -4,6 +4,7 @@ import EventTypePicker from "@/components/bottomSheet/EventTypePicker";
 import ProductCategoryPicker from "@/components/bottomSheet/ProductCategoryPicker";
 import ServiceCategoryPicker from "@/components/bottomSheet/ServiceCategoryPicker";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
+import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
@@ -11,7 +12,7 @@ import usePostDetails from "@/hooks/postDetails";
 import usePhotoStore from "@/store/photoStore";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, ScrollView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function EditPost() {
   const { EditPostId } = useLocalSearchParams();
@@ -63,109 +64,131 @@ export default function EditPost() {
   }
 
   return (
-    <ScrollView contentContainerStyle={editPostStyles.container}>
-      {/* Photo Section */}
-      <PhotoSection photo={postImage} openCamera={() => setIsCameraOpen(true)} />
+    <CustomKeyboard>
+      <View style={editPostStyles.container}>
+        {/* Photo Section */}
+        <PhotoSection photo={postImage} openCamera={() => setIsCameraOpen(true)} />
 
-      {/* Form Section */}
-      <TextInput
-        ref={inputRef}
-        defaultValue={postDetails?.title}
-        onChangeText={(text) => (title.current = text)}
-        style={editPostStyles.input}
-        placeholderTextColor={COLORS.darkGrey}
-      />
-
-      {postDetails?.postType !== "event" && (
-        <TextInput
-          ref={inputRef}
-          defaultValue={postDetails?.price}
-          keyboardType="numeric"
-          onChangeText={(text) => (price.current = text)}
-          style={editPostStyles.input}
-          placeholderTextColor={COLORS.darkGrey}
-        />
-      )}
-
-      {postDetails?.postType === "service" && (
-        <TextInput
-          ref={inputRef}
-          defaultValue={postDetails?.serviceSchedule}
-          onChangeText={(text) => (serviceSchedule.current = text)}
-          style={editPostStyles.input}
-          placeholderTextColor={COLORS.darkGrey}
-        />
-      )}
-
-      {postDetails?.postType === "event" && (
-        <>
+        {/* Form Section */}
+        <View style={editPostStyles.formContainer}>
+          <Text style={editPostStyles.inputName}>Title:</Text>
           <TextInput
             ref={inputRef}
-            defaultValue={postDetails?.eventVenue}
-            onChangeText={(text) => (eventVenue.current = text)}
+            defaultValue={postDetails?.title}
+            onChangeText={(text) => (title.current = text)}
             style={editPostStyles.input}
             placeholderTextColor={COLORS.darkGrey}
           />
 
+          {postDetails?.postType !== "event" && (
+            <>
+              <Text style={editPostStyles.inputName}>Price:</Text>
+              <TextInput
+                ref={inputRef}
+                defaultValue={postDetails?.price}
+                keyboardType="numeric"
+                onChangeText={(text) => (price.current = text)}
+                style={editPostStyles.input}
+                placeholderTextColor={COLORS.darkGrey}
+              />
+            </>
+          )}
+
+          {postDetails?.postType === "service" && (
+            <>
+              <Text style={editPostStyles.inputName}>Schedule:</Text>
+              <TextInput
+                ref={inputRef}
+                defaultValue={postDetails?.serviceSchedule}
+                onChangeText={(text) => (serviceSchedule.current = text)}
+                style={editPostStyles.input}
+                placeholderTextColor={COLORS.darkGrey}
+              />
+            </>
+          )}
+
+          {postDetails?.postType === "event" && (
+            <>
+              <Text style={editPostStyles.inputName}>Venue:</Text>
+              <TextInput
+                ref={inputRef}
+                defaultValue={postDetails?.eventVenue}
+                onChangeText={(text) => (eventVenue.current = text)}
+                style={editPostStyles.input}
+                placeholderTextColor={COLORS.darkGrey}
+              />
+
+              <Text style={editPostStyles.inputName}>Time:</Text>
+              <TextInput
+                ref={inputRef}
+                defaultValue={postDetails?.eventTime}
+                onChangeText={(text) => (eventTime.current = text)}
+                style={editPostStyles.input}
+                placeholderTextColor={COLORS.darkGrey}
+              />
+
+              <Text style={editPostStyles.inputName}>Date:</Text>
+              <TextInput
+                ref={inputRef}
+                defaultValue={postDetails?.eventDate}
+                onChangeText={(text) => (eventDate.current = text)}
+                style={editPostStyles.input}
+                placeholderTextColor={COLORS.darkGrey}
+              />
+            </>
+          )}
+
+          <Text style={editPostStyles.inputName}>Description:</Text>
           <TextInput
             ref={inputRef}
-            defaultValue={postDetails?.eventTime}
-            onChangeText={(text) => (eventTime.current = text)}
+            defaultValue={postDetails?.description}
+            onChangeText={(text) => (description.current = text)}
             style={editPostStyles.input}
             placeholderTextColor={COLORS.darkGrey}
+            multiline={true}
           />
 
-          <TextInput
-            ref={inputRef}
-            defaultValue={postDetails?.eventDate}
-            onChangeText={(text) => (eventDate.current = text)}
-            style={editPostStyles.input}
-            placeholderTextColor={COLORS.darkGrey}
-          />
-        </>
-      )}
+          {postDetails?.postType === "product" && (
+            <>
+              <Text style={editPostStyles.inputName}>Product Category:</Text>
+              <ProductCategoryPicker
+                selectedCategory={selectedProductCategory}
+                setSelectedCategory={setSelectedProductCategory}
+              />
+            </>
+          )}
 
-      <TextInput
-        ref={inputRef}
-        defaultValue={postDetails?.description}
-        onChangeText={(text) => (description.current = text)}
-        style={editPostStyles.input}
-        placeholderTextColor={COLORS.darkGrey}
-        multiline={true}
-      />
+          {postDetails?.postType === "service" && (
+            <>
+              <Text style={editPostStyles.inputName}>Service Category:</Text>
 
-      {postDetails?.postType === "product" && (
-        <ProductCategoryPicker
-          selectedCategory={selectedProductCategory}
-          setSelectedCategory={setSelectedProductCategory}
-        />
-      )}
+              <ServiceCategoryPicker
+                selectedCategory={selectedServiceCategory}
+                setSelectedCategory={setSelectedServiceCategory}
+              />
+            </>
+          )}
 
-      {postDetails?.postType === "service" && (
-        <ServiceCategoryPicker
-          selectedCategory={selectedServiceCategory}
-          setSelectedCategory={setSelectedServiceCategory}
-        />
-      )}
+          {postDetails?.postType === "event" && (
+            <>
+              <EventTypePicker
+                selectedEventType={selectedEventType}
+                setSelectedEventType={setSelectedEventType}
+              />
+              <EventCategoryPicker
+                selectedCategory={selectedEventCategory}
+                setSelectedCategory={setSelectedEventCategory}
+              />
+            </>
+          )}
+        </View>
 
-      {postDetails?.postType === "event" && (
-        <>
-          <EventTypePicker
-            selectedEventType={selectedEventType}
-            setSelectedEventType={setSelectedEventType}
-          />
-          <EventCategoryPicker
-            selectedCategory={selectedEventCategory}
-            setSelectedCategory={setSelectedEventCategory}
-          />
-        </>
-      )}
-
-      {/* Save Post Button*/}
-      <TouchableOpacity>
-        <CustomButton text={"Done"} />
-      </TouchableOpacity>
-    </ScrollView>
+        {/* Save Post Button*/}
+        <TouchableOpacity>
+          <CustomButton text={"Done"} />
+        </TouchableOpacity>
+      </View>
+    </CustomKeyboard>
   );
 }
 
@@ -197,6 +220,22 @@ const editPostStyles = StyleSheet.create({
     marginTop: 20,
   },
 
+  formContainer: {
+    marginVertical: 20,
+    width: "100%",
+    alignItems: "center",
+    //gap: 15,
+  },
+
+  inputName: {
+    color: COLORS.darkBlue,
+    fontFamily: "Segoe_UI_Bold",
+    fontSize: 14,
+    alignSelf: "flex-start",
+    paddingHorizontal: 16,
+    marginBottom: 4,
+  },
+
   input: {
     width: "90%",
     backgroundColor: COLORS.lightGrey,
@@ -204,8 +243,10 @@ const editPostStyles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
+    fontFamily: "Segoe_UI_Bold_Italic",
     minHeight: 48,
-    marginBottom: 20,
+    marginBottom: 15,
   },
+
+  eventCategoryContainer: {},
 });
