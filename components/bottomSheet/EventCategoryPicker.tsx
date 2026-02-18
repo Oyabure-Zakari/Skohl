@@ -6,9 +6,14 @@ import { StyleSheet, View } from "react-native";
 type Props = {
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
+  defaultValue?: string;
 };
 
-const EventCategoryPicker: React.FC<Props> = ({ selectedCategory, setSelectedCategory }) => {
+const EventCategoryPicker: React.FC<Props> = ({
+  selectedCategory,
+  setSelectedCategory,
+  defaultValue,
+}) => {
   return (
     <View style={styles.pickerContainer}>
       <Picker
@@ -17,7 +22,7 @@ const EventCategoryPicker: React.FC<Props> = ({ selectedCategory, setSelectedCat
         onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
       >
         <Picker.Item
-          label="Event Category"
+          label={defaultValue ? defaultValue : "Event Category"}
           value="none"
           enabled={false}
           style={{ fontFamily: "Segoe_UI_Bold" }}

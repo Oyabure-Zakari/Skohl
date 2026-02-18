@@ -6,9 +6,14 @@ import { StyleSheet, View } from "react-native";
 type Props = {
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
+  defaultValue?: string;
 };
 
-const ServiceCategoryPicker: React.FC<Props> = ({ selectedCategory, setSelectedCategory }) => {
+const ServiceCategoryPicker: React.FC<Props> = ({
+  selectedCategory,
+  setSelectedCategory,
+  defaultValue,
+}) => {
   return (
     <View style={styles.pickerContainer}>
       <Picker
@@ -17,7 +22,7 @@ const ServiceCategoryPicker: React.FC<Props> = ({ selectedCategory, setSelectedC
         onValueChange={(itemValue, itemIndex) => setSelectedCategory(itemValue)}
       >
         <Picker.Item
-          label="Service Category"
+          label={defaultValue ? defaultValue : "Service Category"}
           value="none"
           enabled={false}
           style={{ fontFamily: "Segoe_UI_Bold" }}
