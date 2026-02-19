@@ -10,12 +10,15 @@ import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoa
 import COLORS from "@/constants/colors";
 import usePostDetails from "@/hooks/postDetails";
 import usePhotoStore from "@/store/photoStore";
+import useEditPostStyles from "@/styles/editPost.styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function EditPost() {
+  const editPostStyles = useEditPostStyles();
+
   const { EditPostId } = useLocalSearchParams();
 
   // Ref
@@ -210,82 +213,3 @@ export default function EditPost() {
     </>
   );
 }
-
-const editPostStyles = StyleSheet.create({
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    alignItems: "center",
-    backgroundColor: COLORS.white,
-  },
-
-  headerBtn: {
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 40,
-    padding: 2,
-  },
-
-  headerTitle: {
-    color: COLORS.darkBlue,
-    fontSize: 14,
-    fontFamily: "Segoe_UI_Bold",
-  },
-
-  container: {
-    backgroundColor: COLORS.white,
-    alignItems: "center",
-  },
-
-  photoPlaceholder: {
-    marginTop: 20,
-    width: "45%",
-    height: 150,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: COLORS.lightGrey,
-  },
-
-  photoText: {
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold",
-  },
-
-  postPhoto: {
-    width: 150,
-    height: 150,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-
-  formContainer: {
-    marginVertical: 20,
-    width: "100%",
-    alignItems: "center",
-    //gap: 15,
-  },
-
-  inputName: {
-    color: COLORS.darkBlue,
-    fontFamily: "Segoe_UI_Bold",
-    fontSize: 14,
-    alignSelf: "flex-start",
-    paddingHorizontal: 16,
-    marginBottom: 4,
-  },
-
-  input: {
-    width: "90%",
-    backgroundColor: COLORS.lightGrey,
-    borderRadius: 10,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    color: COLORS.darkGrey,
-    fontFamily: "Segoe_UI_Bold_Italic",
-    minHeight: 48,
-    marginBottom: 15,
-  },
-
-  eventCategoryContainer: {},
-});
