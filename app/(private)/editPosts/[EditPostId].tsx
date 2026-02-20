@@ -8,43 +8,57 @@ import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
+import { db } from "@/firebase/firebase.config";
 import usePostDetails from "@/hooks/postDetails";
 import usePhotoStore from "@/store/photoStore";
 import useEditPostStyles from "@/styles/editPost.styles";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function EditPost() {
   const editPostStyles = useEditPostStyles();
 
   const { EditPostId } = useLocalSearchParams();
 
-  // Ref
-  const title = useRef("");
-  const price = useRef("");
-  const serviceSchedule = useRef("");
-  const eventVenue = useRef("");
-  const eventTime = useRef("");
-  const eventDate = useRef("");
-  const description = useRef("");
-  const inputRef = useRef<TextInput>(null);
-
-  // States
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [selectedProductCategory, setSelectedProductCategory] = useState("");
-  const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
-  const [selectedEventType, setSelectedEventType] = useState("");
-  const [selectedEventCategory, setSelectedEventCategory] = useState("");
-
-  // Router
-  const router = useRouter();
-
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
   const { postDetails, isLoadingPostsDetails, isError, error } = usePostDetails(
     EditPostId as string,
   );
+
+  // Destructuring
+  const title = postDetails?.title;
+  const price = postDetails?.postType !== "event" && postDetails?.price;
+  const serviceSchedule = postDetails?.postType === "service" && postDetails?.serviceSchedule;
+  const eventVenue = postDetails?.postType === "event" && postDetails?.eventVenue;
+  const eventTime = postDetails?.postType === "event" && postDetails?.eventTime;
+  const eventDate = postDetails?.postType === "event" && postDetails?.eventDate;
+  const description = postDetails?.description;
+  const category = postDetails?.category;
+  const eventType = (postDetails?.postType === "event" && postDetails?.eventType) as string;
+
+  // Ref
+  const titleRef = useRef(title);
+  const priceRef = useRef(price);
+  const serviceScheduleRef = useRef(serviceSchedule);
+  const eventVenueRef = useRef(eventVenue);
+  const eventTimeRef = useRef(eventTime);
+  const eventDateRef = useRef(eventDate);
+  const descriptionRef = useRef(description);
+  const inputRef = useRef<TextInput>(null);
+
+  // States
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [selectedProductCategory, setSelectedProductCategory] = useState(category);
+  const [selectedServiceCategory, setSelectedServiceCategory] = useState(category);
+  const [selectedEventType, setSelectedEventType] = useState(eventType);
+  const [selectedEventCategory, setSelectedEventCategory] = useState(category);
+  const [isUpdatingPost, setIsUpdatingPost] = useState(false);
+
+  // Router
+  const router = useRouter();
 
   // Zustand
   const photo = usePhotoStore((state) => state.image);
@@ -70,6 +84,74 @@ export default function EditPost() {
     return <DeviceCamera setIsCameraOpen={setIsCameraOpen} />;
   }
 
+  const updatePost = async () => {
+    switch (postDetails?.postType) {
+      case "product":
+        try {
+          setIsUpdatingPost(true);
+          await updateDoc(doc(db, "posts", EditPostId as string), {
+            photo: postImage,
+            title: titleRef.current,
+            description: descriptionRef.current,
+            price: priceRef.current,
+            category: selectedProductCategory,
+          });
+        } catch (error: any) {
+          Alert.alert(`Error: ${error?.message}`);
+          console.log(error.message);
+        } finally {
+          setIsUpdatingPost(false);
+        }
+        break;
+
+      case "service":
+        try {
+          setIsUpdatingPost(true);
+          await updateDoc(doc(db, "posts", EditPostId as string), {
+            photo: postImage,
+            title: titleRef.current,
+            description: descriptionRef.current,
+            price: priceRef.current,
+            serviceSchedule: serviceScheduleRef.current,
+            category: selectedServiceCategory,
+          });
+        } catch (error: any) {
+          Alert.alert(`Error: ${error?.message}`);
+        } finally {
+          setIsUpdatingPost(false);
+        }
+        break;
+
+      case "event":
+        try {
+          setIsUpdatingPost(true);
+          await updateDoc(doc(db, "posts", EditPostId as string), {
+            photo: postImage,
+            title: titleRef.current,
+            description: descriptionRef.current,
+            eventDate: eventDateRef.current,
+            eventTime: eventTimeRef.current,
+            eventVenue: eventVenueRef.current,
+            category: selectedEventCategory,
+            eventType: selectedEventType,
+          });
+        } catch (error: any) {
+          Alert.alert(`Error: ${error?.message}`);
+        } finally {
+          setIsUpdatingPost(false);
+        }
+        break;
+
+      default:
+        Alert.alert("Error", "An error occurred while updating the post.");
+        break;
+    }
+  };
+
+  const handleUpdatePost = async () => {
+    await updatePost();
+  };
+
   return (
     <>
       {/* Edit Post Header */}
@@ -90,7 +172,7 @@ export default function EditPost() {
             <TextInput
               ref={inputRef}
               defaultValue={postDetails?.title}
-              onChangeText={(text) => (title.current = text)}
+              onChangeText={(text) => (titleRef.current = text)}
               style={editPostStyles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
@@ -102,7 +184,7 @@ export default function EditPost() {
                   ref={inputRef}
                   defaultValue={postDetails?.price}
                   keyboardType="numeric"
-                  onChangeText={(text) => (price.current = text)}
+                  onChangeText={(text) => (priceRef.current = text)}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -115,7 +197,7 @@ export default function EditPost() {
                 <TextInput
                   ref={inputRef}
                   defaultValue={postDetails?.serviceSchedule}
-                  onChangeText={(text) => (serviceSchedule.current = text)}
+                  onChangeText={(text) => (serviceScheduleRef.current = text)}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -128,7 +210,7 @@ export default function EditPost() {
                 <TextInput
                   ref={inputRef}
                   defaultValue={postDetails?.eventVenue}
-                  onChangeText={(text) => (eventVenue.current = text)}
+                  onChangeText={(text) => (eventVenueRef.current = text)}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -137,7 +219,7 @@ export default function EditPost() {
                 <TextInput
                   ref={inputRef}
                   defaultValue={postDetails?.eventTime}
-                  onChangeText={(text) => (eventTime.current = text)}
+                  onChangeText={(text) => (eventTimeRef.current = text)}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -146,7 +228,7 @@ export default function EditPost() {
                 <TextInput
                   ref={inputRef}
                   defaultValue={postDetails?.eventDate}
-                  onChangeText={(text) => (eventDate.current = text)}
+                  onChangeText={(text) => (eventDateRef.current = text)}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -157,7 +239,7 @@ export default function EditPost() {
             <TextInput
               ref={inputRef}
               defaultValue={postDetails?.description}
-              onChangeText={(text) => (description.current = text)}
+              onChangeText={(text) => (descriptionRef.current = text)}
               style={editPostStyles.input}
               placeholderTextColor={COLORS.darkGrey}
               multiline={true}
@@ -205,8 +287,8 @@ export default function EditPost() {
           </View>
 
           {/* Save Post Button*/}
-          <TouchableOpacity>
-            <CustomButton text={"Done"} />
+          <TouchableOpacity onPress={handleUpdatePost} disabled={isUpdatingPost}>
+            <CustomButton text={"Save Post"} isLoading={isUpdatingPost} />
           </TouchableOpacity>
         </View>
       </CustomKeyboard>
