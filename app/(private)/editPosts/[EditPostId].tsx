@@ -18,15 +18,20 @@ import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
+// TODO: Create upload new image functionality and also only update the post's info if the user has made any changes and then use firebase to update the post
+
 export default function EditPost() {
   const editPostStyles = useEditPostStyles();
 
   const { EditPostId } = useLocalSearchParams();
 
   // Fetching post details via tanstack query + firebase onSnapshot listener (real-time updates)
-  const { postDetails, isLoadingPostsDetails, isError, error } = usePostDetails(
-    EditPostId as string,
-  );
+  const {
+    postDetails,
+    isLoadingPostsDetails,
+    isError: isPostsDetailsError,
+    error: postsDetailsError,
+  } = usePostDetails(EditPostId as string);
 
   // Destructuring
   const title = postDetails?.title;
@@ -75,8 +80,8 @@ export default function EditPost() {
     return <OverlayLoadingIndicator />;
   }
 
-  if (isError) {
-    Alert.alert(`Error: ${error?.message}`);
+  if (isPostsDetailsError) {
+    Alert.alert(`Error: ${postsDetailsError?.message}`);
     return;
   }
 
@@ -126,7 +131,6 @@ export default function EditPost() {
         try {
           setIsUpdatingPost(true);
           await updateDoc(doc(db, "posts", EditPostId as string), {
-            photo: postImage,
             title: titleRef.current,
             description: descriptionRef.current,
             eventDate: eventDateRef.current,
