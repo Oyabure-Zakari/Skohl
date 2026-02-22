@@ -4,6 +4,7 @@ import EventCategoryPicker from "@/components/bottomSheet/EventCategoryPicker";
 import EventTypePicker from "@/components/bottomSheet/EventTypePicker";
 import ProductCategoryPicker from "@/components/bottomSheet/ProductCategoryPicker";
 import ServiceCategoryPicker from "@/components/bottomSheet/ServiceCategoryPicker";
+import EditPostHeader from "@/components/editPostComponents/EditPostHeader";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
@@ -15,7 +16,6 @@ import usePhotoStore from "@/store/photoStore";
 import useEditPostStyles from "@/styles/editPost.styles";
 import postImageUrl from "@/utils/cloudinary/postImageUrl";
 import extractPublicId from "@/utils/extractPublicId";
-import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
@@ -218,12 +218,7 @@ export default function EditPost() {
   return (
     <>
       {/* Edit Post Header */}
-      <View style={editPostStyles.header}>
-        <TouchableOpacity style={editPostStyles.headerBtn} onPress={() => router.back()}>
-          <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
-        </TouchableOpacity>
-        <Text style={editPostStyles.headerTitle}>Edit Post</Text>
-      </View>
+      <EditPostHeader />
       <CustomKeyboard>
         <View style={editPostStyles.container}>
           {/* Photo Section */}
