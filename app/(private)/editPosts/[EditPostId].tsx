@@ -247,16 +247,12 @@ export default function EditPost() {
             )}
 
             {postDetails?.postType === "service" && (
-              <>
-                <Text style={editPostStyles.inputName}>Schedule:</Text>
-                <TextInput
-                  ref={inputRef}
-                  defaultValue={postDetails?.serviceSchedule}
-                  onChangeText={(text) => (serviceScheduleRef.current = text).trim()}
-                  style={editPostStyles.input}
-                  placeholderTextColor={COLORS.darkGrey}
-                />
-              </>
+              <InputFieldAndTitle
+                title={"Schedule:"}
+                ref={inputRef}
+                defaultValue={postDetails?.serviceSchedule}
+                onChangeText={(text) => (serviceScheduleRef.current = text).trim()}
+              />
             )}
 
             {postDetails?.postType === "event" && (
