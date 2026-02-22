@@ -2,7 +2,7 @@ import deleteCloudinaryImage from "@/app/apis/deleteCloudinaryImage";
 import PhotoSection from "@/components/bottomSheet/createPostComponent/ImageSection";
 import EditPostForm from "@/components/editPostComponents/EditPostForm";
 import EditPostHeader from "@/components/editPostComponents/EditPostHeader";
-import CustomButton from "@/components/reuseableComponents/CustomButton";
+import UpdatePostBtn from "@/components/editPostComponents/UpdatePostBtn";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
@@ -15,7 +15,7 @@ import extractPublicId from "@/utils/extractPublicId";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, TouchableOpacity, View } from "react-native";
+import { Alert, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function EditPost() {
@@ -225,9 +225,7 @@ export default function EditPost() {
           <EditPostForm postDetails={postDetails} />
 
           {/* Save Post Button*/}
-          <TouchableOpacity onPress={handleUpdatePost} disabled={isUpdatingPost}>
-            <CustomButton text={"Save Post"} isLoading={isUpdatingPost} />
-          </TouchableOpacity>
+          <UpdatePostBtn handleUpdatePost={handleUpdatePost} isUpdatingPost={isUpdatingPost} />
         </View>
       </CustomKeyboard>
     </>
