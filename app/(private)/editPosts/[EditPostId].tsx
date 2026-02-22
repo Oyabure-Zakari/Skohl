@@ -1,11 +1,7 @@
 import deleteCloudinaryImage from "@/app/apis/deleteCloudinaryImage";
 import PhotoSection from "@/components/bottomSheet/createPostComponent/ImageSection";
-import EventCategoryPicker from "@/components/bottomSheet/EventCategoryPicker";
-import EventTypePicker from "@/components/bottomSheet/EventTypePicker";
-import ProductCategoryPicker from "@/components/bottomSheet/ProductCategoryPicker";
-import ServiceCategoryPicker from "@/components/bottomSheet/ServiceCategoryPicker";
+import EditPostForm from "@/components/editPostComponents/EditPostForm";
 import EditPostHeader from "@/components/editPostComponents/EditPostHeader";
-import InputFieldAndTitle from "@/components/editPostComponents/InputFieldAndTitle";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
@@ -19,7 +15,7 @@ import extractPublicId from "@/utils/extractPublicId";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 export default function EditPost() {
@@ -43,7 +39,6 @@ export default function EditPost() {
   const eventTimeRef = useRef("");
   const eventDateRef = useRef("");
   const descriptionRef = useRef("");
-  const inputRef = useRef<TextInput>(null);
 
   // States
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -227,106 +222,7 @@ export default function EditPost() {
           <PhotoSection photo={postImage} openCamera={() => setIsCameraOpen(true)} />
 
           {/* Form Section */}
-          <View style={editPostStyles.formContainer}>
-            <InputFieldAndTitle
-              title={"Title:"}
-              ref={inputRef}
-              defaultValue={postDetails?.title}
-              onChangeText={(text: string) => (titleRef.current = text).trim()}
-            />
-
-            {postDetails?.postType !== "event" && (
-              <InputFieldAndTitle
-                title={"Price:"}
-                ref={inputRef}
-                defaultValue={postDetails?.price?.slice(1)}
-                onChangeText={(text) => (priceRef.current = text).trim()}
-                keyboardType={"numeric"}
-              />
-            )}
-
-            {postDetails?.postType === "service" && (
-              <InputFieldAndTitle
-                title={"Schedule:"}
-                ref={inputRef}
-                defaultValue={postDetails?.serviceSchedule}
-                onChangeText={(text) => (serviceScheduleRef.current = text).trim()}
-              />
-            )}
-
-            {postDetails?.postType === "event" && (
-              <>
-                <InputFieldAndTitle
-                  title={"Venue:"}
-                  ref={inputRef}
-                  defaultValue={postDetails?.eventVenue}
-                  onChangeText={(text) => (eventVenueRef.current = text).trim()}
-                />
-
-                <InputFieldAndTitle
-                  title={"Time:"}
-                  ref={inputRef}
-                  defaultValue={postDetails?.eventTime}
-                  onChangeText={(text) => (eventTimeRef.current = text).trim()}
-                />
-
-                <InputFieldAndTitle
-                  title={"Date:"}
-                  ref={inputRef}
-                  defaultValue={postDetails?.eventDate}
-                  onChangeText={(text) => (eventDateRef.current = text).trim()}
-                />
-              </>
-            )}
-
-            <InputFieldAndTitle
-              title={"Description:"}
-              ref={inputRef}
-              defaultValue={postDetails?.description}
-              onChangeText={(text) => (descriptionRef.current = text).trim()}
-              multiline={true}
-            />
-
-            {postDetails?.postType === "product" && (
-              <>
-                <Text style={editPostStyles.inputName}>Product Category:</Text>
-                <ProductCategoryPicker
-                  selectedCategory={selectedProductCategory}
-                  setSelectedCategory={setSelectedProductCategory}
-                  defaultValue={postDetails?.category}
-                />
-              </>
-            )}
-
-            {postDetails?.postType === "service" && (
-              <>
-                <Text style={editPostStyles.inputName}>Service Category:</Text>
-                <ServiceCategoryPicker
-                  selectedCategory={selectedServiceCategory}
-                  setSelectedCategory={setSelectedServiceCategory}
-                  defaultValue={postDetails?.category}
-                />
-              </>
-            )}
-
-            {postDetails?.postType === "event" && (
-              <>
-                <Text style={editPostStyles.inputName}>Event Type:</Text>
-                <EventTypePicker
-                  selectedEventType={selectedEventType}
-                  setSelectedEventType={setSelectedEventType}
-                  defaultValue={postDetails?.eventType}
-                />
-
-                <Text style={[editPostStyles.inputName, { marginTop: 15 }]}>Event Category:</Text>
-                <EventCategoryPicker
-                  selectedCategory={selectedEventCategory}
-                  setSelectedCategory={setSelectedEventCategory}
-                  defaultValue={postDetails?.category}
-                />
-              </>
-            )}
-          </View>
+          <EditPostForm postDetails={postDetails} />
 
           {/* Save Post Button*/}
           <TouchableOpacity onPress={handleUpdatePost} disabled={isUpdatingPost}>
