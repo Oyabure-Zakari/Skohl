@@ -271,22 +271,11 @@ export default function EditPost() {
                   onChangeText={(text) => (eventTimeRef.current = text).trim()}
                 />
 
-                <Text style={editPostStyles.inputName}>Time:</Text>
-                <TextInput
-                  ref={inputRef}
-                  defaultValue={postDetails?.eventTime}
-                  onChangeText={(text) => (eventTimeRef.current = text).trim()}
-                  style={editPostStyles.input}
-                  placeholderTextColor={COLORS.darkGrey}
-                />
-
-                <Text style={editPostStyles.inputName}>Date:</Text>
-                <TextInput
+                <InputFieldAndTitle
+                  title={"Date:"}
                   ref={inputRef}
                   defaultValue={postDetails?.eventDate}
                   onChangeText={(text) => (eventDateRef.current = text).trim()}
-                  style={editPostStyles.input}
-                  placeholderTextColor={COLORS.darkGrey}
                 />
               </>
             )}
