@@ -258,10 +258,17 @@ export default function EditPost() {
             {postDetails?.postType === "event" && (
               <>
                 <InputFieldAndTitle
-                  title={"Value:"}
+                  title={"Venue:"}
                   ref={inputRef}
                   defaultValue={postDetails?.eventVenue}
                   onChangeText={(text) => (eventVenueRef.current = text).trim()}
+                />
+
+                <InputFieldAndTitle
+                  title={"Time:"}
+                  ref={inputRef}
+                  defaultValue={postDetails?.eventTime}
+                  onChangeText={(text) => (eventTimeRef.current = text).trim()}
                 />
 
                 <Text style={editPostStyles.inputName}>Time:</Text>
