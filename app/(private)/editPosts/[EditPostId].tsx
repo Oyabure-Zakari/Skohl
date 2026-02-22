@@ -35,33 +35,22 @@ export default function EditPost() {
     error: postsDetailsError,
   } = usePostDetails(EditPostId as string);
 
-  // Destructuring
-  const title = postDetails?.title;
-  const price = postDetails?.postType !== "event" && postDetails?.price;
-  const serviceSchedule = postDetails?.postType === "service" && postDetails?.serviceSchedule;
-  const eventVenue = postDetails?.postType === "event" && postDetails?.eventVenue;
-  const eventTime = postDetails?.postType === "event" && postDetails?.eventTime;
-  const eventDate = postDetails?.postType === "event" && postDetails?.eventDate;
-  const description = postDetails?.description;
-  const category = postDetails?.category;
-  const eventType = (postDetails?.postType === "event" && postDetails?.eventType) as string;
-
   // Ref
-  const titleRef = useRef(title);
-  const priceRef = useRef(price);
-  const serviceScheduleRef = useRef(serviceSchedule);
-  const eventVenueRef = useRef(eventVenue);
-  const eventTimeRef = useRef(eventTime);
-  const eventDateRef = useRef(eventDate);
-  const descriptionRef = useRef(description);
+  const titleRef = useRef("");
+  const priceRef = useRef("");
+  const serviceScheduleRef = useRef("");
+  const eventVenueRef = useRef("");
+  const eventTimeRef = useRef("");
+  const eventDateRef = useRef("");
+  const descriptionRef = useRef("");
   const inputRef = useRef<TextInput>(null);
 
   // States
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [selectedProductCategory, setSelectedProductCategory] = useState(category);
-  const [selectedServiceCategory, setSelectedServiceCategory] = useState(category);
-  const [selectedEventType, setSelectedEventType] = useState(eventType);
-  const [selectedEventCategory, setSelectedEventCategory] = useState(category);
+  const [selectedProductCategory, setSelectedProductCategory] = useState("");
+  const [selectedServiceCategory, setSelectedServiceCategory] = useState("");
+  const [selectedEventType, setSelectedEventType] = useState("");
+  const [selectedEventCategory, setSelectedEventCategory] = useState("");
   const [isUpdatingPost, setIsUpdatingPost] = useState(false);
 
   // Router
@@ -78,20 +67,29 @@ export default function EditPost() {
     clearPhoto();
   }, []);
 
-  // Seed refs with the loaded postDetails values once they arrive.
-  // This is important so that if the user changes nothing, the ref values
-  // still match postDetails exactly and the change comparison works correctly.
+  // Pre-fill refs and state with the current post values so we can detect what the user actually changed before saving.
   useEffect(() => {
     if (postDetails) {
-      titleRef.current = postDetails.title;
-      descriptionRef.current = postDetails.description;
-      // Strip the ₦ symbol from the price before storing in ref
-      priceRef.current = postDetails?.postType !== "event" && postDetails?.price?.slice(1);
-      serviceScheduleRef.current =
-        postDetails?.postType === "service" && postDetails?.serviceSchedule;
-      eventVenueRef.current = postDetails?.postType === "event" && postDetails?.eventVenue;
-      eventTimeRef.current = postDetails?.postType === "event" && postDetails?.eventTime;
-      eventDateRef.current = postDetails?.postType === "event" && postDetails?.eventDate;
+      titleRef.current = postDetails?.title;
+      descriptionRef.current = postDetails?.description;
+
+      // Strip the ₦ symbol — price is stored with it in Firestore but edited without it in the input
+      if (postDetails?.postType !== "event")
+        priceRef.current = postDetails?.price?.slice(1) as string;
+
+      if (postDetails?.postType === "service")
+        serviceScheduleRef.current = postDetails?.serviceSchedule as string;
+
+      if (postDetails?.postType === "event") {
+        eventVenueRef.current = postDetails?.eventVenue as string;
+        eventTimeRef.current = postDetails?.eventTime as string;
+        eventDateRef.current = postDetails?.eventDate as string;
+        setSelectedEventType(postDetails?.eventType as string);
+      }
+
+      setSelectedProductCategory(postDetails?.category);
+      setSelectedServiceCategory(postDetails?.category);
+      setSelectedEventCategory(postDetails?.category);
     }
   }, [postDetails]);
 
@@ -129,48 +127,45 @@ export default function EditPost() {
       }
     }
 
-    // Build a changes object dynamically — only fields that have actually
-    // been modified by the user will be included. This prevents unnecessary
-    // Firestore writes and keeps bandwidth usage to a minimum.
-    const changes: Record<string, any> = {};
+    // An empty object, only fields the user actually changed will be added here and sent to Firestore
+    const updatedFields: any = {};
 
     // Only include the new image if one was uploaded
-    if (uploadedImage) changes.photo = uploadedImage;
+    if (uploadedImage) updatedFields.photo = uploadedImage;
 
     // Shared fields across all post types
-    if (titleRef.current !== postDetails?.title) changes.title = titleRef.current;
+    if (titleRef.current !== postDetails?.title) updatedFields.title = titleRef?.current;
     if (descriptionRef.current !== postDetails?.description)
-      changes.description = descriptionRef.current;
+      updatedFields.description = descriptionRef.current;
 
     switch (postDetails?.postType) {
       case "product":
-        // Re-attach the ₦ symbol before comparing with the stored price
-        const rawProductPrice = priceRef.current ? `₦${priceRef.current}` : postDetails?.price;
-        if (rawProductPrice !== postDetails?.price) changes.price = rawProductPrice;
+        if (priceRef.current !== postDetails?.price?.slice(1))
+          updatedFields.price = `₦${priceRef?.current}`;
         if (selectedProductCategory !== postDetails?.category)
-          changes.category = selectedProductCategory;
+          updatedFields.category = selectedProductCategory;
         break;
 
       case "service":
-        // Re-attach the ₦ symbol before comparing with the stored price
-        const rawServicePrice = priceRef.current ? `₦${priceRef.current}` : postDetails?.price;
-        if (rawServicePrice !== postDetails?.price) changes.price = rawServicePrice;
+        if (priceRef.current !== postDetails?.price?.slice(1))
+          updatedFields.price = `₦${priceRef?.current}`;
         if (serviceScheduleRef.current !== postDetails?.serviceSchedule)
-          changes.serviceSchedule = serviceScheduleRef.current;
+          updatedFields.serviceSchedule = serviceScheduleRef.current;
         if (selectedServiceCategory !== postDetails?.category)
-          changes.category = selectedServiceCategory;
+          updatedFields.category = selectedServiceCategory;
         break;
 
       case "event":
         if (eventDateRef.current !== postDetails?.eventDate)
-          changes.eventDate = eventDateRef.current;
+          updatedFields.eventDate = eventDateRef.current;
         if (eventTimeRef.current !== postDetails?.eventTime)
-          changes.eventTime = eventTimeRef.current;
+          updatedFields.eventTime = eventTimeRef.current;
         if (eventVenueRef.current !== postDetails?.eventVenue)
-          changes.eventVenue = eventVenueRef.current;
+          updatedFields.eventVenue = eventVenueRef.current;
         if (selectedEventCategory !== postDetails?.category)
-          changes.category = selectedEventCategory;
-        if (selectedEventType !== postDetails?.eventType) changes.eventType = selectedEventType;
+          updatedFields.category = selectedEventCategory;
+        if (selectedEventType !== postDetails?.eventType)
+          updatedFields.eventType = selectedEventType;
         break;
 
       default:
@@ -184,8 +179,8 @@ export default function EditPost() {
         return;
     }
 
-    // Nothing changed — bail out early and skip the Firestore write entirely
-    if (Object.keys(changes).length === 0) {
+    // If the user didn't change anything, let them know, stop here and skip the Firestore write entirely
+    if (Object.keys(updatedFields).length === 0) {
       Toast.show({
         type: "info",
         text1: "Post not updated",
@@ -199,7 +194,8 @@ export default function EditPost() {
     // At this point we have confirmed changes, so update only the changed fields in Firestore
     try {
       setIsUpdatingPost(true);
-      await updateDoc(doc(db, "posts", EditPostId as string), changes);
+      await updateDoc(doc(db, "posts", EditPostId as string), updatedFields);
+      console.log(updatedFields);
       Toast.show({
         type: "success",
         text1: "Post updated",
