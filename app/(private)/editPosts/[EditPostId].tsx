@@ -257,13 +257,11 @@ export default function EditPost() {
 
             {postDetails?.postType === "event" && (
               <>
-                <Text style={editPostStyles.inputName}>Venue:</Text>
-                <TextInput
+                <InputFieldAndTitle
+                  title={"Value:"}
                   ref={inputRef}
                   defaultValue={postDetails?.eventVenue}
                   onChangeText={(text) => (eventVenueRef.current = text).trim()}
-                  style={editPostStyles.input}
-                  placeholderTextColor={COLORS.darkGrey}
                 />
 
                 <Text style={editPostStyles.inputName}>Time:</Text>
