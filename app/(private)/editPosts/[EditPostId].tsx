@@ -10,7 +10,6 @@ import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
-import COLORS from "@/constants/colors";
 import { db } from "@/firebase/firebase.config";
 import usePostDetails from "@/hooks/postDetails";
 import usePhotoStore from "@/store/photoStore";
@@ -280,13 +279,11 @@ export default function EditPost() {
               </>
             )}
 
-            <Text style={editPostStyles.inputName}>Description:</Text>
-            <TextInput
+            <InputFieldAndTitle
+              title={"Description:"}
               ref={inputRef}
               defaultValue={postDetails?.description}
               onChangeText={(text) => (descriptionRef.current = text).trim()}
-              style={editPostStyles.input}
-              placeholderTextColor={COLORS.darkGrey}
               multiline={true}
             />
 

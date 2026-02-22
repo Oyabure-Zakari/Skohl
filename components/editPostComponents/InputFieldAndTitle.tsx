@@ -9,6 +9,7 @@ type InputFieldAndTitleProps = {
   defaultValue: string | undefined;
   onChangeText: (text: string) => string;
   keyboardType?: KeyboardTypeOptions | undefined;
+  multiline?: boolean;
 };
 
 const InputFieldAndTitle: React.FC<InputFieldAndTitleProps> = ({
@@ -17,6 +18,7 @@ const InputFieldAndTitle: React.FC<InputFieldAndTitleProps> = ({
   defaultValue,
   onChangeText,
   keyboardType,
+  multiline,
 }) => {
   const editPostStyles = useEditPostStyles();
   return (
@@ -29,6 +31,7 @@ const InputFieldAndTitle: React.FC<InputFieldAndTitleProps> = ({
         style={editPostStyles.input}
         placeholderTextColor={COLORS.darkGrey}
         keyboardType={keyboardType}
+        multiline={multiline}
       />
     </>
   );
