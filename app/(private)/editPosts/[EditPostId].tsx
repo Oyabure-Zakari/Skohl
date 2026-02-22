@@ -98,7 +98,7 @@ export default function EditPost() {
             photo: postImage,
             title: titleRef.current,
             description: descriptionRef.current,
-            price: priceRef.current,
+            price: `₦${priceRef.current}`,
             category: selectedProductCategory,
           });
         } catch (error: any) {
@@ -116,7 +116,7 @@ export default function EditPost() {
             photo: postImage,
             title: titleRef.current,
             description: descriptionRef.current,
-            price: priceRef.current,
+            price: `₦${priceRef.current}`,
             serviceSchedule: serviceScheduleRef.current,
             category: selectedServiceCategory,
           });
@@ -176,7 +176,7 @@ export default function EditPost() {
             <TextInput
               ref={inputRef}
               defaultValue={postDetails?.title}
-              onChangeText={(text) => (titleRef.current = text)}
+              onChangeText={(text) => (titleRef.current = text).trim()}
               style={editPostStyles.input}
               placeholderTextColor={COLORS.darkGrey}
             />
@@ -186,9 +186,9 @@ export default function EditPost() {
                 <Text style={editPostStyles.inputName}>Price:</Text>
                 <TextInput
                   ref={inputRef}
-                  defaultValue={postDetails?.price}
+                  defaultValue={postDetails?.price?.slice(1)}
                   keyboardType="numeric"
-                  onChangeText={(text) => (priceRef.current = text)}
+                  onChangeText={(text) => (priceRef.current = text).trim()}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -201,7 +201,7 @@ export default function EditPost() {
                 <TextInput
                   ref={inputRef}
                   defaultValue={postDetails?.serviceSchedule}
-                  onChangeText={(text) => (serviceScheduleRef.current = text)}
+                  onChangeText={(text) => (serviceScheduleRef.current = text).trim()}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -214,7 +214,7 @@ export default function EditPost() {
                 <TextInput
                   ref={inputRef}
                   defaultValue={postDetails?.eventVenue}
-                  onChangeText={(text) => (eventVenueRef.current = text)}
+                  onChangeText={(text) => (eventVenueRef.current = text).trim()}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -223,7 +223,7 @@ export default function EditPost() {
                 <TextInput
                   ref={inputRef}
                   defaultValue={postDetails?.eventTime}
-                  onChangeText={(text) => (eventTimeRef.current = text)}
+                  onChangeText={(text) => (eventTimeRef.current = text).trim()}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -232,7 +232,7 @@ export default function EditPost() {
                 <TextInput
                   ref={inputRef}
                   defaultValue={postDetails?.eventDate}
-                  onChangeText={(text) => (eventDateRef.current = text)}
+                  onChangeText={(text) => (eventDateRef.current = text).trim()}
                   style={editPostStyles.input}
                   placeholderTextColor={COLORS.darkGrey}
                 />
@@ -243,7 +243,7 @@ export default function EditPost() {
             <TextInput
               ref={inputRef}
               defaultValue={postDetails?.description}
-              onChangeText={(text) => (descriptionRef.current = text)}
+              onChangeText={(text) => (descriptionRef.current = text).trim()}
               style={editPostStyles.input}
               placeholderTextColor={COLORS.darkGrey}
               multiline={true}
