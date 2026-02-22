@@ -20,8 +20,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { doc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
-
-// TODO: Create upload new image functionality and also only update the post's info if the user has made any changes and then use firebase to update the post
+import Toast from "react-native-toast-message";
 
 export default function EditPost() {
   const editPostStyles = useEditPostStyles();
@@ -79,6 +78,23 @@ export default function EditPost() {
     clearPhoto();
   }, []);
 
+  // Seed refs with the loaded postDetails values once they arrive.
+  // This is important so that if the user changes nothing, the ref values
+  // still match postDetails exactly and the change comparison works correctly.
+  useEffect(() => {
+    if (postDetails) {
+      titleRef.current = postDetails.title;
+      descriptionRef.current = postDetails.description;
+      // Strip the ₦ symbol from the price before storing in ref
+      priceRef.current = postDetails?.postType !== "event" && postDetails?.price?.slice(1);
+      serviceScheduleRef.current =
+        postDetails?.postType === "service" && postDetails?.serviceSchedule;
+      eventVenueRef.current = postDetails?.postType === "event" && postDetails?.eventVenue;
+      eventTimeRef.current = postDetails?.postType === "event" && postDetails?.eventTime;
+      eventDateRef.current = postDetails?.postType === "event" && postDetails?.eventDate;
+    }
+  }, [postDetails]);
+
   if (isLoadingPostsDetails) {
     return <OverlayLoadingIndicator />;
   }
@@ -102,8 +118,6 @@ export default function EditPost() {
       uploadedImage = await postImageUrl(postImage);
     }
 
-    console.log(uploadedImage);
-
     // Delete previous image from Cloudinary
     if (uploadedImage && postDetails?.photo?.includes("cloudinary")) {
       try {
@@ -114,66 +128,90 @@ export default function EditPost() {
         // Don't throw here - profile update was successful
       }
     }
+
+    // Build a changes object dynamically — only fields that have actually
+    // been modified by the user will be included. This prevents unnecessary
+    // Firestore writes and keeps bandwidth usage to a minimum.
+    const changes: Record<string, any> = {};
+
+    // Only include the new image if one was uploaded
+    if (uploadedImage) changes.photo = uploadedImage;
+
+    // Shared fields across all post types
+    if (titleRef.current !== postDetails?.title) changes.title = titleRef.current;
+    if (descriptionRef.current !== postDetails?.description)
+      changes.description = descriptionRef.current;
+
     switch (postDetails?.postType) {
       case "product":
-        try {
-          setIsUpdatingPost(true);
-          await updateDoc(doc(db, "posts", EditPostId as string), {
-            photo: uploadedImage ? uploadedImage : postImage,
-            title: titleRef.current,
-            description: descriptionRef.current,
-            price: `₦${priceRef.current}`,
-            category: selectedProductCategory,
-          });
-        } catch (error: any) {
-          Alert.alert(`Error: ${error?.message}`);
-          console.log(error.message);
-        } finally {
-          setIsUpdatingPost(false);
-        }
+        // Re-attach the ₦ symbol before comparing with the stored price
+        const rawProductPrice = priceRef.current ? `₦${priceRef.current}` : postDetails?.price;
+        if (rawProductPrice !== postDetails?.price) changes.price = rawProductPrice;
+        if (selectedProductCategory !== postDetails?.category)
+          changes.category = selectedProductCategory;
         break;
 
       case "service":
-        try {
-          setIsUpdatingPost(true);
-          await updateDoc(doc(db, "posts", EditPostId as string), {
-            photo: uploadedImage ? uploadedImage : postImage,
-            title: titleRef.current,
-            description: descriptionRef.current,
-            price: `₦${priceRef.current}`,
-            serviceSchedule: serviceScheduleRef.current,
-            category: selectedServiceCategory,
-          });
-        } catch (error: any) {
-          Alert.alert(`Error: ${error?.message}`);
-        } finally {
-          setIsUpdatingPost(false);
-        }
+        // Re-attach the ₦ symbol before comparing with the stored price
+        const rawServicePrice = priceRef.current ? `₦${priceRef.current}` : postDetails?.price;
+        if (rawServicePrice !== postDetails?.price) changes.price = rawServicePrice;
+        if (serviceScheduleRef.current !== postDetails?.serviceSchedule)
+          changes.serviceSchedule = serviceScheduleRef.current;
+        if (selectedServiceCategory !== postDetails?.category)
+          changes.category = selectedServiceCategory;
         break;
 
       case "event":
-        try {
-          setIsUpdatingPost(true);
-          await updateDoc(doc(db, "posts", EditPostId as string), {
-            photo: uploadedImage ? uploadedImage : postImage,
-            title: titleRef.current,
-            description: descriptionRef.current,
-            eventDate: eventDateRef.current,
-            eventTime: eventTimeRef.current,
-            eventVenue: eventVenueRef.current,
-            category: selectedEventCategory,
-            eventType: selectedEventType,
-          });
-        } catch (error: any) {
-          Alert.alert(`Error: ${error?.message}`);
-        } finally {
-          setIsUpdatingPost(false);
-        }
+        if (eventDateRef.current !== postDetails?.eventDate)
+          changes.eventDate = eventDateRef.current;
+        if (eventTimeRef.current !== postDetails?.eventTime)
+          changes.eventTime = eventTimeRef.current;
+        if (eventVenueRef.current !== postDetails?.eventVenue)
+          changes.eventVenue = eventVenueRef.current;
+        if (selectedEventCategory !== postDetails?.category)
+          changes.category = selectedEventCategory;
+        if (selectedEventType !== postDetails?.eventType) changes.eventType = selectedEventType;
         break;
 
       default:
-        Alert.alert("Error", "An error occurred while updating the post.");
-        break;
+        Toast.show({
+          type: "error",
+          text1: "Post not updated",
+          text2: "An error occurred while updating the post.",
+          text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+          text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+        });
+        return;
+    }
+
+    // Nothing changed — bail out early and skip the Firestore write entirely
+    if (Object.keys(changes).length === 0) {
+      Toast.show({
+        type: "info",
+        text1: "Post not updated",
+        text2: "You did not make any changes",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
+      return;
+    }
+
+    // At this point we have confirmed changes, so update only the changed fields in Firestore
+    try {
+      setIsUpdatingPost(true);
+      await updateDoc(doc(db, "posts", EditPostId as string), changes);
+      Toast.show({
+        type: "success",
+        text1: "Post updated",
+        text2: "Your post has been updated successfully",
+        text1Style: { fontSize: 16, fontFamily: "Segoe_UI_Bold" },
+        text2Style: { fontSize: 12, fontFamily: "Segoe_UI_Bold" },
+      });
+    } catch (error: any) {
+      Alert.alert(`Error: ${error?.message}`);
+      console.log(error.message);
+    } finally {
+      setIsUpdatingPost(false);
     }
   };
 
