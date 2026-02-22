@@ -1,3 +1,4 @@
+import deleteCloudinaryImage from "@/app/apis/deleteCloudinaryImage";
 import PhotoSection from "@/components/bottomSheet/createPostComponent/ImageSection";
 import EventCategoryPicker from "@/components/bottomSheet/EventCategoryPicker";
 import EventTypePicker from "@/components/bottomSheet/EventTypePicker";
@@ -12,6 +13,8 @@ import { db } from "@/firebase/firebase.config";
 import usePostDetails from "@/hooks/postDetails";
 import usePhotoStore from "@/store/photoStore";
 import useEditPostStyles from "@/styles/editPost.styles";
+import postImageUrl from "@/utils/cloudinary/postImageUrl";
+import extractPublicId from "@/utils/extractPublicId";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { doc, updateDoc } from "firebase/firestore";
@@ -90,12 +93,38 @@ export default function EditPost() {
   }
 
   const updatePost = async () => {
+    // // Check if user has selected a new image that is not a cloudinary image
+    // const hasNewImage = postImage && !postImage.includes("cloudinary");
+    // let uploadedImage;
+
+    // // User has selected a new image, upload to Cloudinary
+    // if (hasNewImage) {
+    //   uploadedImage = await postImageUrl(postImage);
+    // }
+
+    let uploadedImage;
+    if (postImage) {
+      uploadedImage = await postImageUrl(postImage);
+    }
+
+    console.log(uploadedImage);
+
+    // Delete previous image from Cloudinary
+    if (uploadedImage && postDetails?.photo?.includes("cloudinary")) {
+      try {
+        const publicId = extractPublicId(postDetails?.photo);
+        if (publicId) await deleteCloudinaryImage(publicId);
+      } catch (deleteError: any) {
+        //console.error("Failed to delete old image:", deleteError.message);
+        // Don't throw here - profile update was successful
+      }
+    }
     switch (postDetails?.postType) {
       case "product":
         try {
           setIsUpdatingPost(true);
           await updateDoc(doc(db, "posts", EditPostId as string), {
-            photo: postImage,
+            photo: uploadedImage,
             title: titleRef.current,
             description: descriptionRef.current,
             price: `₦${priceRef.current}`,
