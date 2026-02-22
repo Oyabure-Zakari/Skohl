@@ -237,17 +237,13 @@ export default function EditPost() {
             />
 
             {postDetails?.postType !== "event" && (
-              <>
-                <Text style={editPostStyles.inputName}>Price:</Text>
-                <TextInput
-                  ref={inputRef}
-                  defaultValue={postDetails?.price?.slice(1)}
-                  keyboardType="numeric"
-                  onChangeText={(text) => (priceRef.current = text).trim()}
-                  style={editPostStyles.input}
-                  placeholderTextColor={COLORS.darkGrey}
-                />
-              </>
+              <InputFieldAndTitle
+                title={"Price:"}
+                ref={inputRef}
+                defaultValue={postDetails?.price?.slice(1)}
+                onChangeText={(text) => (priceRef.current = text).trim()}
+                keyboardType={"numeric"}
+              />
             )}
 
             {postDetails?.postType === "service" && (

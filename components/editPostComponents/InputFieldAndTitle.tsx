@@ -1,13 +1,14 @@
 import COLORS from "@/constants/colors";
 import useEditPostStyles from "@/styles/editPost.styles";
 import React, { RefObject } from "react";
-import { Text, TextInput } from "react-native";
+import { KeyboardTypeOptions, Text, TextInput } from "react-native";
 
 type InputFieldAndTitleProps = {
   title: string;
   ref: RefObject<TextInput | null>;
-  defaultValue: string;
+  defaultValue: string | undefined;
   onChangeText: (text: string) => string;
+  keyboardType?: KeyboardTypeOptions | undefined;
 };
 
 const InputFieldAndTitle: React.FC<InputFieldAndTitleProps> = ({
@@ -15,6 +16,7 @@ const InputFieldAndTitle: React.FC<InputFieldAndTitleProps> = ({
   ref,
   defaultValue,
   onChangeText,
+  keyboardType,
 }) => {
   const editPostStyles = useEditPostStyles();
   return (
@@ -26,6 +28,7 @@ const InputFieldAndTitle: React.FC<InputFieldAndTitleProps> = ({
         onChangeText={onChangeText}
         style={editPostStyles.input}
         placeholderTextColor={COLORS.darkGrey}
+        keyboardType={keyboardType}
       />
     </>
   );
