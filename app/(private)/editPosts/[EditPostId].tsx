@@ -93,17 +93,12 @@ export default function EditPost() {
   }
 
   const updatePost = async () => {
-    // // Check if user has selected a new image that is not a cloudinary image
-    // const hasNewImage = postImage && !postImage.includes("cloudinary");
-    // let uploadedImage;
-
-    // // User has selected a new image, upload to Cloudinary
-    // if (hasNewImage) {
-    //   uploadedImage = await postImageUrl(postImage);
-    // }
-
+    // Check if user has selected a new image that is not a cloudinary image
+    const hasNewImage = postImage && !postImage.includes("cloudinary");
     let uploadedImage;
-    if (postImage) {
+
+    // User has selected a new image, upload to Cloudinary
+    if (hasNewImage) {
       uploadedImage = await postImageUrl(postImage);
     }
 
@@ -124,7 +119,7 @@ export default function EditPost() {
         try {
           setIsUpdatingPost(true);
           await updateDoc(doc(db, "posts", EditPostId as string), {
-            photo: uploadedImage,
+            photo: uploadedImage ? uploadedImage : postImage,
             title: titleRef.current,
             description: descriptionRef.current,
             price: `₦${priceRef.current}`,
@@ -142,7 +137,7 @@ export default function EditPost() {
         try {
           setIsUpdatingPost(true);
           await updateDoc(doc(db, "posts", EditPostId as string), {
-            photo: postImage,
+            photo: uploadedImage ? uploadedImage : postImage,
             title: titleRef.current,
             description: descriptionRef.current,
             price: `₦${priceRef.current}`,
@@ -160,6 +155,7 @@ export default function EditPost() {
         try {
           setIsUpdatingPost(true);
           await updateDoc(doc(db, "posts", EditPostId as string), {
+            photo: uploadedImage ? uploadedImage : postImage,
             title: titleRef.current,
             description: descriptionRef.current,
             eventDate: eventDateRef.current,
