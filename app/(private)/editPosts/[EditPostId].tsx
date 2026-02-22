@@ -5,6 +5,7 @@ import EventTypePicker from "@/components/bottomSheet/EventTypePicker";
 import ProductCategoryPicker from "@/components/bottomSheet/ProductCategoryPicker";
 import ServiceCategoryPicker from "@/components/bottomSheet/ServiceCategoryPicker";
 import EditPostHeader from "@/components/editPostComponents/EditPostHeader";
+import InputFieldAndTitle from "@/components/editPostComponents/InputFieldAndTitle";
 import CustomButton from "@/components/reuseableComponents/CustomButton";
 import CustomKeyboard from "@/components/reuseableComponents/CustomKeyboard";
 import DeviceCamera from "@/components/reuseableComponents/DeviceCamera";
@@ -219,6 +220,8 @@ export default function EditPost() {
     <>
       {/* Edit Post Header */}
       <EditPostHeader />
+
+      {/* Post Details */}
       <CustomKeyboard>
         <View style={editPostStyles.container}>
           {/* Photo Section */}
@@ -226,13 +229,11 @@ export default function EditPost() {
 
           {/* Form Section */}
           <View style={editPostStyles.formContainer}>
-            <Text style={editPostStyles.inputName}>Title:</Text>
-            <TextInput
+            <InputFieldAndTitle
+              title={"Title:"}
               ref={inputRef}
               defaultValue={postDetails?.title}
-              onChangeText={(text) => (titleRef.current = text).trim()}
-              style={editPostStyles.input}
-              placeholderTextColor={COLORS.darkGrey}
+              onChangeText={(text: string) => (titleRef.current = text).trim()}
             />
 
             {postDetails?.postType !== "event" && (
