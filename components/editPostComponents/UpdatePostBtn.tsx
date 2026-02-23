@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native";
 import CustomButton from "../reuseableComponents/CustomButton";
 
 type UpdatePostBtnProps = {
-  handleUpdatePost: () => Promise<void>;
+  handleUpdatePost: () => void;
   isUpdatingPost: boolean;
 };
 
