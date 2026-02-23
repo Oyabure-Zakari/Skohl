@@ -41,10 +41,8 @@ export default function useUpdatePost({
   selectedServiceCategory,
   selectedEventCategory,
 }: UseUpdatePostParams) {
-  // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
 
-  // useMutation gives us methods and states which is saved in mutation variable
   const mutation = useMutation({
     mutationFn: async () => {
       // Check if user has selected a new image that is not a cloudinary image
@@ -130,42 +128,35 @@ export default function useUpdatePost({
         });
         return;
       }
-      // At this point we have confirmed changes, so update only the changed fields in Firestore
+
       try {
+        // At this point we have confirmed changes, so update only the changed fields in Firestore
         await updateDoc(doc(db, "posts", EditPostId as string), updatedFields);
-        //console.log(updatedFields);
+        // console.log(updatedFields);
+        Toast.show({
+          type: "success",
+          text1: "Post updated",
+          text2: "Your post has been updated successfully",
+          text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
+          text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
+        });
       } catch (error: any) {
-        throw new Error(error.message);
+        Toast.show({
+          type: "error",
+          text1: "Post not updated",
+          text2: `Failed to update post: ${error.message}`,
+          text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
+          text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
+        });
       }
-    },
-
-    onSuccess: () => {
-      Toast.show({
-        type: "success",
-        text1: "Post updated",
-        text2: "Your post has been updated successfully",
-        text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
-        text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
-      });
-    },
-
-    onError: () => {
-      Toast.show({
-        type: "error",
-        text1: "Post not updated",
-        text2: "An error occurred while updating the post.",
-        text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
-        text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
-      });
     },
   });
 
-  // A function to trigger the mutation, so that in the component we just call handleUpdatePost instead of mutation.mutate()
   const handleUpdatePost = () => mutation.mutate();
 
   return {
     handleUpdatePost,
-    isUpdatingPost: mutation.isPending, // So that in the component we use isUpdatingPost instead of mutation.isPending
+    isUpdatingPost: mutation.isPending,
     isUpdatePostError: mutation.isError,
     updatePostError: mutation.error,
   };
