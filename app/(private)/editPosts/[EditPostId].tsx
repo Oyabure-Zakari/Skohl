@@ -1,7 +1,7 @@
 // React
 import React, { useEffect, useRef, useState } from "react";
 // React Native
-import { Alert, Text, TextInput, View } from "react-native";
+import { Alert, TextInput, View } from "react-native";
 // Expo
 import { useLocalSearchParams } from "expo-router";
 // Custom Hook
@@ -10,10 +10,7 @@ import useUpdatePost from "@/hooks/updatePost";
 import useInitializePostEditForm from "@/hooks/useInitializePostEditForm";
 // Components
 import PhotoSection from "@/components/bottomSheet/createPostComponent/ImageSection";
-import EventCategoryPicker from "@/components/bottomSheet/EventCategoryPicker";
-import EventTypePicker from "@/components/bottomSheet/EventTypePicker";
-import ProductCategoryPicker from "@/components/bottomSheet/ProductCategoryPicker";
-import ServiceCategoryPicker from "@/components/bottomSheet/ServiceCategoryPicker";
+import EditPostCategoryPicker from "@/components/editPostComponents/EditPostCategoryPicker";
 import EditPostFormInput from "@/components/editPostComponents/EditPostFormInput";
 import EditPostHeader from "@/components/editPostComponents/EditPostHeader";
 import UpdatePostBtn from "@/components/editPostComponents/UpdatePostBtn";
@@ -127,6 +124,7 @@ export default function EditPost() {
 
           {/* Form Section */}
           <View style={editPostStyles.formContainer}>
+            {/* Text Inputs */}
             <EditPostFormInput
               postDetails={postDetails}
               inputRef={inputRef}
@@ -139,45 +137,20 @@ export default function EditPost() {
               descriptionRef={descriptionRef}
             />
 
-            {postDetails?.postType === "product" && (
-              <>
-                <Text style={editPostStyles.inputName}>Product Category:</Text>
-                <ProductCategoryPicker
-                  selectedCategory={selectedProductCategory}
-                  setSelectedCategory={setSelectedProductCategory}
-                  defaultValue={postDetails?.category}
-                />
-              </>
-            )}
-
-            {postDetails?.postType === "service" && (
-              <>
-                <Text style={editPostStyles.inputName}>Service Category:</Text>
-                <ServiceCategoryPicker
-                  selectedCategory={selectedServiceCategory}
-                  setSelectedCategory={setSelectedServiceCategory}
-                  defaultValue={postDetails?.category}
-                />
-              </>
-            )}
-
-            {postDetails?.postType === "event" && (
-              <>
-                <Text style={editPostStyles.inputName}>Event Type:</Text>
-                <EventTypePicker
-                  selectedEventType={selectedEventType}
-                  setSelectedEventType={setSelectedEventType}
-                  defaultValue={postDetails?.eventType}
-                />
-
-                <Text style={[editPostStyles.inputName, { marginTop: 15 }]}>Event Category:</Text>
-                <EventCategoryPicker
-                  selectedCategory={selectedEventCategory}
-                  setSelectedCategory={setSelectedEventCategory}
-                  defaultValue={postDetails?.category}
-                />
-              </>
-            )}
+            {/* Category Picker */}
+            <EditPostCategoryPicker
+              postType={postDetails?.postType}
+              category={postDetails?.category}
+              eventType={(postDetails?.postType === "event" && postDetails?.eventType) as string}
+              selectedProductCategory={selectedProductCategory}
+              selectedServiceCategory={selectedServiceCategory}
+              selectedEventCategory={selectedEventCategory}
+              selectedEventType={selectedEventType}
+              setSelectedProductCategory={setSelectedProductCategory}
+              setSelectedServiceCategory={setSelectedServiceCategory}
+              setSelectedEventCategory={setSelectedEventCategory}
+              setSelectedEventType={setSelectedEventType}
+            />
           </View>
 
           {/* Update Post Button*/}
