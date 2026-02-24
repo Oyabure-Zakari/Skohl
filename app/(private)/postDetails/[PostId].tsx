@@ -115,6 +115,12 @@ const PostDetails = () => {
     ]);
   };
 
+  const otherUser = postDetails?.postedBy;
+
+  const handleNavigateToChatRoom = () => {
+    router.push({ pathname: "/(private)/ChatRoom", params: otherUser });
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.white }}>
       {/* Post Image */}
@@ -168,7 +174,7 @@ const PostDetails = () => {
               <BookmarkBtn handleBookmark={handleBookmark} isBookmarked={isBookmarked} size={22} />
             )}
             {/* Chat Button */}
-            <TouchableOpacity style={postDetailsStyles.chatBtn}>
+            <TouchableOpacity style={postDetailsStyles.chatBtn} onPress={handleNavigateToChatRoom}>
               <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />
               <Text style={postDetailsStyles.chatBtnText}>Chat</Text>
             </TouchableOpacity>
