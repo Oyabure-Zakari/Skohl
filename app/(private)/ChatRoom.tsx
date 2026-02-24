@@ -1,10 +1,12 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import { useAuth } from "@/contexts/AuthContext";
+import { db } from "@/firebase/firebase.config";
 import formatFullName from "@/utils/formatUserFullname";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -18,7 +20,6 @@ export default function ChatRoom() {
   const router = useRouter();
   const { userUid } = useAuth();
   const otherUser: OtherUserType = useLocalSearchParams();
-  console.log("Other user Id:", otherUser?.userUid);
 
   const getRoomId = (user1: string, user2: string): string => {
     return [user1, user2].join("-");
@@ -26,7 +27,14 @@ export default function ChatRoom() {
 
   const createChatRoom = async () => {
     const roomId = getRoomId(userUid!, otherUser?.userUid);
-    console.log("ChatRoom Id", roomId);
+    await setDoc(doc(db, "chatRooms", roomId), {
+      roomId,
+      users: [userUid, otherUser?.userUid],
+      createdAt: serverTimestamp(),
+      lastMessage: "",
+      lastMessageSender: "",
+      lastMessageTime: serverTimestamp(),
+    });
   };
 
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
