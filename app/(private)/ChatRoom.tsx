@@ -1,6 +1,7 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import { useAuth } from "@/contexts/AuthContext";
+import formatFullName from "@/utils/formatUserFullname";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -17,10 +18,10 @@ export default function ChatRoom() {
   const router = useRouter();
   const { userUid } = useAuth();
   const otherUser: OtherUserType = useLocalSearchParams();
-  console.log("Other user:", otherUser);
+  console.log("Other user Id:", otherUser?.userUid);
 
   const getRoomId = (user1: string, user2: string): string => {
-    return [user1, user2].sort().join("-");
+    return [user1, user2].join("-");
   };
 
   const createChatRoom = async () => {
@@ -28,12 +29,14 @@ export default function ChatRoom() {
     console.log("ChatRoom Id", roomId);
   };
 
+  const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
+
   useEffect(() => {
     createChatRoom();
   }, []);
 
   return (
-    <View>
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16 }}>
       {/* Back Btn */}
       <TouchableOpacity onPress={() => router.back()}>
         <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
@@ -45,7 +48,7 @@ export default function ChatRoom() {
       >
         <Image
           source={{ uri: otherUser?.image }}
-          style={{ width: 80, height: 80, borderRadius: 50 }}
+          style={{ width: 50, height: 50, borderRadius: 25 }}
           placeholder={{ blurhash }}
           contentFit="contain"
           transition={1000}
@@ -54,7 +57,9 @@ export default function ChatRoom() {
       </TouchableOpacity>
 
       {/* User Name */}
-      <Text>{otherUser?.fullName}</Text>
+      <Text style={{ fontSize: 20, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.darkBlue }}>
+        {firstName}
+      </Text>
     </View>
   );
 }
