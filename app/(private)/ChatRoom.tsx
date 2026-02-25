@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
@@ -39,14 +39,29 @@ export default function ChatRoom() {
   };
 
   const createChatRoom = async () => {
+    // Create a unique room ID by combining the two user IDs (e.g. "uid1-uid2")
     const roomId = getRoomId(userUid!, otherUser?.userUid);
-    await setDoc(doc(db, "chatRooms", roomId), {
+
+    // A reference (like an address) to where this chat room document lives in Firestore
+    const docRef = doc(db, "chatRooms", roomId);
+
+    // Fetch the chat room document from Firestore using the reference
+    const docSnap = await getDoc(docRef);
+
+    // Check if the chat room document already exists in the database
+    const chatRoomExists = docSnap.exists();
+
+    // If the chat room already exists, do nothing and exit early (no need to create it again)
+    if (chatRoomExists) return;
+
+    // If we reached here → the chat room does NOT exist yet, so create it
+    await setDoc(docRef, {
       roomId,
-      users: [userUid, otherUser?.userUid],
       createdAt: serverTimestamp(),
-      lastMessage: "",
-      lastMessageSender: "",
-      lastMessageTime: serverTimestamp(),
+      // These fields start as null because no messages exist yet
+      lastMessage: null,
+      lastMessageSender: null,
+      lastMessageTime: null,
     });
   };
 
