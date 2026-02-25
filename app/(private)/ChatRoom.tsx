@@ -1,6 +1,7 @@
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
+import OtherUserType from "@/types/OtherUser";
 import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
 import generateRoomId from "@/utils/generateRoomId";
@@ -19,12 +20,6 @@ import {
   View,
 } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
-
-type OtherUserType = {
-  fullName: string;
-  image?: string | undefined;
-  userUid: string;
-};
 
 type MessagesType = {
   _id: string;
