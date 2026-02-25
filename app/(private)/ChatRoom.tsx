@@ -2,6 +2,7 @@ import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
+import { useUserProfile } from "@/hooks/userProfile";
 import formatFullName from "@/utils/formatUserFullname";
 import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -25,7 +26,6 @@ type MessagesType = {
   createdAt: Date;
   user: {
     _id: string;
-    name: string;
     avatar: string | undefined;
   };
 };
@@ -33,6 +33,8 @@ type MessagesType = {
 export default function ChatRoom() {
   const router = useRouter();
   const { userUid } = useAuth();
+  // Fetch user via TanStack Query instead of local state
+  const { data: user, isPending: isLoading } = useUserProfile(userUid);
   const otherUser: OtherUserType = useLocalSearchParams();
 
   const getRoomId = (user1: string, user2: string): string => {
@@ -87,7 +89,6 @@ export default function ChatRoom() {
         user: {
           // ← This whole object describes **who sent it**
           _id: otherUser?.userUid, // ← Unique ID of the **sender** (not the message)
-          name: firstName, // ← Display name of the sender
           avatar: otherUser?.image, // ← Profile picture of the sender
         },
       },
@@ -131,12 +132,14 @@ export default function ChatRoom() {
         messages={messages}
         onSend={(messages) => onSend(messages as never[])}
         user={{
-          _id: 1,
+          _id: userUid!,
+          avatar: isLoading ? blurhash : user?.image,
         }}
         keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
         colorScheme="dark"
         messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
         isAvatarOnTop={true}
+        isUserAvatarVisible={true}
       />
     </>
   );
