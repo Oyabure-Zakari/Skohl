@@ -2,6 +2,7 @@ import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import formatFullName from "@/utils/formatUserFullname";
+import generateRoomId from "@/utils/generateRoomId";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -38,10 +39,6 @@ export default function ChatRoom() {
   const router = useRouter();
   const { userUid } = useAuth();
   const otherUser: OtherUserType = useLocalSearchParams();
-
-  const generateRoomId = (user1: string, user2: string): string => {
-    return [user1, user2].sort().join("-");
-  };
 
   const createChatRoom = async () => {
     // Create a unique room ID by combining the two user IDs (e.g. "uid1-uid2")
