@@ -60,7 +60,7 @@ export default function ChatRoom() {
       // These fields start as null because no messages exist yet
       lastMessage: null,
       lastMessageSender: null,
-      lastMessageTime: null,
+      lastMessageTime: serverTimestamp(),
       // Store both users in an array so we can query "all chat rooms the currently logged in user is part of". This works the same whether the currently logged in user start the chat or the other person does.
       participants: [userUid, otherUser?.userUid].sort(),
     });
