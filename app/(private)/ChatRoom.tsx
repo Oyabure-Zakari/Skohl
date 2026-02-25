@@ -59,13 +59,14 @@ export default function ChatRoom() {
     // If we reached here → the chat room does NOT exist yet, so create it
     await setDoc(docRef, {
       roomId,
+      otherUser,
       createdAt: serverTimestamp(),
-      // Store both users in an array so we can query "all chat rooms the currently logged in user is part of". This works the same whether the currently logged in user start the chat or the other person does.
-      users: [userUid, otherUser?.userUid].sort(),
       // These fields start as null because no messages exist yet
       lastMessage: null,
       lastMessageSender: null,
       lastMessageTime: null,
+      // Store both users in an array so we can query "all chat rooms the currently logged in user is part of". This works the same whether the currently logged in user start the chat or the other person does.
+      participants: [userUid, otherUser?.userUid].sort(),
     });
   };
 
