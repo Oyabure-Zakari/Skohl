@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -99,6 +100,7 @@ export default function ChatRoom() {
 
   return (
     <>
+      <StatusBar style="dark" backgroundColor={COLORS.lightGrey} />
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16 }}>
         {/* Back Btn */}
         <TouchableOpacity onPress={() => router.back()}>
@@ -133,6 +135,7 @@ export default function ChatRoom() {
         }}
         keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
         colorScheme="dark"
+        messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
       />
     </>
   );
