@@ -1,10 +1,11 @@
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
+import PostFeedHeader from "@/components/reuseableComponents/postsFeedComponent/PostFeedHeader";
 import COLORS from "@/constants/colors";
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function ChatListScreen() {
@@ -26,7 +27,8 @@ export default function ChatListScreen() {
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
-      <Text>Event Screen</Text>
+      {/* Header: User Name + User Image */}
+      <PostFeedHeader screenText={"Chat"} />
 
       {/* Bottom Sheet */}
       <BottomSheetComponent
