@@ -132,6 +132,7 @@ export default function ChatRoom() {
           _id: 1,
         }}
         keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
+        colorScheme="dark"
       />
     </>
   );
