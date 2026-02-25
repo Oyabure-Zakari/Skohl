@@ -136,6 +136,7 @@ export default function ChatRoom() {
         keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
         colorScheme="dark"
         messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
+        isAvatarOnTop={true}
       />
     </>
   );
