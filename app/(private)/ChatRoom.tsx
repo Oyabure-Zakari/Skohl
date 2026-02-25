@@ -4,14 +4,20 @@ import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import { useUserProfile } from "@/hooks/userProfile";
 import formatFullName from "@/utils/formatUserFullname";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 
 type OtherUserType = {
@@ -102,45 +108,71 @@ export default function ChatRoom() {
   return (
     <>
       <StatusBar style="dark" backgroundColor={COLORS.lightGrey} />
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16 }}>
-        {/* Back Btn */}
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
-        </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingHorizontal: 16,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          {/* Back Btn */}
+          <TouchableOpacity onPress={() => router.back()}>
+            <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
+          </TouchableOpacity>
 
-        {/* Profile Image */}
-        <TouchableOpacity
-          onPress={() => router.push(`/(private)/otherUserProfile/${otherUser?.userUid}`)}
+          {/* User Name */}
+          <Text
+            style={{ fontSize: 20, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.darkBlue }}
+          >
+            {`${firstName}`}
+          </Text>
+        </View>
+
+        {/* Messages Count */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+            backgroundColor: "#dddddd",
+            justifyContent: "center",
+            paddingHorizontal: 10,
+            borderRadius: 10,
+          }}
         >
-          <Image
-            source={{ uri: otherUser?.image }}
-            style={{ width: 50, height: 50, borderRadius: 25 }}
-            placeholder={{ blurhash }}
-            contentFit="contain"
-            transition={1000}
-            alt="Profile Picture"
-          />
-        </TouchableOpacity>
-
-        {/* User Name */}
-        <Text style={{ fontSize: 20, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.darkBlue }}>
-          {firstName}
-        </Text>
+          <FontAwesome6 name="message" size={20} color={COLORS.darkBlue} />
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 14,
+              fontFamily: "Segoe_UI_Bold_Italic",
+              color: COLORS.darkBlue,
+            }}
+          >
+            {`${messages.length}`}
+          </Text>
+        </View>
       </View>
 
-      <GiftedChat
-        messages={messages}
-        onSend={(messages) => onSend(messages as never[])}
-        user={{
-          _id: userUid!,
-          avatar: isLoading ? blurhash : user?.image,
-        }}
-        keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
-        colorScheme="dark"
-        messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
-        isAvatarOnTop={true}
-        isUserAvatarVisible={true}
-      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1, backgroundColor: COLORS.lightGrey }}
+      >
+        <GiftedChat
+          messages={messages}
+          onSend={(messages) => onSend(messages as never[])}
+          user={{
+            _id: userUid!,
+            avatar: isLoading ? blurhash : user?.image,
+          }}
+          keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
+          colorScheme="dark"
+          messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
+          isAvatarOnTop={true}
+          ///isUserAvatarVisible={true}
+        />
+      </KeyboardAvoidingView>
     </>
   );
 }
