@@ -1,6 +1,7 @@
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
+import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
 import generateRoomId from "@/utils/generateRoomId";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
@@ -100,13 +101,6 @@ export default function ChatRoom() {
   const onSend = useCallback((messages = []) => {
     setMessages((previousMessages) => GiftedChat.append(previousMessages, messages));
   }, []);
-
-  function formatMessageCount(count: number) {
-    if (count < 1000) return count.toString();
-    if (count < 10000) return (count / 1000).toFixed(1) + "k";
-    if (count < 1000000) return Math.round(count / 1000) + "k";
-    return (count / 1000000).toFixed(1) + "M";
-  }
 
   const messageCount = formatMessageCount(messages.length);
 
