@@ -9,8 +9,8 @@ export default function useHomeStyles() {
       paddingHorizontal: 16,
       backgroundColor: COLORS.darkBlue,
       paddingBottom: 20,
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 50,
+      // borderBottomLeftRadius: 0,
+      // borderBottomRightRadius: 50,
       alignItems: "center",
     },
 
