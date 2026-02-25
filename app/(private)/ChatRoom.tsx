@@ -39,13 +39,13 @@ export default function ChatRoom() {
   const { userUid } = useAuth();
   const otherUser: OtherUserType = useLocalSearchParams();
 
-  const getRoomId = (user1: string, user2: string): string => {
+  const generateRoomId = (user1: string, user2: string): string => {
     return [user1, user2].sort().join("-");
   };
 
   const createChatRoom = async () => {
     // Create a unique room ID by combining the two user IDs (e.g. "uid1-uid2")
-    const roomId = getRoomId(userUid!, otherUser?.userUid);
+    const roomId = generateRoomId(userUid!, otherUser?.userUid);
 
     // A reference (like an address) to where this chat room document lives in Firestore
     const docRef = doc(db, "chatRooms", roomId);
@@ -63,6 +63,7 @@ export default function ChatRoom() {
     await setDoc(docRef, {
       roomId,
       createdAt: serverTimestamp(),
+      createdBy: userUid,
       // These fields start as null because no messages exist yet
       lastMessage: null,
       lastMessageSender: null,
