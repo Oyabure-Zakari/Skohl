@@ -81,10 +81,15 @@ export default function ChatListScreen() {
       ? new Date(lastMessageTime?.seconds * 1000 + (lastMessageTime?.nanoseconds || 0) / 1000000)
       : new Date(); // fallback to now
 
+    const handleNavigateToChatRoom = () => {
+      router.push({ pathname: "/(private)/ChatRoom", params: otherUser });
+    };
+
     return (
       <TouchableOpacity
         style={styles.chatRow}
         // Navigate to chat room
+        onPress={handleNavigateToChatRoom}
       >
         {/* Avatar */}
         <Image
