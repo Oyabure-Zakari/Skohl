@@ -210,14 +210,10 @@ export default function ChatRoom() {
             _id: userUid!,
             //avatar: user?.image,
           }}
-          placeholder="Type a message..."
-          alwaysShowSend
-          scrollToBottom
-          renderAvatarOnTop={false}
-          showUserAvatar
-          showAvatarForEveryMessage={false}
-          keyboardShouldPersistTaps="handled"
+          keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
+          colorScheme="dark"
           messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
+          isAvatarOnTop={true}
         />
       </KeyboardAvoidingView>
     </>
