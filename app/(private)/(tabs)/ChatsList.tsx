@@ -90,7 +90,9 @@ export default function ChatListScreen() {
   const router = useRouter();
 
   const renderItem = ({ item }: { item: ChatRoomsType }) => {
-    const { otherUser, lastMessage, lastMessageTime } = item;
+    const { otherUser, lastMessage, lastMessageTime, lastMessageSender } = item;
+
+    const isOwnMessage = lastMessageSender === userUid;
 
     // Safe timestamp conversion with fallback
     const messageTime = lastMessageTime?.seconds
@@ -121,7 +123,7 @@ export default function ChatListScreen() {
           <Text style={styles.name}>{formatFullName(otherUser?.fullName)}</Text>
 
           <Text style={styles.preview} numberOfLines={1}>
-            {lastMessage || "No messages yet"}
+            {lastMessage ? `${isOwnMessage ? "You: " : ""}${lastMessage}` : "No messages yet"}
           </Text>
         </View>
 
