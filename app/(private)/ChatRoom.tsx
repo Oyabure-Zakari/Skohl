@@ -1,6 +1,7 @@
 import COLORS from "@/constants/colors";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
+import { useUserProfile } from "@/hooks/userProfile";
 import OtherUserType from "@/types/OtherUser";
 import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
@@ -9,7 +10,18 @@ import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -24,78 +36,115 @@ import { GiftedChat } from "react-native-gifted-chat";
 type MessagesType = {
   _id: string;
   text: string;
-  createdAt: Date;
+  createdAt: number | Date;
   user: {
     _id: string;
-    avatar: string | undefined;
+    avatar: string;
   };
 };
 
 export default function ChatRoom() {
   const router = useRouter();
   const { userUid } = useAuth();
+
   const otherUser: OtherUserType = useLocalSearchParams();
 
-  const createChatRoom = async () => {
-    // Create a unique room ID by combining the two user IDs (e.g. "uid1-uid2")
-    const roomId = generateRoomId(userUid!, otherUser?.userUid);
-
-    // A reference (like an address) to where this chat room document lives in Firestore
-    const docRef = doc(db, "chatRooms", roomId);
-
-    // Fetch the chat room document from Firestore using the reference
-    const docSnap = await getDoc(docRef);
-
-    // Check if the chat room document already exists in the database
-    const chatRoomExists = docSnap.exists();
-
-    // If the chat room already exists, do nothing and exit early (no need to create it again)
-    if (chatRoomExists) return;
-
-    // If we reached here → the chat room does NOT exist yet, so create it
-    await setDoc(docRef, {
-      roomId,
-      otherUser,
-      createdAt: serverTimestamp(),
-      // These fields start as null because no messages exist yet
-      lastMessage: null,
-      lastMessageSender: null,
-      lastMessageTime: serverTimestamp(),
-      // Store both users in an array so we can query "all chat rooms the currently logged in user is part of". This works the same whether the currently logged in user start the chat or the other person does.
-      participants: [userUid, otherUser?.userUid].sort(),
-    });
-  };
-
-  const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
-
-  useEffect(() => {
-    createChatRoom();
-  }, []);
+  const roomId = generateRoomId(userUid!, otherUser?.userUid);
 
   const [messages, setMessages] = useState<MessagesType[]>([]);
 
-  // keyboardVerticalOffset = distance from screen top to GiftedChat container
-  // useHeaderHeight() returns status bar + navigation header height
   const headerHeight = useHeaderHeight();
 
-  useEffect(() => {
-    setMessages([
-      {
-        _id: "msdl", // ← This is the unique ID of **this message**
-        text: "Hello developer", // ← The actual text/content of the message
-        createdAt: new Date(), // ← When the message was sent (timestamp)
-        user: {
-          // ← This whole object describes **who sent it**
-          _id: otherUser?.userUid, // ← Unique ID of the **sender** (not the message)
-          avatar: otherUser?.image, // ← Profile picture of the sender
-        },
-      },
-    ]);
-  }, []);
+  const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
 
-  const onSend = useCallback((messages = []) => {
-    setMessages((previousMessages) => GiftedChat.append(previousMessages, messages));
-  }, []);
+  // Create chat room if it doesn't exist
+  useEffect(() => {
+    const createChatRoom = async () => {
+      // A reference (like an address) to where this chat room document lives in Firestore
+      const docRef = doc(db, "chatRooms", roomId);
+      // Fetch the chat room document from Firestore using the reference
+      const docSnap = await getDoc(docRef);
+      // Check if the chat room document already exists in the database
+      const chatRoomExists = docSnap.exists();
+      // If the chat room already exists, do nothing and exit early (no need to create it again)
+      if (chatRoomExists) return;
+      // If we reached here → the chat room does NOT exist yet, so create it
+      await setDoc(docRef, {
+        roomId,
+        otherUser,
+        createdAt: serverTimestamp(),
+        // These fields start as null because no messages exist yet
+        lastMessage: null,
+        lastMessageSender: null,
+        lastMessageTime: null,
+        // Store both users in an array so we can query "all chat rooms the currently logged in user is part of". This works the same whether the currently logged in user start the chat or the other person does.
+        participants: [userUid, otherUser?.userUid].sort(),
+      });
+    };
+
+    createChatRoom();
+  }, [roomId, userUid, otherUser, otherUser?.userUid]);
+
+  // Listen for real-time messages (new messages appear instantly)
+  useEffect(() => {
+    const messagesRef = collection(db, "chatRooms", roomId, "messages");
+
+    const q = query(messagesRef, orderBy("createdAt", "asc"));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const loadedMessages: MessagesType[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          _id: data?.id, // ← This is the unique ID of this message
+          text: data?.message, // ← The actual text/content of the message
+          createdAt: data?.createdAt, // ← When the message was sent (timestamp)
+          // ← This whole object describes who sent it
+          user: {
+            _id: data?.senderUid, // ← Unique ID of the sender (not the message)
+            avatar: data?.senderAvatar, // ← Profile picture of the sender
+          },
+        };
+      });
+
+      setMessages(loadedMessages);
+    });
+
+    return () => unsubscribe();
+  }, [roomId]);
+
+  const { data: user } = useUserProfile(userUid!);
+
+  // Send a new message
+  const onSend = useCallback(
+    async (newMessages = []) => {
+      const messageInfo: MessagesType = newMessages[0];
+
+      try {
+        const messagesRef = collection(db, "chatRooms", roomId, "messages");
+
+        const docRef = await addDoc(messagesRef, {
+          message: messageInfo.text,
+          senderUid: messageInfo?.user?._id,
+          senderAvatar: messageInfo?.user?.avatar || user?.image,
+        });
+
+        updateDoc(docRef, { id: docRef.id });
+
+        // Update room's last message info (for chat list preview)
+        updateDoc(doc(db, "chatRooms", roomId), {
+          lastMessage: messageInfo.text,
+          lastMessageSender: messageInfo?.user?._id,
+          lastMessageTime: serverTimestamp(),
+        });
+      } catch (error: any) {
+        console.error("Error sending message:", error.message);
+      }
+
+      // Append locally (optimistic UI)
+      setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
+    },
+    [roomId, user?.image, userUid],
+  );
 
   const messageCount = formatMessageCount(messages.length);
 
@@ -150,19 +199,25 @@ export default function ChatRoom() {
       </View>
 
       <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, backgroundColor: COLORS.lightGrey }}
+        keyboardVerticalOffset={headerHeight + 80} // Adjust if needed
       >
         <GiftedChat
           messages={messages}
-          onSend={(messages) => onSend(messages as never[])}
+          onSend={(msgs) => onSend(msgs)}
           user={{
             _id: userUid!,
+            //avatar: user?.image,
           }}
-          keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
-          colorScheme="dark"
+          placeholder="Type a message..."
+          alwaysShowSend
+          scrollToBottom
+          renderAvatarOnTop={false}
+          showUserAvatar
+          showAvatarForEveryMessage={false}
+          keyboardShouldPersistTaps="handled"
           messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
-          isAvatarOnTop={true}
         />
       </KeyboardAvoidingView>
     </>
