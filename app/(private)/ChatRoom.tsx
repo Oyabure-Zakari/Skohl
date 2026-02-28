@@ -116,7 +116,7 @@ export default function ChatRoom() {
 
   // Send a new message
   const onSend = useCallback(
-    async (newMessages = []) => {
+    async (newMessages: MessagesType[] = []) => {
       const messageInfo: MessagesType = newMessages[0];
 
       try {
