@@ -15,9 +15,6 @@ import {
   collection,
   doc,
   getDoc,
-  onSnapshot,
-  orderBy,
-  query,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -46,6 +43,7 @@ type MessagesType = {
 export default function ChatRoom() {
   const router = useRouter();
   const { userUid } = useAuth();
+  const { data: user } = useUserProfile(userUid!);
 
   const otherUser: OtherUserType = useLocalSearchParams();
 
@@ -85,35 +83,6 @@ export default function ChatRoom() {
     createChatRoom();
   }, [roomId, userUid, otherUser, otherUser?.userUid]);
 
-  // Listen for real-time messages (new messages appear instantly)
-  useEffect(() => {
-    const messagesRef = collection(db, "chatRooms", roomId, "messages");
-
-    const q = query(messagesRef, orderBy("createdAt", "asc"));
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const loadedMessages: MessagesType[] = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          _id: data?.id, // ← This is the unique ID of this message
-          text: data?.message, // ← The actual text/content of the message
-          createdAt: data?.createdAt, // ← When the message was sent (timestamp)
-          // ← This whole object describes who sent it
-          user: {
-            _id: data?.senderUid, // ← Unique ID of the sender (not the message)
-            avatar: data?.senderAvatar, // ← Profile picture of the sender
-          },
-        };
-      });
-
-      setMessages(loadedMessages);
-    });
-
-    return () => unsubscribe();
-  }, [roomId]);
-
-  const { data: user } = useUserProfile(userUid!);
-
   // Send a new message
   const onSend = useCallback(
     async (newMessages: MessagesType[] = []) => {
@@ -126,6 +95,7 @@ export default function ChatRoom() {
           message: messageInfo.text,
           senderUid: messageInfo?.user?._id,
           senderAvatar: messageInfo?.user?.avatar || user?.image,
+          createdAt: messageInfo?.createdAt,
         });
 
         updateDoc(docRef, { id: docRef.id });
@@ -143,7 +113,7 @@ export default function ChatRoom() {
       // Append locally (optimistic UI)
       setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
     },
-    [roomId, user?.image, userUid],
+    [roomId, user?.image],
   );
 
   const messageCount = formatMessageCount(messages.length);
