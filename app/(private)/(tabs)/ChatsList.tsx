@@ -3,6 +3,7 @@ import FloatingActionButton from "@/components/reuseableComponents/FloatingActio
 import PostFeedHeader from "@/components/reuseableComponents/postsFeedComponent/PostFeedHeader";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import IMAGES from "@/constants/images";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
@@ -157,17 +158,24 @@ export default function ChatListScreen() {
       />
 
       {chatRooms.length === 0 ? (
-        <Text
-          style={{
-            textAlign: "center",
-            marginTop: 20,
-            fontSize: 16,
-            fontFamily: "Segoe_UI_Bold",
-            color: COLORS.darkGrey,
-          }}
-        >
-          No chats yet.
-        </Text>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+          <Image
+            source={IMAGES.noChats}
+            style={{ width: 200, height: 200 }}
+            contentFit="contain"
+            alt="No Chats"
+          />
+
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: "Segoe_UI_Bold",
+              color: COLORS.darkGrey,
+            }}
+          >
+            No chats yet.
+          </Text>
+        </View>
       ) : (
         <FlashList
           data={chatRooms}
