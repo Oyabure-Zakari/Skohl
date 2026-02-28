@@ -12,7 +12,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { collection, FieldValue, onSnapshot, query, where } from "firebase/firestore";
+import { collection, FieldValue, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -65,7 +65,7 @@ export default function ChatListScreen() {
     const q = query(
       chatRoomsCollectionRef,
       where("participants", "array-contains", userUid),
-      //orderBy("lastMessageTime", "desc") // newest active chats first
+      orderBy("lastMessageTime", "desc"), // newest active chats first
     );
 
     // Real-time listener
@@ -73,7 +73,6 @@ export default function ChatListScreen() {
       q,
       (snapshot) => {
         const rooms: ChatRoomsType[] = snapshot.docs.map((doc) => ({
-          // add document ID
           ...doc.data(), // spread all fields
         })) as ChatRoomsType[];
 
@@ -87,8 +86,6 @@ export default function ChatListScreen() {
     // Cleanup listener when component unmounts or userUid changes
     return () => unsubscribe();
   }, []);
-
-  console.log("Chat Rooms:", chatRooms);
 
   const router = useRouter();
 
