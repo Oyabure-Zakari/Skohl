@@ -12,7 +12,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { collection, FieldValue, getDocs, query, where } from "firebase/firestore";
+import { collection, FieldValue, onSnapshot, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -55,18 +55,37 @@ export default function ChatListScreen() {
 
   const { userUid } = useAuth();
 
-  const fetchChatRooms = async () => {
-    // Fetch chat rooms
-    const q = query(chatRoomsCollectionRef, where("participants", "array-contains", userUid));
-    const snapshot = await getDocs(q);
-    const chatRooms: ChatRoomsType[] = snapshot.docs.map((doc) => ({
-      ...doc.data(),
-    })) as ChatRoomsType[];
-    setChatRooms(chatRooms);
-  };
-
   useEffect(() => {
-    fetchChatRooms();
+    if (!userUid) {
+      setChatRooms([]);
+      return;
+    }
+
+    // Query: all chat rooms where current user is in the participants array
+    const q = query(
+      chatRoomsCollectionRef,
+      where("participants", "array-contains", userUid),
+      //orderBy("lastMessageTime", "desc") // newest active chats first
+    );
+
+    // Real-time listener
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const rooms: ChatRoomsType[] = snapshot.docs.map((doc) => ({
+          // add document ID
+          ...doc.data(), // spread all fields
+        })) as ChatRoomsType[];
+
+        setChatRooms(rooms);
+      },
+      (error: any) => {
+        console.error("Chat rooms listener error:", error.message);
+      },
+    );
+
+    // Cleanup listener when component unmounts or userUid changes
+    return () => unsubscribe();
   }, []);
 
   console.log("Chat Rooms:", chatRooms);
