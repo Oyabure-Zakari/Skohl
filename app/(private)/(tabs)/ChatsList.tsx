@@ -156,14 +156,28 @@ export default function ChatListScreen() {
         activeBottomSheet={activeBottomSheet}
       />
 
-      <FlashList
-        data={chatRooms}
-        keyExtractor={(item) => item.roomId}
-        renderItem={renderItem}
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
+      {chatRooms.length === 0 ? (
+        <Text
+          style={{
+            textAlign: "center",
+            marginTop: 20,
+            fontSize: 16,
+            fontFamily: "Segoe_UI_Bold",
+            color: COLORS.darkGrey,
+          }}
+        >
+          No chats yet.
+        </Text>
+      ) : (
+        <FlashList
+          data={chatRooms}
+          keyExtractor={(item) => item.roomId}
+          renderItem={renderItem}
+          style={styles.list}
+          contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
+      )}
 
       {/* Floating Action Button */}
       <FloatingActionButton
