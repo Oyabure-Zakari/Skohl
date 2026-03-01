@@ -10,12 +10,7 @@ export const useFetchChatMessages = (roomId: string) => {
   const { fontScale } = useWindowDimensions();
   const queryClient = useQueryClient();
 
-  const {
-    data: messages = [],
-    isLoading: isLoadingMessages,
-    isError: isErrorMessages,
-    error: errorMessages,
-  } = useQuery<IMessage[]>({
+  const { data: messages = [], isLoading: isLoadingMessages } = useQuery<IMessage[]>({
     queryKey: ["messages", roomId],
     staleTime: Infinity, // Never stale — onSnapshot keeps it fresh
     gcTime: 5 * 60 * 1000, // Cache 5 min after unmount
@@ -64,7 +59,5 @@ export const useFetchChatMessages = (roomId: string) => {
   return {
     messages,
     isLoadingMessages,
-    isErrorMessages,
-    errorMessages,
   };
 };

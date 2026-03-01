@@ -1,3 +1,4 @@
+import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import IMAGES from "@/constants/images";
@@ -18,6 +19,7 @@ import { StatusBar } from "expo-status-bar";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React, { useCallback, useEffect } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -45,8 +47,7 @@ export default function ChatRoom() {
   const headerHeight = useHeaderHeight();
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
 
-  const { createChatRoom, isCreatingChatRoom, isCreateChatRoomError, createChatRoomError } =
-    useCreateChatRoom();
+  const { createChatRoom, isCreateChatRoomError, createChatRoomError } = useCreateChatRoom();
 
   // Create chat room if it doesn't exist
   useEffect(() => {
@@ -87,6 +88,14 @@ export default function ChatRoom() {
   );
 
   const messageCount = formatMessageCount(messages.length);
+
+  if (isLoadingMessages) {
+    return <OverlayLoadingIndicator />;
+  }
+
+  if (isCreateChatRoomError) {
+    return Alert.alert(`Error: ${createChatRoomError?.message}`);
+  }
 
   const renderBubble = (props: any) => {
     return (
