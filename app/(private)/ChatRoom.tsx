@@ -8,7 +8,7 @@ import OtherUserType from "@/types/OtherUser";
 import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
 import generateRoomId from "@/utils/generateRoomId";
-import { FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Image, ImageBackground } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -34,7 +34,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Bubble, Composer, GiftedChat, IMessage, InputToolbar } from "react-native-gifted-chat";
+import {
+  Bubble,
+  Composer,
+  GiftedChat,
+  IMessage,
+  InputToolbar,
+  Send,
+} from "react-native-gifted-chat";
 
 export default function ChatRoom() {
   const router = useRouter();
@@ -180,9 +187,10 @@ export default function ChatRoom() {
       <InputToolbar
         {...props}
         containerStyle={{
-          backgroundColor: COLORS.white,
+          backgroundColor: COLORS.darkBlue,
           borderTopWidth: 0,
           paddingHorizontal: 10,
+          paddingVertical: 8,
           marginHorizontal: 12,
           marginBottom: 10,
           borderRadius: 30,
@@ -202,7 +210,7 @@ export default function ChatRoom() {
       <Composer
         {...props}
         textInputStyle={{
-          color: COLORS.darkBlue,
+          color: COLORS.lightGrey,
           fontFamily: "Segoe_UI_Bold_Italic",
           fontSize: 14,
           lineHeight: 20,
@@ -212,6 +220,30 @@ export default function ChatRoom() {
         placeholderTextColor="rgba(0,0,0,0.4)"
         placeholder="Type a message..."
       />
+    );
+  };
+
+  const renderSend = (props: any) => {
+    return (
+      <Send
+        {...props}
+        containerStyle={{
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 8,
+          paddingBottom: 4,
+        }}
+      >
+        {/* Replace the default send icon with your own */}
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <FontAwesome name="send" size={18} color={COLORS.lightGrey} />
+        </View>
+      </Send>
     );
   };
 
@@ -291,7 +323,9 @@ export default function ChatRoom() {
           <GiftedChat
             messages={messages}
             onSend={(msgs) => onSend(msgs)}
+            colorScheme="dark"
             renderBubble={renderBubble}
+            renderSend={renderSend}
             renderInputToolbar={renderInputToolbar} // 👈
             renderComposer={renderComposer} // 👈
             user={{
@@ -301,6 +335,7 @@ export default function ChatRoom() {
             messagesContainerStyle={{ backgroundColor: "transparent" }} // Make it transparent so bg shows
             isAvatarOnTop={true}
             isAlignedTop={true}
+            isSendButtonAlwaysVisible={true}
           />
         </ImageBackground>
       </KeyboardAvoidingView>
