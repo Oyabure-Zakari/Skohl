@@ -3,6 +3,7 @@ import blurhash from "@/constants/expoBlurImage";
 import IMAGES from "@/constants/images";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
+import useCreateChatRoom from "@/hooks/useCreateChatRoom.ts";
 import { useUserProfile } from "@/hooks/userProfile";
 import OtherUserType from "@/types/OtherUser";
 import formatMessageCount from "@/utils/formatMessageCount";
@@ -17,12 +18,10 @@ import {
   addDoc,
   collection,
   doc,
-  getDoc,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import React, { useCallback, useEffect, useState } from "react";
@@ -56,30 +55,12 @@ export default function ChatRoom() {
   const headerHeight = useHeaderHeight();
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
 
+  const { createChatRoom, isCreatingChatRoom, isCreateChatRoomError, createChatRoomError } =
+    useCreateChatRoom();
+
   // Create chat room if it doesn't exist
   useEffect(() => {
-    const createChatRoom = async () => {
-      // A document reference of the particular chat room doc
-      const docRef = doc(db, "chatRooms", roomId);
-      // Fetch the chat room document from Firestore using the reference
-      const docSnap = await getDoc(docRef);
-      // Check if the chat room document already exists in the database
-      const chatRoomExists = docSnap.exists();
-      // If the chat room already exists, do nothing and exit early (no need to create it again)
-      if (chatRoomExists) return;
-      // If we reached here → the chat room does NOT exist yet, so create it
-      await setDoc(docRef, {
-        roomId,
-        otherUser,
-        createdAt: serverTimestamp(),
-        lastMessage: null,
-        lastMessageSender: null,
-        lastMessageTime: null,
-        participants: [userUid, otherUser?.userUid].sort(),
-      });
-    };
-
-    createChatRoom();
+    createChatRoom({ roomId, userUid: userUid!, otherUser });
   }, [roomId, userUid, otherUser]);
 
   // Fetch message using onSnapshot Real-time listener
