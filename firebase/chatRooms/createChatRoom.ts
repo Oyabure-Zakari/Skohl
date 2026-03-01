@@ -27,7 +27,7 @@ const createChatRoom = async ({ roomId, userUid, otherUser }: CreateChatRoomPara
       participants: [userUid, otherUser?.userUid].sort(),
     });
   } catch (error: any) {
-    throw new Error(`Failed to create chat room: ${error.message}`);
+    throw new Error(error?.message || "Failed to create chat room");
   }
 };
 
