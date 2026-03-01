@@ -33,7 +33,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { GiftedChat, IMessage } from "react-native-gifted-chat";
+import { Bubble, GiftedChat, IMessage } from "react-native-gifted-chat";
 
 export default function ChatRoom() {
   const router = useRouter();
@@ -136,6 +136,52 @@ export default function ChatRoom() {
 
   const messageCount = formatMessageCount(messages.length);
 
+  const renderBubble = (props: any) => {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            // Your own sent message bubble
+            backgroundColor: COLORS.purple,
+            borderBottomEndRadius: 10,
+            borderBottomStartRadius: 10,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 0,
+            marginBottom: 4,
+            padding: 4,
+          },
+          left: {
+            // Other person's received message bubble
+            backgroundColor: COLORS.darkGrey,
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+            borderTopRightRadius: 10,
+            borderTopLeftRadius: 0,
+            marginBottom: 4,
+            padding: 4,
+          },
+        }}
+        textStyle={{
+          right: {
+            color: COLORS.lightGrey,
+            fontFamily: "Segoe_UI_Bold",
+            fontSize: 14,
+          },
+          left: {
+            color: COLORS.darkBlue,
+            fontFamily: "Segoe_UI_Bold",
+            fontSize: 14,
+          },
+        }}
+        timeTextStyle={{
+          right: { color: "rgba(255,255,255,0.6)", fontSize: 11 },
+          left: { color: "rgba(0,0,0,0.4)", fontSize: 11 },
+        }}
+      />
+    );
+  };
+
   return (
     <>
       <StatusBar style="dark" backgroundColor={COLORS.lightGrey} />
@@ -151,7 +197,7 @@ export default function ChatRoom() {
             <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/(private)/(tabs)/Profile")}>
+          <TouchableOpacity onPress={() => {}}>
             <Image
               source={{ uri: otherUser?.image }}
               style={{ width: 40, height: 40, borderRadius: 20 }}
@@ -179,9 +225,9 @@ export default function ChatRoom() {
             flexDirection: "row",
             alignItems: "center",
             gap: 10,
-            backgroundColor: "#dddddd",
-            paddingHorizontal: 8,
-            borderRadius: 10,
+            // backgroundColor: "#dddddd",
+            // paddingHorizontal: 8,
+            // borderRadius: 10,
           }}
         >
           <FontAwesome6
@@ -211,6 +257,7 @@ export default function ChatRoom() {
         <GiftedChat
           messages={messages}
           onSend={(msgs) => onSend(msgs)}
+          renderBubble={renderBubble}
           user={{
             _id: userUid!,
           }}
