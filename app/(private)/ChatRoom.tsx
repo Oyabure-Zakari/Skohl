@@ -1,5 +1,6 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
+import IMAGES from "@/constants/images";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import { useUserProfile } from "@/hooks/userProfile";
@@ -9,7 +10,7 @@ import formatFullName from "@/utils/formatUserFullname";
 import generateRoomId from "@/utils/generateRoomId";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Image } from "expo-image";
+import { Image, ImageBackground } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -184,17 +185,18 @@ export default function ChatRoom() {
 
   return (
     <>
-      <StatusBar style="dark" backgroundColor={COLORS.lightGrey} />
+      <StatusBar style="light" backgroundColor={COLORS.darkBlue} />
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
           paddingHorizontal: 16,
+          backgroundColor: COLORS.darkBlue,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
           <TouchableOpacity onPress={() => router.back()}>
-            <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
+            <Ionicons name="arrow-back-sharp" size={24} color={COLORS.lightGrey} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -202,7 +204,7 @@ export default function ChatRoom() {
           >
             <Image
               source={{ uri: otherUser?.image }}
-              style={{ width: 40, height: 40, borderRadius: 20 }}
+              style={{ width: 40, height: 40, borderRadius: 20, marginBottom: 10 }}
               placeholder={{ blurhash }}
               contentFit="contain"
               transition={1000}
@@ -212,9 +214,9 @@ export default function ChatRoom() {
           <Text
             numberOfLines={1}
             style={{
-              fontSize: 20,
+              fontSize: 18,
               fontFamily: "Segoe_UI_Bold_Italic",
-              color: COLORS.darkBlue,
+              color: COLORS.lightGrey,
               width: "60%",
             }}
           >
@@ -231,8 +233,8 @@ export default function ChatRoom() {
         >
           <FontAwesome6
             name="message"
-            size={20}
-            color={COLORS.darkBlue}
+            size={16}
+            color={COLORS.lightGrey}
             style={{ alignSelf: "center" }}
           />
           <Text
@@ -240,7 +242,7 @@ export default function ChatRoom() {
               textAlign: "center",
               fontSize: 14,
               fontFamily: "Segoe_UI_Bold_Italic",
-              color: COLORS.darkBlue,
+              color: COLORS.lightGrey,
             }}
           >
             {messageCount}
@@ -253,19 +255,21 @@ export default function ChatRoom() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={headerHeight + 80}
       >
-        <GiftedChat
-          messages={messages}
-          onSend={(msgs) => onSend(msgs)}
-          renderBubble={renderBubble}
-          user={{
-            _id: userUid!,
-          }}
-          keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
-          colorScheme="dark"
-          messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
-          isAvatarOnTop={true}
-          isAlignedTop={true}
-        />
+        <ImageBackground source={IMAGES.pattern1} style={{ flex: 1 }} contentFit="cover">
+          <GiftedChat
+            messages={messages}
+            onSend={(msgs) => onSend(msgs)}
+            renderBubble={renderBubble}
+            user={{
+              _id: userUid!,
+            }}
+            keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
+            //colorScheme="dark"
+            messagesContainerStyle={{ backgroundColor: "transparent" }} // Make it transparent so bg shows
+            isAvatarOnTop={true}
+            isAlignedTop={true}
+          />
+        </ImageBackground>
       </KeyboardAvoidingView>
     </>
   );
