@@ -15,6 +15,9 @@ import {
   collection,
   doc,
   getDoc,
+  onSnapshot,
+  orderBy,
+  query,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -28,17 +31,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { GiftedChat } from "react-native-gifted-chat";
-
-type MessagesType = {
-  _id: string;
-  text: string;
-  createdAt: number | Date;
-  user: {
-    _id: string;
-    avatar: string;
-  };
-};
+import { GiftedChat, IMessage } from "react-native-gifted-chat";
 
 export default function ChatRoom() {
   const router = useRouter();
@@ -46,47 +39,68 @@ export default function ChatRoom() {
   const { data: user } = useUserProfile(userUid!);
 
   const otherUser: OtherUserType = useLocalSearchParams();
-
   const roomId = generateRoomId(userUid!, otherUser?.userUid);
 
-  const [messages, setMessages] = useState<MessagesType[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
   const headerHeight = useHeaderHeight();
-
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
 
   // Create chat room if it doesn't exist
   useEffect(() => {
     const createChatRoom = async () => {
-      // A reference (like an address) to where this chat room document lives in Firestore
       const docRef = doc(db, "chatRooms", roomId);
-      // Fetch the chat room document from Firestore using the reference
       const docSnap = await getDoc(docRef);
-      // Check if the chat room document already exists in the database
-      const chatRoomExists = docSnap.exists();
-      // If the chat room already exists, do nothing and exit early (no need to create it again)
-      if (chatRoomExists) return;
-      // If we reached here → the chat room does NOT exist yet, so create it
+      if (docSnap.exists()) return;
+
       await setDoc(docRef, {
         roomId,
         otherUser,
         createdAt: serverTimestamp(),
-        // These fields start as null because no messages exist yet
         lastMessage: null,
         lastMessageSender: null,
         lastMessageTime: null,
-        // Store both users in an array so we can query "all chat rooms the currently logged in user is part of". This works the same whether the currently logged in user start the chat or the other person does.
         participants: [userUid, otherUser?.userUid].sort(),
       });
     };
 
     createChatRoom();
-  }, [roomId, userUid, otherUser, otherUser?.userUid]);
+  }, [roomId, userUid, otherUser]);
+
+  // ✅ Real-time message listener using onSnapshot
+  useEffect(() => {
+    const messagesRef = collection(db, "chatRooms", roomId, "messages");
+    // Order by createdAt ascending so GiftedChat (which reverses internally) displays correctly
+    const messagesQuery = query(messagesRef, orderBy("createdAt", "asc"));
+
+    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+      const fetchedMessages: IMessage[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+
+        return {
+          _id: doc.id,
+          text: data.message,
+          // Firestore Timestamps need to be converted to JS Date
+          createdAt: data.createdAt?.toDate?.() ?? new Date(),
+          user: {
+            _id: data.senderUid,
+            avatar: data.senderAvatar,
+          },
+        };
+      });
+
+      // GiftedChat expects messages in descending order (newest first)
+      setMessages(fetchedMessages.reverse());
+    });
+
+    // Cleanup listener when component unmounts or roomId changes
+    return () => unsubscribe();
+  }, [roomId]);
 
   // Send a new message
   const onSend = useCallback(
-    async (newMessages: MessagesType[] = []) => {
-      const messageInfo: MessagesType = newMessages[0];
+    async (newMessages: IMessage[] = []) => {
+      const messageInfo = newMessages[0];
 
       try {
         const messagesRef = collection(db, "chatRooms", roomId, "messages");
@@ -95,12 +109,12 @@ export default function ChatRoom() {
           message: messageInfo.text,
           senderUid: messageInfo?.user?._id,
           senderAvatar: messageInfo?.user?.avatar || user?.image,
-          createdAt: messageInfo?.createdAt,
+          // Use JS Date here so onSnapshot can immediately read it before server resolves
+          createdAt: messageInfo?.createdAt ?? new Date(),
         });
 
         updateDoc(docRef, { id: docRef.id });
 
-        // Update room's last message info (for chat list preview)
         updateDoc(doc(db, "chatRooms", roomId), {
           lastMessage: messageInfo.text,
           lastMessageSender: messageInfo?.user?._id,
@@ -109,9 +123,7 @@ export default function ChatRoom() {
       } catch (error: any) {
         console.error("Error sending message:", error.message);
       }
-
-      // Append locally (optimistic UI)
-      setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
+      // ❌ Removed optimistic setMessages() — onSnapshot handles UI updates automatically
     },
     [roomId, user?.image],
   );
@@ -129,20 +141,16 @@ export default function ChatRoom() {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          {/* Back Btn */}
           <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
           </TouchableOpacity>
-
-          {/* User Name */}
           <Text
             style={{ fontSize: 20, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.darkBlue }}
           >
-            {`${firstName}`}
+            {firstName}
           </Text>
         </View>
 
-        {/* Messages Count */}
         <View
           style={{
             flexDirection: "row",
@@ -171,14 +179,13 @@ export default function ChatRoom() {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={headerHeight + 80} // Adjust if needed
+        keyboardVerticalOffset={headerHeight + 80}
       >
         <GiftedChat
           messages={messages}
           onSend={(msgs) => onSend(msgs)}
           user={{
             _id: userUid!,
-            //avatar: user?.image,
           }}
           keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
           colorScheme="dark"
