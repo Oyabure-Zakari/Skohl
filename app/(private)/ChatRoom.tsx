@@ -199,7 +199,9 @@ export default function ChatRoom() {
             <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => {}}>
+          <TouchableOpacity
+            onPress={() => router.push(`/(private)/otherUserProfile/${otherUser?.userUid}`)}
+          >
             <Image
               source={{ uri: otherUser?.image }}
               style={{ width: 40, height: 40, borderRadius: 20 }}
@@ -227,9 +229,6 @@ export default function ChatRoom() {
             flexDirection: "row",
             alignItems: "center",
             gap: 10,
-            // backgroundColor: "#dddddd",
-            // paddingHorizontal: 8,
-            // borderRadius: 10,
           }}
         >
           <FontAwesome6
