@@ -4,6 +4,7 @@ import IMAGES from "@/constants/images";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import useCreateChatRoom from "@/hooks/useCreateChatRoom.ts";
+import { useFetchChatMessages } from "@/hooks/useFetchChatMessages";
 import { useUserProfile } from "@/hooks/userProfile";
 import OtherUserType from "@/types/OtherUser";
 import formatMessageCount from "@/utils/formatMessageCount";
@@ -14,17 +15,8 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import { Image, ImageBackground } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import {
-  addDoc,
-  collection,
-  doc,
-  onSnapshot,
-  orderBy,
-  query,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
-import React, { useCallback, useEffect, useState } from "react";
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import React, { useCallback, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -50,8 +42,6 @@ export default function ChatRoom() {
   const otherUser: OtherUserType = useLocalSearchParams();
   const roomId = generateRoomId(userUid!, otherUser?.userUid);
 
-  const [messages, setMessages] = useState<IMessage[]>([]);
-
   const headerHeight = useHeaderHeight();
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
 
@@ -63,35 +53,8 @@ export default function ChatRoom() {
     createChatRoom({ roomId, userUid: userUid!, otherUser });
   }, [roomId, userUid, otherUser]);
 
-  // Fetch message using onSnapshot Real-time listener
-  useEffect(() => {
-    const messagesRef = collection(db, "chatRooms", roomId, "messages");
-    // Order by createdAt ascending so GiftedChat (which reverses internally) displays correctly
-    const messagesQuery = query(messagesRef, orderBy("createdAt", "asc"));
-
-    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-      const fetchedMessages: IMessage[] = snapshot.docs.map((doc) => {
-        const data = doc.data();
-
-        return {
-          _id: doc.id,
-          text: data.message,
-          // Firestore Timestamps need to be converted to JS Date
-          createdAt: data.createdAt?.toDate?.() ?? new Date(),
-          user: {
-            _id: data.senderUid,
-            avatar: data.senderAvatar,
-          },
-        };
-      });
-
-      // GiftedChat expects messages in descending order (newest first)
-      setMessages(fetchedMessages.reverse());
-    });
-
-    // Cleanup listener when component unmounts or roomId changes
-    return () => unsubscribe();
-  }, [roomId]);
+  // Fetch message using onSnapshot Real-time listener + Tanstack Query for caching
+  const { messages, isLoadingMessages } = useFetchChatMessages(roomId);
 
   // Send a new message
   const onSend = useCallback(
