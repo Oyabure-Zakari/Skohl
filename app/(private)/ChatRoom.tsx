@@ -1,4 +1,5 @@
 import COLORS from "@/constants/colors";
+import blurhash from "@/constants/expoBlurImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import { useUserProfile } from "@/hooks/userProfile";
@@ -8,6 +9,7 @@ import formatFullName from "@/utils/formatUserFullname";
 import generateRoomId from "@/utils/generateRoomId";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { Image } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -148,8 +150,25 @@ export default function ChatRoom() {
           <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back-sharp" size={24} color={COLORS.darkBlue} />
           </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => router.push("/(private)/(tabs)/Profile")}>
+            <Image
+              source={{ uri: otherUser?.image }}
+              style={{ width: 40, height: 40, borderRadius: 20 }}
+              placeholder={{ blurhash }}
+              contentFit="contain"
+              transition={1000}
+              alt="Profile Picture"
+            />
+          </TouchableOpacity>
           <Text
-            style={{ fontSize: 20, fontFamily: "Segoe_UI_Bold_Italic", color: COLORS.darkBlue }}
+            numberOfLines={1}
+            style={{
+              fontSize: 20,
+              fontFamily: "Segoe_UI_Bold_Italic",
+              color: COLORS.darkBlue,
+              width: "60%",
+            }}
           >
             {firstName}
           </Text>
@@ -161,12 +180,16 @@ export default function ChatRoom() {
             alignItems: "center",
             gap: 10,
             backgroundColor: "#dddddd",
-            justifyContent: "center",
-            paddingHorizontal: 10,
+            paddingHorizontal: 8,
             borderRadius: 10,
           }}
         >
-          <FontAwesome6 name="message" size={20} color={COLORS.darkBlue} />
+          <FontAwesome6
+            name="message"
+            size={20}
+            color={COLORS.darkBlue}
+            style={{ alignSelf: "center" }}
+          />
           <Text
             style={{
               textAlign: "center",
@@ -190,12 +213,12 @@ export default function ChatRoom() {
           onSend={(msgs) => onSend(msgs)}
           user={{
             _id: userUid!,
-            avatar: user?.image,
           }}
           keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
           colorScheme="dark"
           messagesContainerStyle={{ backgroundColor: COLORS.lightGrey }}
           isAvatarOnTop={true}
+          isAlignedTop={true}
         />
       </KeyboardAvoidingView>
     </>
