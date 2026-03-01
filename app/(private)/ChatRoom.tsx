@@ -136,8 +136,6 @@ export default function ChatRoom() {
 
   const messageCount = formatMessageCount(messages.length);
 
-  console.log(otherUser?.image);
-
   const renderBubble = (props: any) => {
     return (
       <Bubble
