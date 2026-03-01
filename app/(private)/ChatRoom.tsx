@@ -136,6 +136,8 @@ export default function ChatRoom() {
 
   const messageCount = formatMessageCount(messages.length);
 
+  console.log(otherUser?.image);
+
   const renderBubble = (props: any) => {
     return (
       <Bubble
@@ -153,7 +155,7 @@ export default function ChatRoom() {
           },
           left: {
             // Other person's received message bubble
-            backgroundColor: COLORS.darkGrey,
+            backgroundColor: COLORS.darkBlue,
             borderBottomLeftRadius: 10,
             borderBottomRightRadius: 10,
             borderTopRightRadius: 10,
@@ -169,14 +171,14 @@ export default function ChatRoom() {
             fontSize: 14,
           },
           left: {
-            color: COLORS.darkBlue,
+            color: COLORS.lightGrey,
             fontFamily: "Segoe_UI_Bold",
             fontSize: 14,
           },
         }}
         timeTextStyle={{
           right: { color: "rgba(255,255,255,0.6)", fontSize: 11 },
-          left: { color: "rgba(0,0,0,0.4)", fontSize: 11 },
+          left: { color: "rgba(255,255,255,0.6)", fontSize: 11 },
         }}
       />
     );
