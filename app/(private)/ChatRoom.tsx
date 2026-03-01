@@ -49,10 +49,15 @@ export default function ChatRoom() {
   // Create chat room if it doesn't exist
   useEffect(() => {
     const createChatRoom = async () => {
+      // A document reference of the particular chat room doc
       const docRef = doc(db, "chatRooms", roomId);
+      // Fetch the chat room document from Firestore using the reference
       const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) return;
-
+      // Check if the chat room document already exists in the database
+      const chatRoomExists = docSnap.exists();
+      // If the chat room already exists, do nothing and exit early (no need to create it again)
+      if (chatRoomExists) return;
+      // If we reached here → the chat room does NOT exist yet, so create it
       await setDoc(docRef, {
         roomId,
         otherUser,
@@ -67,7 +72,7 @@ export default function ChatRoom() {
     createChatRoom();
   }, [roomId, userUid, otherUser]);
 
-  // ✅ Real-time message listener using onSnapshot
+  // Fetch message using onSnapshot Real-time listener
   useEffect(() => {
     const messagesRef = collection(db, "chatRooms", roomId, "messages");
     // Order by createdAt ascending so GiftedChat (which reverses internally) displays correctly
@@ -123,7 +128,6 @@ export default function ChatRoom() {
       } catch (error: any) {
         console.error("Error sending message:", error.message);
       }
-      // ❌ Removed optimistic setMessages() — onSnapshot handles UI updates automatically
     },
     [roomId, user?.image],
   );
@@ -186,6 +190,7 @@ export default function ChatRoom() {
           onSend={(msgs) => onSend(msgs)}
           user={{
             _id: userUid!,
+            avatar: user?.image,
           }}
           keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
           colorScheme="dark"
