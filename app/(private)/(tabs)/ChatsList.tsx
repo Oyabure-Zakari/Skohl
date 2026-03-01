@@ -157,35 +157,34 @@ export default function ChatListScreen() {
         activeBottomSheet={activeBottomSheet}
       />
 
-      {chatRooms.length === 0 ? (
-        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-          <Image
-            source={IMAGES.noChats}
-            style={{ width: 200, height: 200 }}
-            contentFit="contain"
-            alt="No Chats"
-          />
+      <FlashList
+        data={chatRooms}
+        keyExtractor={(item) => item.roomId}
+        renderItem={renderItem}
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ListEmptyComponent={() => (
+          <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <Image
+              source={IMAGES.noChats}
+              style={{ width: 200, height: 200 }}
+              contentFit="contain"
+              alt="No Chats"
+            />
 
-          <Text
-            style={{
-              fontSize: 16,
-              fontFamily: "Segoe_UI_Bold",
-              color: COLORS.darkGrey,
-            }}
-          >
-            No chats yet.
-          </Text>
-        </View>
-      ) : (
-        <FlashList
-          data={chatRooms}
-          keyExtractor={(item) => item.roomId}
-          renderItem={renderItem}
-          style={styles.list}
-          contentContainerStyle={styles.listContent}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-        />
-      )}
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: "Segoe_UI_Bold",
+                color: COLORS.darkGrey,
+              }}
+            >
+              No chats yet.
+            </Text>
+          </View>
+        )}
+      />
 
       {/* Floating Action Button */}
       <FloatingActionButton
