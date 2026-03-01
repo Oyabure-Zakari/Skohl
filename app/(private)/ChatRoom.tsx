@@ -145,22 +145,14 @@ export default function ChatRoom() {
           right: {
             // Your own sent message bubble
             backgroundColor: COLORS.purple,
-            borderBottomEndRadius: 10,
-            borderBottomStartRadius: 10,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 0,
+            borderRadius: 10,
             marginBottom: 4,
-            padding: 4,
           },
           left: {
             // Other person's received message bubble
             backgroundColor: COLORS.darkBlue,
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
-            borderTopRightRadius: 10,
-            borderTopLeftRadius: 0,
+            borderRadius: 10,
             marginBottom: 4,
-            padding: 4,
           },
         }}
         textStyle={{
