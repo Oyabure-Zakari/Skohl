@@ -1,4 +1,8 @@
 import CustomBubble from "@/components/customReactNativeGiftedChatComponent/CustomBubble";
+import {
+  CustomComposer,
+  CustomInputToolbar,
+} from "@/components/customReactNativeGiftedChatComponent/CustomInputToolbarAndComposer";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
@@ -27,7 +31,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { Composer, GiftedChat, IMessage, InputToolbar, Send } from "react-native-gifted-chat";
+import { GiftedChat, IMessage, Send } from "react-native-gifted-chat";
 import Toast from "react-native-toast-message";
 
 export default function ChatRoom() {
@@ -45,8 +49,11 @@ export default function ChatRoom() {
     createChatRoom({ roomId, userUid: userUid!, otherUser });
   }, [roomId, userUid, otherUser]);
 
+  // Fetch message using onSnapshot Real-time listener + Tanstack Query for caching
+  const { messages, isLoadingMessages } = useFetchChatMessages(roomId);
+
   // Send a new message
-  const { sendMessage, isSendingMessage } = useSendMessage();
+  const { sendMessage } = useSendMessage();
   const onSend = useCallback(
     (newMessages: IMessage[] = []) => {
       sendMessage({
@@ -58,50 +65,9 @@ export default function ChatRoom() {
     [roomId, user?.image],
   );
 
-  // Fetch message using onSnapshot Real-time listener + Tanstack Query for caching
-  const { messages, isLoadingMessages } = useFetchChatMessages(roomId);
-
   const headerHeight = useHeaderHeight();
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
   const messageCount = formatMessageCount(messages.length);
-
-  // ✅ Render functions before early returns
-  const renderInputToolbar = (props: any) => (
-    <InputToolbar
-      {...props}
-      containerStyle={{
-        backgroundColor: COLORS.darkBlue,
-        borderTopWidth: 0,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        marginHorizontal: 12,
-        marginBottom: 10,
-        borderRadius: 30,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-      }}
-      primaryStyle={{ alignItems: "center" }}
-    />
-  );
-
-  const renderComposer = (props: any) => (
-    <Composer
-      {...props}
-      textInputStyle={{
-        color: COLORS.lightGrey,
-        fontFamily: "Segoe_UI_Bold_Italic",
-        fontSize: 14,
-        lineHeight: 20,
-        paddingTop: 8,
-        paddingHorizontal: 10,
-      }}
-      placeholderTextColor="rgba(0,0,0,0.4)"
-      placeholder="Type a message..."
-    />
-  );
 
   const renderSend = (props: any) => (
     <Send
@@ -206,8 +172,8 @@ export default function ChatRoom() {
             colorScheme="dark"
             renderBubble={(props) => <CustomBubble {...props} />}
             renderSend={renderSend}
-            renderInputToolbar={renderInputToolbar}
-            renderComposer={renderComposer}
+            renderInputToolbar={(props) => <CustomInputToolbar {...props} />}
+            renderComposer={(props) => <CustomComposer {...props} />}
             user={{ _id: userUid! }}
             keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
             messagesContainerStyle={{ backgroundColor: "transparent" }}
