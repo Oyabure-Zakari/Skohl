@@ -34,7 +34,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Bubble, GiftedChat, IMessage } from "react-native-gifted-chat";
+import { Bubble, Composer, GiftedChat, IMessage, InputToolbar } from "react-native-gifted-chat";
 
 export default function ChatRoom() {
   const router = useRouter();
@@ -175,6 +175,46 @@ export default function ChatRoom() {
     );
   };
 
+  const renderInputToolbar = (props: any) => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          backgroundColor: COLORS.white,
+          borderTopWidth: 0,
+          paddingHorizontal: 10,
+          marginHorizontal: 12,
+          marginBottom: 10,
+          borderRadius: 30,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 3,
+        }}
+        primaryStyle={{ alignItems: "center" }}
+      />
+    );
+  };
+
+  const renderComposer = (props: any) => {
+    return (
+      <Composer
+        {...props}
+        textInputStyle={{
+          color: COLORS.darkBlue,
+          fontFamily: "Segoe_UI_Bold_Italic",
+          fontSize: 14,
+          lineHeight: 20,
+          paddingTop: 8,
+          paddingHorizontal: 10,
+        }}
+        placeholderTextColor="rgba(0,0,0,0.4)"
+        placeholder="Type a message..."
+      />
+    );
+  };
+
   return (
     <>
       <StatusBar style="light" backgroundColor={COLORS.darkBlue} />
@@ -252,11 +292,12 @@ export default function ChatRoom() {
             messages={messages}
             onSend={(msgs) => onSend(msgs)}
             renderBubble={renderBubble}
+            renderInputToolbar={renderInputToolbar} // 👈
+            renderComposer={renderComposer} // 👈
             user={{
               _id: userUid!,
             }}
             keyboardAvoidingViewProps={{ keyboardVerticalOffset: headerHeight }}
-            //colorScheme="dark"
             messagesContainerStyle={{ backgroundColor: "transparent" }} // Make it transparent so bg shows
             isAvatarOnTop={true}
             isAlignedTop={true}
