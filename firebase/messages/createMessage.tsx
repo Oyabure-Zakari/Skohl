@@ -2,13 +2,13 @@ import { db } from "@/firebase/firebase.config";
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { IMessage } from "react-native-gifted-chat";
 
-type SendMessageParams = {
+type CreateMessageParams = {
   roomId: string;
   messageInfo: IMessage;
   userImage?: string;
 };
 
-const sendMessage = async ({ roomId, messageInfo, userImage }: SendMessageParams) => {
+const createMessage = async ({ roomId, messageInfo, userImage }: CreateMessageParams) => {
   try {
     const messagesRef = collection(db, "chatRooms", roomId, "messages");
 
@@ -34,4 +34,4 @@ const sendMessage = async ({ roomId, messageInfo, userImage }: SendMessageParams
   }
 };
 
-export default sendMessage;
+export default createMessage;

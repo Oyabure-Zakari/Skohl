@@ -3,10 +3,10 @@ import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import IMAGES from "@/constants/images";
 import { useAuth } from "@/contexts/AuthContext";
-import { db } from "@/firebase/firebase.config";
 import useCreateChatRoom from "@/hooks/useCreateChatRoom.ts";
 import { useFetchChatMessages } from "@/hooks/useFetchChatMessages";
 import { useUserProfile } from "@/hooks/userProfile";
+import { useSendMessage } from "@/hooks/useSendMessage";
 import OtherUserType from "@/types/OtherUser";
 import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
@@ -16,7 +16,6 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import { Image, ImageBackground } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import React, { useCallback, useEffect } from "react";
 import {
   Alert,
@@ -47,9 +46,8 @@ export default function ChatRoom() {
   const headerHeight = useHeaderHeight();
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
 
-  const { createChatRoom, isCreateChatRoomError, createChatRoomError } = useCreateChatRoom();
-
   // Create chat room if it doesn't exist
+  const { createChatRoom, isCreateChatRoomError, createChatRoomError } = useCreateChatRoom();
   useEffect(() => {
     createChatRoom({ roomId, userUid: userUid!, otherUser });
   }, [roomId, userUid, otherUser]);
@@ -58,31 +56,14 @@ export default function ChatRoom() {
   const { messages, isLoadingMessages } = useFetchChatMessages(roomId);
 
   // Send a new message
+  const { sendMessage, isSendingMessage } = useSendMessage();
   const onSend = useCallback(
-    async (newMessages: IMessage[] = []) => {
-      const messageInfo = newMessages[0];
-
-      try {
-        const messagesRef = collection(db, "chatRooms", roomId, "messages");
-
-        const docRef = await addDoc(messagesRef, {
-          message: messageInfo.text,
-          senderUid: messageInfo?.user?._id,
-          senderAvatar: messageInfo?.user?.avatar || user?.image,
-          // Use JS Date here so onSnapshot can immediately read it before server resolves
-          createdAt: messageInfo?.createdAt ?? new Date(),
-        });
-
-        updateDoc(docRef, { id: docRef.id });
-
-        updateDoc(doc(db, "chatRooms", roomId), {
-          lastMessage: messageInfo.text,
-          lastMessageSender: messageInfo?.user?._id,
-          lastMessageTime: serverTimestamp(),
-        });
-      } catch (error: any) {
-        console.error("Error sending message:", error.message);
-      }
+    (newMessages: IMessage[] = []) => {
+      sendMessage({
+        roomId,
+        messageInfo: newMessages[0],
+        userImage: user?.image,
+      });
     },
     [roomId, user?.image],
   );
@@ -289,6 +270,7 @@ export default function ChatRoom() {
             isAvatarOnTop={true}
             isAlignedTop={true}
             isSendButtonAlwaysVisible={true}
+            isTyping={isSendingMessage}
           />
         </ImageBackground>
       </KeyboardAvoidingView>
