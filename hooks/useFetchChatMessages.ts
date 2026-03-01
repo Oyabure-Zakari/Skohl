@@ -29,12 +29,12 @@ export const useFetchChatMessages = (roomId: string) => {
           const data = doc.data();
 
           return {
-            _id: doc.id,
-            text: data.message,
-            createdAt: data.createdAt?.toDate?.() ?? new Date(),
+            _id: data.id, // The id of the message
+            text: data.message, // Content of the message
+            createdAt: data.createdAt?.toDate?.() ?? new Date(), // The time the message was sent
             user: {
-              _id: data.senderUid,
-              avatar: data.senderAvatar,
+              _id: data.senderUid, // Id of the sender of the message
+              avatar: data.senderAvatar, // Image of the sender of the message
             },
           };
         });
