@@ -3,6 +3,7 @@ import {
   CustomComposer,
   CustomInputToolbar,
 } from "@/components/customReactNativeGiftedChatComponent/CustomInputToolbarAndComposer";
+import { CustomSendBtn } from "@/components/customReactNativeGiftedChatComponent/CustomSendBtn";
 import OverlayLoadingIndicator from "@/components/reuseableComponents/OverlayLoadingIndicator";
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
@@ -16,7 +17,7 @@ import OtherUserType from "@/types/OtherUser";
 import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
 import generateRoomId from "@/utils/generateRoomId";
-import { FontAwesome, FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Image, ImageBackground } from "expo-image";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -31,7 +32,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { GiftedChat, IMessage, Send } from "react-native-gifted-chat";
+import { GiftedChat, IMessage } from "react-native-gifted-chat";
 import Toast from "react-native-toast-message";
 
 export default function ChatRoom() {
@@ -68,22 +69,6 @@ export default function ChatRoom() {
   const headerHeight = useHeaderHeight();
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
   const messageCount = formatMessageCount(messages.length);
-
-  const renderSend = (props: any) => (
-    <Send
-      {...props}
-      containerStyle={{
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 8,
-        paddingBottom: 4,
-      }}
-    >
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
-        <FontAwesome name="send" size={18} color={COLORS.lightGrey} />
-      </View>
-    </Send>
-  );
 
   if (isLoadingMessages) return <OverlayLoadingIndicator />;
 
@@ -171,7 +156,7 @@ export default function ChatRoom() {
             onSend={(msgs) => onSend(msgs)}
             colorScheme="dark"
             renderBubble={(props) => <CustomBubble {...props} />}
-            renderSend={renderSend}
+            renderSend={(props) => <CustomSendBtn {...props} />}
             renderInputToolbar={(props) => <CustomInputToolbar {...props} />}
             renderComposer={(props) => <CustomComposer {...props} />}
             user={{ _id: userUid! }}
