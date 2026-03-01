@@ -1,10 +1,10 @@
 // React
 import React, { useCallback, useEffect } from "react";
 // React Native
-import { KeyboardAvoidingView, Platform, useWindowDimensions } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 // Expo
 import { ImageBackground } from "expo-image";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 // Components
 import ChatRoomHeader from "@/components/chatRoomComponent/ChatRoomHeader";
@@ -25,8 +25,6 @@ import useCreateChatRoom from "@/hooks/useCreateChatRoom.ts";
 import { useFetchChatMessages } from "@/hooks/useFetchChatMessages";
 import { useUserProfile } from "@/hooks/userProfile";
 import { useSendMessage } from "@/hooks/useSendMessage";
-// Styles
-import useChatRoomStyles from "@/styles/chatRoom.styles";
 // Types
 import OtherUserType from "@/types/OtherUser";
 // Utils
@@ -36,23 +34,14 @@ import generateRoomId from "@/utils/generateRoomId";
 // Libraries/Packages
 import { useHeaderHeight } from "@react-navigation/elements";
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
-import Toast from "react-native-toast-message";
 
 export default function ChatRoom() {
-  const { fontScale } = useWindowDimensions();
-
   // Get header height
   const headerHeight = useHeaderHeight();
-
-  // Router
-  const router = useRouter();
 
   // Currently logged in user
   const { userUid } = useAuth();
   const { data: user } = useUserProfile(userUid!);
-
-  // Styles
-  const chatRoomStyles = useChatRoomStyles();
 
   // Fetch other user
   const otherUser: OtherUserType = useLocalSearchParams();
@@ -90,16 +79,8 @@ export default function ChatRoom() {
 
   if (isLoadingMessages) return <OverlayLoadingIndicator />;
 
-  if (isCreateChatRoomError) {
-    Toast.show({
-      type: "error",
-      text1: "Error creating chat room",
-      text2: `Error: ${createChatRoomError?.message}`,
-      text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
-      text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
-    });
-    return;
-  }
+  if (isCreateChatRoomError)
+    return Alert.alert("Error", `Error creating chat room:${createChatRoomError?.message}`);
 
   return (
     <>
