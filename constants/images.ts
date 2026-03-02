@@ -5,7 +5,7 @@ const IMAGES = {
   register: require("../assets/images/register.png"),
   verify: require("../assets/images/verify.png"),
   login: require("../assets/images/login.png"),
-  pattern1: require("../assets/images/Pattern.png"),
+  pattern1: require("../assets/images/Pattern3.png"),
   pattern2: require("../assets/images/Pattern2.png"),
 };
 
