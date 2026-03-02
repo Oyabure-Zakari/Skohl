@@ -11,6 +11,7 @@ import PostsFeed from "@/components/reuseableComponents/postsFeedComponent/Posts
 //Constants
 import postEventCategories from "@/constants/postEventCategories";
 // Types
+import IMAGES from "@/constants/images";
 import { EventCategoryType } from "@/types/EventCategoryType";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
 import { ServiceCategoryType } from "@/types/ServiceCategoryType";
@@ -55,6 +56,8 @@ export default function EventScreen() {
       setActiveBottomSheet={setActiveBottomSheet}
       handleSnapPress={handleSnapPress}
       screenText={"Events"}
+      postFeedTitle={`"Find something${"\n"}exciting to attend"`}
+      postFeedIllustration={IMAGES.event}
     />
   );
 }

@@ -11,6 +11,7 @@ import productCategories from "@/constants/postProductCategories";
 // Hooks
 import { useFetchPosts } from "@/hooks/fetchPosts";
 // Types
+import IMAGES from "@/constants/images";
 import { EventCategoryType } from "@/types/EventCategoryType";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
 import { ServiceCategoryType } from "@/types/ServiceCategoryType";
@@ -55,6 +56,8 @@ export default function HomeScreen() {
       setActiveBottomSheet={setActiveBottomSheet}
       handleSnapPress={handleSnapPress}
       screenText={"Products"}
+      postFeedTitle={`"Find the perfect${"\n"}product for you"`}
+      postFeedIllustration={IMAGES.product}
     />
   );
 }

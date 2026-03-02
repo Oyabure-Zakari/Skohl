@@ -11,6 +11,7 @@ import postServiceCategories from "@/constants/postServiceCategories";
 // Hooks
 import { useFetchPosts } from "@/hooks/fetchPosts";
 // Types
+import IMAGES from "@/constants/images";
 import { EventCategoryType } from "@/types/EventCategoryType";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
 import { ServiceCategoryType } from "@/types/ServiceCategoryType";
@@ -55,6 +56,8 @@ export default function ServiceScreen() {
       setActiveBottomSheet={setActiveBottomSheet}
       handleSnapPress={handleSnapPress}
       screenText={"Services"}
+      postFeedTitle={`"Find who's got${"\n"}what you need"`}
+      postFeedIllustration={IMAGES.service}
     />
   );
 }

@@ -7,8 +7,10 @@ import { Post } from "@/types/PostTypes";
 import { ProductCategoryType } from "@/types/ProductCategoryType";
 import { ServiceCategoryType } from "@/types/ServiceCategoryType";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { Image } from "expo-image";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import FloatingActionButton from "../FloatingActionButton";
 import PostCategoryButtons from "./postCardVertical/PostCategoryButtons";
@@ -30,6 +32,8 @@ type PostsFeedProps = {
   setActiveBottomSheet: React.Dispatch<React.SetStateAction<"Create Post" | "Send Feedback">>;
   handleSnapPress: () => void;
   screenText: string;
+  postFeedTitle: string;
+  postFeedIllustration: string;
 };
 
 const PostsFeed: React.FC<PostsFeedProps> = ({
@@ -45,6 +49,8 @@ const PostsFeed: React.FC<PostsFeedProps> = ({
   setActiveBottomSheet,
   handleSnapPress,
   screenText,
+  postFeedTitle,
+  postFeedIllustration,
 }) => {
   return (
     <>
@@ -52,6 +58,33 @@ const PostsFeed: React.FC<PostsFeedProps> = ({
       <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
         {/* Header: User Name + User Image */}
         <PostFeedHeader screenText={screenText} />
+
+        <View
+          style={{
+            paddingHorizontal: 16,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "Segoe_UI_Bold",
+              color: COLORS.darkBlue,
+              fontSize: 20,
+              lineHeight: 25,
+            }}
+          >
+            {postFeedTitle}
+          </Text>
+
+          <Image
+            source={postFeedIllustration}
+            style={{ width: 140, height: 140 }}
+            contentFit="contain"
+            alt="Post feed illustration"
+          />
+        </View>
 
         {/* Category Buttons */}
         <PostCategoryButtons

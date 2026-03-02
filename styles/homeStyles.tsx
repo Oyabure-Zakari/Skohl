@@ -29,7 +29,7 @@ export default function useHomeStyles() {
     },
 
     categoryContainer: {
-      marginTop: 20,
+      //marginTop: 20,
       paddingHorizontal: 4,
     },
 
