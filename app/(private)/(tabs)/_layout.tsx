@@ -1,8 +1,13 @@
 import COLORS from "@/constants/colors";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import Fontisto from "@expo/vector-icons/Fontisto";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import {
+  Entypo,
+  Feather,
+  FontAwesome5,
+  FontAwesome6,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Octicons,
+} from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
 
@@ -20,9 +25,12 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="home-filled" size={20} color={color} />
-          ),
+          tabBarIcon: ({ color, focused }) =>
+            focused ? (
+              <Octicons name="home-fill" size={20} color={color} />
+            ) : (
+              <Feather name="home" size={20} color={color} />
+            ),
         }}
       />
 
@@ -30,9 +38,12 @@ export default function TabLayout() {
         name="Services"
         options={{
           title: "",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="suitcase" size={20} color={color} />
-          ),
+          tabBarIcon: ({ color, focused }) =>
+            focused ? (
+              <FontAwesome5 name="briefcase" size={20} color={color} />
+            ) : (
+              <Octicons name="briefcase" size={20} color={color} />
+            ),
         }}
       />
 
@@ -40,9 +51,12 @@ export default function TabLayout() {
         name="Events"
         options={{
           title: "",
-          tabBarIcon: ({ color, size }) => (
-            <Fontisto name="calendar" size={20} color={color} />
-          ),
+          tabBarIcon: ({ color, focused }) =>
+            focused ? (
+              <Entypo name="calendar" size={20} color={color} />
+            ) : (
+              <Octicons name="calendar" size={20} color={color} />
+            ),
         }}
       />
 
@@ -50,9 +64,12 @@ export default function TabLayout() {
         name="ChatsList"
         options={{
           title: "",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="chat" size={20} color={color} />
-          ),
+          tabBarIcon: ({ color, focused }) =>
+            focused ? (
+              <MaterialIcons name="message" size={20} color={color} />
+            ) : (
+              <MaterialCommunityIcons name="message-reply-outline" size={20} color={color} />
+            ),
         }}
       />
 
@@ -60,9 +77,12 @@ export default function TabLayout() {
         name="Profile"
         options={{
           title: "",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-sharp" size={20} color={color} />
-          ),
+          tabBarIcon: ({ color, focused }) =>
+            focused ? (
+              <FontAwesome5 name="user-alt" size={20} color={color} />
+            ) : (
+              <FontAwesome6 name="user" size={20} color={color} />
+            ),
         }}
       />
     </Tabs>
