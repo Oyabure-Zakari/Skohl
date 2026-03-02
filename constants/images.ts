@@ -10,6 +10,7 @@ const IMAGES = {
   product: require("@/assets/images/Product.png"),
   service: require("@/assets/images/Service.png"),
   event: require("@/assets/images/Event.png"),
+  hello: require("@/assets/images/Hello.png"),
 };
 
 export default IMAGES;
