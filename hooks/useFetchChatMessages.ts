@@ -29,7 +29,7 @@ export const useFetchChatMessages = (roomId: string) => {
           const data = doc.data();
 
           return {
-            _id: data.id, // The id of the message
+            _id: doc.id, // The id of the message
             text: data.message, // Content of the message
             createdAt: data.createdAt?.toDate?.() ?? new Date(), // The time the message was sent
             user: {
