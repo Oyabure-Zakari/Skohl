@@ -56,7 +56,7 @@ export default function HomeScreen() {
       setActiveBottomSheet={setActiveBottomSheet}
       handleSnapPress={handleSnapPress}
       screenText={"Products"}
-      postFeedTitle={`"Find the perfect${"\n"}product for you"`}
+      postFeedTitle={`"Find the perfect${"\n"}item for you"`}
       postFeedIllustration={IMAGES.product}
     />
   );
