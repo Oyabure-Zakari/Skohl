@@ -148,7 +148,7 @@ export default function ChatListScreen() {
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
       {/* Header: User Name + User Image */}
-      <PostFeedHeader screenText={"Chat"} />
+      <PostFeedHeader screenText={"Chats"} />
 
       <View
         style={{
