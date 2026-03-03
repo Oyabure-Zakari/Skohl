@@ -1,4 +1,5 @@
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
+import NoChatsComponent from "@/components/NoChatsComponent";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import PostFeedHeader from "@/components/reuseableComponents/postsFeedComponent/PostFeedHeader";
 import COLORS from "@/constants/colors";
@@ -106,7 +107,7 @@ export default function ChatListScreen() {
 
     return (
       <TouchableOpacity
-        style={styles.chatRow}
+        style={chatsListStyles.chatRow}
         // Navigate to chat room
         onPress={handleNavigateToChatRoom}
       >
@@ -120,16 +121,16 @@ export default function ChatListScreen() {
         />
 
         {/* Text content */}
-        <View style={styles.chatInfo}>
-          <Text style={styles.name}>{formatFullName(otherUser?.fullName)}</Text>
+        <View style={chatsListStyles.chatInfo}>
+          <Text style={chatsListStyles.name}>{formatFullName(otherUser?.fullName)}</Text>
 
-          <Text style={styles.preview} numberOfLines={1}>
+          <Text style={chatsListStyles.preview} numberOfLines={1}>
             {lastMessage ? `${isOwnMessage ? "You: " : ""}${lastMessage}` : "No messages yet"}
           </Text>
         </View>
 
         {/* Timestamp */}
-        <Text style={styles.time}>
+        <Text style={chatsListStyles.time}>
           {lastMessage && (
             <ReactTimeAgo
               date={messageTime}
@@ -188,29 +189,10 @@ export default function ChatListScreen() {
         data={chatRooms}
         keyExtractor={(item) => item.roomId}
         renderItem={renderItem}
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        ListEmptyComponent={() => (
-          <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-            <Image
-              source={IMAGES.noChats}
-              style={{ width: 200, height: 200 }}
-              contentFit="contain"
-              alt="No Chats"
-            />
-
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: "Segoe_UI_Bold",
-                color: COLORS.darkGrey,
-              }}
-            >
-              No chats yet.
-            </Text>
-          </View>
-        )}
+        style={chatsListStyles.list}
+        contentContainerStyle={chatsListStyles.listContent}
+        ItemSeparatorComponent={() => <View style={chatsListStyles.separator} />}
+        ListEmptyComponent={() => <NoChatsComponent />}
       />
 
       {/* Floating Action Button */}
@@ -221,14 +203,16 @@ export default function ChatListScreen() {
     </GestureHandlerRootView>
   );
 }
-const styles = StyleSheet.create({
+const chatsListStyles = StyleSheet.create({
   list: {
     flex: 1,
     backgroundColor: "#fff",
   },
+
   listContent: {
     paddingVertical: 8,
   },
+
   chatRow: {
     flexDirection: "row",
     padding: 12,
@@ -237,34 +221,40 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.lightGrey,
   },
+
   avatar: {
     width: 56,
     height: 56,
     borderRadius: 28,
     marginRight: 12,
   },
+
   chatInfo: {
     flex: 1,
   },
+
   name: {
     fontSize: 14,
     fontFamily: "Segoe_UI_Bold",
     color: COLORS.darkBlue,
   },
+
   preview: {
     fontSize: 12,
     fontFamily: "Segoe_UI_Bold_Italic",
     color: COLORS.darkGrey,
   },
+
   time: {
     fontFamily: "Segoe_UI_Bold",
     color: COLORS.darkGrey,
     fontSize: 12,
     alignSelf: "flex-start",
   },
+
   separator: {
     height: 1,
     backgroundColor: "#eee",
-    marginLeft: 80, // align with text start
+    marginLeft: 80,
   },
 });
