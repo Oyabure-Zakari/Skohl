@@ -8,6 +8,7 @@ import IMAGES from "@/constants/images";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/firebase/firebase.config";
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
+import useChatListStyles from "@/styles/useChatList.styles";
 import OtherUserType from "@/types/OtherUser";
 import formatFullName from "@/utils/formatUserFullname";
 import BottomSheet from "@gorhom/bottom-sheet";
@@ -16,7 +17,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { collection, FieldValue, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReactTimeAgo from "react-time-ago";
 
@@ -90,6 +91,8 @@ export default function ChatListScreen() {
   }, []);
 
   const router = useRouter();
+
+  const chatsListStyles = useChatListStyles();
 
   const renderItem = ({ item }: { item: ChatRoomsType }) => {
     const { otherUser, lastMessage, lastMessageTime, lastMessageSender } = item;
@@ -203,58 +206,3 @@ export default function ChatListScreen() {
     </GestureHandlerRootView>
   );
 }
-const chatsListStyles = StyleSheet.create({
-  list: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-
-  listContent: {
-    paddingVertical: 8,
-  },
-
-  chatRow: {
-    flexDirection: "row",
-    padding: 12,
-    alignItems: "center",
-    gap: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightGrey,
-  },
-
-  avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    marginRight: 12,
-  },
-
-  chatInfo: {
-    flex: 1,
-  },
-
-  name: {
-    fontSize: 14,
-    fontFamily: "Segoe_UI_Bold",
-    color: COLORS.darkBlue,
-  },
-
-  preview: {
-    fontSize: 12,
-    fontFamily: "Segoe_UI_Bold_Italic",
-    color: COLORS.darkGrey,
-  },
-
-  time: {
-    fontFamily: "Segoe_UI_Bold",
-    color: COLORS.darkGrey,
-    fontSize: 12,
-    alignSelf: "flex-start",
-  },
-
-  separator: {
-    height: 1,
-    backgroundColor: "#eee",
-    marginLeft: 80,
-  },
-});
