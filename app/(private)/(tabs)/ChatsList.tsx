@@ -1,41 +1,33 @@
+// React
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// React Native
+import { View } from "react-native";
+// Libraries/package
+import BottomSheet from "@gorhom/bottom-sheet";
+import { FlashList } from "@shopify/flash-list";
+import { onSnapshot, orderBy, query, where } from "firebase/firestore";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+// Components
 import BottomSheetComponent from "@/components/bottomSheet/BottomSheetComponent";
+import ChatIllustration from "@/components/chatListComponent/ChatIllustration";
+import ChatListCard from "@/components/chatListComponent/ChatListCard";
 import NoChatsComponent from "@/components/NoChatsComponent";
 import FloatingActionButton from "@/components/reuseableComponents/FloatingActionButton";
 import PostFeedHeader from "@/components/reuseableComponents/postsFeedComponent/PostFeedHeader";
-import COLORS from "@/constants/colors";
-import blurhash from "@/constants/expoBlurImage";
-import IMAGES from "@/constants/images";
+// Contexts
 import { useAuth } from "@/contexts/AuthContext";
-import { db } from "@/firebase/firebase.config";
+// Firebase
+import chatRoomsCollectionRef from "@/firebase/collectionRef/chatRoomsCollectionRef";
+// Styles
 import gestureHandlerRootViewStyle from "@/styles/gestureHandlerRootView.styles";
 import useChatListStyles from "@/styles/useChatList.styles";
-import OtherUserType from "@/types/OtherUser";
-import formatFullName from "@/utils/formatUserFullname";
-import BottomSheet from "@gorhom/bottom-sheet";
-import { FlashList } from "@shopify/flash-list";
-import { Image } from "expo-image";
-import { useRouter } from "expo-router";
-import { collection, FieldValue, onSnapshot, orderBy, query, where } from "firebase/firestore";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import ReactTimeAgo from "react-time-ago";
-
-type ChatRoomsType = {
-  roomId: string;
-  createdAt: FieldValue;
-  lastMessage: null | string;
-  lastMessageSender: null | string;
-  lastMessageTime: { seconds: number; nanoseconds: number; type: string };
-  participants: (string | null)[];
-  otherUser: OtherUserType;
-};
-
-function Time({ children }: { children: string }) {
-  return <Text>{children}</Text>;
-}
+// Types
+import ChatRoomsType from "@/types/chatRoomType";
 
 export default function ChatListScreen() {
+  // Styles
+  const chatsListStyles = useChatListStyles();
+
   // States
   const [activeBottomSheet, setActiveBottomSheet] = useState<"Create Post" | "Send Feedback">(
     "Create Post",
@@ -47,15 +39,9 @@ export default function ChatListScreen() {
   // Bottom Sheet snap points
   const snapPoints = useMemo(() => ["1%", "50%", "100%"], []);
 
-  // Handlers
-  const handleSnapPress = useCallback(() => {
-    sheetRef.current?.snapToIndex(2);
-  }, []);
-
   const [chatRooms, setChatRooms] = useState<ChatRoomsType[]>([]);
 
-  const chatRoomsCollectionRef = collection(db, "chatRooms");
-
+  // Firebase auth context
   const { userUid } = useAuth();
 
   useEffect(() => {
@@ -90,96 +76,18 @@ export default function ChatListScreen() {
     return () => unsubscribe();
   }, []);
 
-  const router = useRouter();
-
-  const chatsListStyles = useChatListStyles();
-
-  const renderItem = ({ item }: { item: ChatRoomsType }) => {
-    const { otherUser, lastMessage, lastMessageTime, lastMessageSender } = item;
-
-    const isOwnMessage = lastMessageSender === userUid;
-
-    // Safe timestamp conversion with fallback
-    const messageTime = lastMessageTime?.seconds
-      ? new Date(lastMessageTime?.seconds * 1000 + (lastMessageTime?.nanoseconds || 0) / 1000000)
-      : new Date(); // fallback to now
-
-    const handleNavigateToChatRoom = () => {
-      router.push({ pathname: "/(private)/ChatRoom", params: otherUser });
-    };
-
-    return (
-      <TouchableOpacity
-        style={chatsListStyles.chatRow}
-        // Navigate to chat room
-        onPress={handleNavigateToChatRoom}
-      >
-        {/* Avatar */}
-        <Image
-          source={{ uri: otherUser?.image }}
-          style={{ width: 40, height: 40, borderRadius: 20 }}
-          placeholder={{ blurhash }}
-          transition={300}
-          contentFit="cover"
-        />
-
-        {/* Text content */}
-        <View style={chatsListStyles.chatInfo}>
-          <Text style={chatsListStyles.name}>{formatFullName(otherUser?.fullName)}</Text>
-
-          <Text style={chatsListStyles.preview} numberOfLines={1}>
-            {lastMessage ? `${isOwnMessage ? "You: " : ""}${lastMessage}` : "No messages yet"}
-          </Text>
-        </View>
-
-        {/* Timestamp */}
-        <Text style={chatsListStyles.time}>
-          {lastMessage && (
-            <ReactTimeAgo
-              date={messageTime}
-              locale="en-US"
-              component={Time}
-              timeStyle="twitter"
-              tick={true} // Auto-update enabled (this is the default)
-              updateInterval={60000} // Update every minute
-            />
-          )}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
+  // Handlers
+  const handleSnapPress = useCallback(() => {
+    sheetRef.current?.snapToIndex(2);
+  }, []);
 
   return (
     <GestureHandlerRootView style={gestureHandlerRootViewStyle.container}>
       {/* Header: User Name + User Image */}
       <PostFeedHeader screenText={"Chats"} />
 
-      <View
-        style={{
-          paddingHorizontal: 16,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: "Segoe_UI_Bold",
-            color: COLORS.darkBlue,
-            fontSize: 20,
-            lineHeight: 25,
-          }}
-        >
-          {`"Find someone${"\n"}to chat with"`}
-        </Text>
-
-        <Image
-          source={IMAGES.hello}
-          style={{ width: 100, height: 140 }}
-          contentFit="contain"
-          alt="Post feed illustration"
-        />
-      </View>
+      {/* Chat Illustration */}
+      <ChatIllustration />
 
       {/* Bottom Sheet */}
       <BottomSheetComponent
@@ -191,7 +99,7 @@ export default function ChatListScreen() {
       <FlashList
         data={chatRooms}
         keyExtractor={(item) => item.roomId}
-        renderItem={renderItem}
+        renderItem={({ item }) => <ChatListCard chatRoomData={item} />}
         style={chatsListStyles.list}
         contentContainerStyle={chatsListStyles.listContent}
         ItemSeparatorComponent={() => <View style={chatsListStyles.separator} />}
