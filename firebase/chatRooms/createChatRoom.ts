@@ -4,11 +4,10 @@ import { db } from "../firebase.config";
 
 type CreateChatRoomParams = {
   roomId: string;
-  userUid: string;
   otherUser: OtherUserType;
 };
 
-const createChatRoom = async ({ roomId, userUid, otherUser }: CreateChatRoomParams) => {
+const createChatRoom = async ({ roomId, otherUser }: CreateChatRoomParams) => {
   try {
     const docRef = doc(db, "chatRooms", roomId);
     const docSnap = await getDoc(docRef);
@@ -24,7 +23,7 @@ const createChatRoom = async ({ roomId, userUid, otherUser }: CreateChatRoomPara
       lastMessage: null,
       lastMessageSender: null,
       lastMessageTime: null,
-      participants: [userUid, otherUser?.userUid].sort(),
+      participants: roomId,
     });
   } catch (error: any) {
     throw new Error(error?.message || "Failed to create chat room");
