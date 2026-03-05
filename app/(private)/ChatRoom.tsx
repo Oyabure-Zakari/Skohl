@@ -52,7 +52,7 @@ export default function ChatRoom() {
   // Create chat room if it doesn't exist
   const { createChatRoom, isCreateChatRoomError, createChatRoomError } = useCreateChatRoom();
   useEffect(() => {
-    createChatRoom({ roomId, otherUser });
+    createChatRoom({ roomId, userUid: userUid!, otherUser });
   }, [roomId, userUid, otherUser]);
 
   // Fetch message using onSnapshot Real-time listener + Tanstack Query for caching
