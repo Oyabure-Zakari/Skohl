@@ -118,7 +118,7 @@ const PostDetails = () => {
   const otherUser = postDetails?.postedBy;
 
   const handleNavigateToChatRoom = () => {
-    router.push({ pathname: "/(private)/ChatRoom", params: otherUser });
+    router.push(`/(private)/chatRoom/${otherUser?.userUid}`);
   };
 
   return (
