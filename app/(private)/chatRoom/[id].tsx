@@ -26,7 +26,6 @@ import { useFetchChatMessages } from "@/hooks/useFetchChatMessages";
 import { useUserProfile } from "@/hooks/userProfile";
 import { useSendMessage } from "@/hooks/useSendMessage";
 // Types
-import OtherUserType from "@/types/OtherUser";
 // Utils
 import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
@@ -44,7 +43,18 @@ export default function ChatRoom() {
   const { data: user } = useUserProfile(userUid!);
 
   // Fetch other user
-  const otherUser: OtherUserType = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+
+  // Fecth user data from Firestore using TanStack Query
+  const { data: user2 } = useUserProfile(id as string | null);
+
+  const otherUser = {
+    userUid: user2?.uid,
+    fullName: user2?.fullName,
+    image: user2?.image,
+  };
+
+  console.log("Other User: ", otherUser);
 
   // Get chat room id
   const roomId = generateRoomId(userUid!, otherUser?.userUid);
