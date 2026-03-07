@@ -1,11 +1,16 @@
-import OtherUserType from "@/types/OtherUser";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
+
+type OtherUser = {
+  fullName: string;
+  image: string;
+  uid: string;
+};
 
 type CreateChatRoomParams = {
   roomId: string;
   userUid: string;
-  otherUser: OtherUserType;
+  otherUser: OtherUser;
 };
 
 const createChatRoom = async ({ roomId, userUid, otherUser }: CreateChatRoomParams) => {
@@ -24,7 +29,7 @@ const createChatRoom = async ({ roomId, userUid, otherUser }: CreateChatRoomPara
       lastMessage: null,
       lastMessageSender: null,
       lastMessageTime: null,
-      participants: [userUid, otherUser?.userUid].sort(),
+      participants: [userUid, otherUser?.uid].sort(),
     });
   } catch (error: any) {
     throw new Error(error?.message || "Failed to create chat room");
