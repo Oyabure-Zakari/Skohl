@@ -1,5 +1,5 @@
 // React
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 // React Native
 import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 // Expo
@@ -31,8 +31,16 @@ import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
 import generateRoomId from "@/utils/generateRoomId";
 // Libraries/Packages
+import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { getDocs, query, where } from "firebase/firestore";
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
+
+type OtherUser = {
+  fullName: string;
+  image: string;
+  uid: string;
+};
 
 export default function ChatRoom() {
   // Get header height
@@ -45,24 +53,52 @@ export default function ChatRoom() {
   // Fetch other user
   const { id } = useLocalSearchParams();
 
-  // Fecth user data from Firestore using TanStack Query
-  const { data: user2 } = useUserProfile(id as string | null);
+  const [otherUser, setOtherUser] = useState<OtherUser>();
+  const [isLoading, setIsLoading] = useState(true);
 
-  const otherUser = {
-    userUid: user2?.uid,
-    fullName: user2?.fullName,
-    image: user2?.image,
+  // Fecth user data from Firestore using TanStack Query
+  const fetchUserInfo = async (userUid: string | null) => {
+    if (!userUid) return;
+
+    try {
+      const q = query(usersCollectionRef, where("uid", "==", userUid));
+      const snapshot = await getDocs(q);
+
+      let fetchedInfo = {
+        uid: "",
+        image: "",
+        fullName: "",
+      };
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        fetchedInfo = {
+          uid: data?.uid,
+          image: data?.image,
+          fullName: `${data?.surname} ${data?.firstname}`,
+        };
+        setOtherUser({ ...fetchedInfo });
+      });
+    } catch (error: any) {
+      console.log(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchUserInfo(id as string);
+  }, [id]);
 
   console.log("Other User: ", otherUser);
 
   // Get chat room id
-  const roomId = generateRoomId(userUid!, otherUser?.userUid);
+  const roomId = generateRoomId(userUid!, otherUser?.uid!);
 
   // Create chat room if it doesn't exist
   const { createChatRoom, isCreateChatRoomError, createChatRoomError } = useCreateChatRoom();
   useEffect(() => {
-    createChatRoom({ roomId, userUid: userUid!, otherUser });
+    if (otherUser) createChatRoom({ roomId, userUid: userUid!, otherUser });
   }, [roomId, userUid, otherUser]);
 
   // Fetch message using onSnapshot Real-time listener + Tanstack Query for caching
@@ -81,13 +117,15 @@ export default function ChatRoom() {
     [roomId, user?.image],
   );
 
+  if (!otherUser) return;
+
   // Extract user first name
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
 
   // Format message count
   const messageCount = formatMessageCount(messages.length);
 
-  if (isLoadingMessages) return <OverlayLoadingIndicator />;
+  if (isLoadingMessages || isLoading) return <OverlayLoadingIndicator />;
 
   if (isCreateChatRoomError)
     return Alert.alert("Error", `Error creating chat room:${createChatRoomError?.message}`);
