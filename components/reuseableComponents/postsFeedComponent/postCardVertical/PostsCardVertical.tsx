@@ -99,7 +99,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
   const otherUser = post?.postedBy;
 
   const handleNavigateToChatRoom = () => {
-    router.push({ pathname: "/(private)/ChatRoom", params: otherUser });
+    router.push(`/(private)/chatRoom/${otherUser?.userUid}`);
   };
 
   return (
