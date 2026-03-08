@@ -85,6 +85,7 @@ export default function OtherUserProfile() {
         {/* Chat Button */}
         <TouchableOpacity
           style={otherUserProfileStyles.chatBtn}
+          disabled={!otherUserId}
           onPress={() => router.push(`/(private)/chatRoom/${otherUserId as string}`)}
         >
           <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />

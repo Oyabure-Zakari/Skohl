@@ -174,7 +174,11 @@ const PostDetails = () => {
               <BookmarkBtn handleBookmark={handleBookmark} isBookmarked={isBookmarked} size={22} />
             )}
             {/* Chat Button */}
-            <TouchableOpacity style={postDetailsStyles.chatBtn} onPress={handleNavigateToChatRoom}>
+            <TouchableOpacity
+              style={postDetailsStyles.chatBtn}
+              disabled={!otherUser?.userUid}
+              onPress={handleNavigateToChatRoom}
+            >
               <MaterialCommunityIcons name="chat-outline" size={20} color={COLORS.white} />
               <Text style={postDetailsStyles.chatBtnText}>Chat</Text>
             </TouchableOpacity>

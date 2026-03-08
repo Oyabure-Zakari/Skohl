@@ -38,6 +38,7 @@ const ChatListCard: React.FC<ChatListCardProps> = ({ chatRoomData }) => {
     <TouchableOpacity
       style={chatsListStyles.chatRow}
       // Navigate to chat room
+      disabled={!otherUser?.uid}
       onPress={handleNavigateToChatRoom}
     >
       {/* Avatar */}

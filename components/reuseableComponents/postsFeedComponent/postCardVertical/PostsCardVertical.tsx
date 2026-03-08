@@ -165,6 +165,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
         {!isTheOwner ? (
           <TouchableOpacity
             style={postCardVerticalStyles.chatBtn}
+            disabled={!otherUser?.userUid}
             onPress={handleNavigateToChatRoom}
           >
             <MaterialCommunityIcons name="chat-outline" size={22} color={COLORS.lightGrey} />
