@@ -29,7 +29,7 @@ const ChatListCard: React.FC<ChatListCardProps> = ({ chatRoomData }) => {
     : new Date(); // fallback to now
 
   const handleNavigateToChatRoom = () => {
-    router.push(`/(private)/chatRoom/${otherUser?.userUid}`);
+    router.push(`/(private)/chatRoom/${otherUser?.uid}`);
   };
 
   const chatsListStyles = useChatListStyles();
