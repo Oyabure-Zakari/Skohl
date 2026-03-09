@@ -1,15 +1,20 @@
 import COLORS from "@/constants/colors";
 import blurhash from "@/constants/expoBlurImage";
 import useChatRoomStyles from "@/styles/chatRoom.styles";
-import OtherUserType from "@/types/OtherUser";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
+type OtherUser = {
+  fullName: string;
+  image: string;
+  uid: string;
+};
+
 type ChatRoomHeaderProps = {
-  otherUser: OtherUserType;
+  otherUser: OtherUser;
   messageCount: string;
   firstName: string;
 };
@@ -28,7 +33,7 @@ const ChatRoomHeader: React.FC<ChatRoomHeaderProps> = ({ otherUser, messageCount
 
         {/* Profile Picture */}
         <TouchableOpacity
-          onPress={() => router.push(`/(private)/otherUserProfile/${otherUser?.userUid}`)}
+          onPress={() => router.push(`/(private)/otherUserProfile/${otherUser?.uid}`)}
         >
           <Image
             source={{ uri: otherUser?.image }}

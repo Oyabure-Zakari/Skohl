@@ -1,5 +1,10 @@
 import { FieldValue } from "firebase/firestore";
-import OtherUserType from "./OtherUser";
+
+type OtherUser = {
+  fullName: string;
+  image: string;
+  uid: string;
+};
 
 type ChatRoomsType = {
   roomId: string;
@@ -8,7 +13,7 @@ type ChatRoomsType = {
   lastMessageSender: null | string;
   lastMessageTime: { seconds: number; nanoseconds: number; type: string };
   participants: (string | null)[];
-  otherUser: OtherUserType;
+  otherUser: OtherUser;
 };
 
 export default ChatRoomsType;

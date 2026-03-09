@@ -25,8 +25,6 @@ import useCreateChatRoom from "@/hooks/useCreateChatRoom.ts";
 import { useFetchChatMessages } from "@/hooks/useFetchChatMessages";
 import { useUserProfile } from "@/hooks/userProfile";
 import { useSendMessage } from "@/hooks/useSendMessage";
-// Types
-import OtherUserType from "@/types/OtherUser";
 // Utils
 import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
@@ -41,18 +39,19 @@ export default function ChatRoom() {
 
   // Currently logged in user
   const { userUid } = useAuth();
-  const { data: user } = useUserProfile(userUid!);
+  const { data: currentUser, isPending: isLoadingCurrentUser } = useUserProfile(userUid!);
 
   // Fetch other user
-  const otherUser: OtherUserType = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+  const { data: otherUser, isPending: isLoadingOtherUser } = useUserProfile(id as string);
 
   // Get chat room id
-  const roomId = generateRoomId(userUid!, otherUser?.userUid);
+  const roomId = generateRoomId(userUid!, otherUser?.uid!);
 
   // Create chat room if it doesn't exist
   const { createChatRoom, isCreateChatRoomError, createChatRoomError } = useCreateChatRoom();
   useEffect(() => {
-    createChatRoom({ roomId, userUid: userUid!, otherUser });
+    createChatRoom({ roomId, currentUserId: userUid!, otherUserId: otherUser?.uid });
   }, [roomId, userUid, otherUser]);
 
   // Fetch message using onSnapshot Real-time listener + Tanstack Query for caching
@@ -65,10 +64,10 @@ export default function ChatRoom() {
       sendMessage({
         roomId,
         messageInfo: newMessages[0],
-        userImage: user?.image,
+        userImage: currentUser?.image,
       });
     },
-    [roomId, user?.image],
+    [roomId, currentUser?.image],
   );
 
   // Extract user first name
@@ -77,7 +76,9 @@ export default function ChatRoom() {
   // Format message count
   const messageCount = formatMessageCount(messages.length);
 
-  if (isLoadingMessages) return <OverlayLoadingIndicator />;
+  if (isLoadingMessages || isLoadingCurrentUser || isLoadingOtherUser) {
+    return <OverlayLoadingIndicator />;
+  }
 
   if (isCreateChatRoomError)
     return Alert.alert("Error", `Error creating chat room:${createChatRoomError?.message}`);

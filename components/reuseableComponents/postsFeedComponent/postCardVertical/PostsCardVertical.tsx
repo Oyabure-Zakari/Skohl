@@ -99,7 +99,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
   const otherUser = post?.postedBy;
 
   const handleNavigateToChatRoom = () => {
-    router.push({ pathname: "/(private)/ChatRoom", params: otherUser });
+    router.push(`/(private)/chatRoom/${otherUser?.userUid}`);
   };
 
   return (
@@ -165,6 +165,7 @@ const PostCardVertical: React.FC<PostCardVerticalProps> = ({ post, isInOtherUser
         {!isTheOwner ? (
           <TouchableOpacity
             style={postCardVerticalStyles.chatBtn}
+            disabled={!otherUser?.userUid}
             onPress={handleNavigateToChatRoom}
           >
             <MaterialCommunityIcons name="chat-outline" size={22} color={COLORS.lightGrey} />

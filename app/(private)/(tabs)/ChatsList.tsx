@@ -41,7 +41,6 @@ export default function ChatListScreen() {
 
   // Fetch chatRooms using onSnapshot for real time update + Tanstack QUery for caching
   const { chatRooms } = useFetchChatRooms(userUid);
-  console.log(JSON.stringify(chatRooms, null, 2));
 
   // Handlers
   const handleSnapPress = useCallback(() => {
