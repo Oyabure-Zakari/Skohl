@@ -1,5 +1,5 @@
 // React
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 // React Native
 import { Alert, KeyboardAvoidingView, Platform } from "react-native";
 // Expo
@@ -25,22 +25,13 @@ import useCreateChatRoom from "@/hooks/useCreateChatRoom.ts";
 import { useFetchChatMessages } from "@/hooks/useFetchChatMessages";
 import { useUserProfile } from "@/hooks/userProfile";
 import { useSendMessage } from "@/hooks/useSendMessage";
-// Types
 // Utils
 import formatMessageCount from "@/utils/formatMessageCount";
 import formatFullName from "@/utils/formatUserFullname";
 import generateRoomId from "@/utils/generateRoomId";
 // Libraries/Packages
-import usersCollectionRef from "@/firebase/collectionRef/usersCollectionRef";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { getDocs, query, where } from "firebase/firestore";
 import { GiftedChat, IMessage } from "react-native-gifted-chat";
-
-type OtherUser = {
-  fullName: string;
-  image: string;
-  uid: string;
-};
 
 export default function ChatRoom() {
   // Get header height
@@ -48,49 +39,11 @@ export default function ChatRoom() {
 
   // Currently logged in user
   const { userUid } = useAuth();
-  const { data: user } = useUserProfile(userUid!);
+  const { data: currentUser } = useUserProfile(userUid!);
 
   // Fetch other user
   const { id } = useLocalSearchParams();
-
-  const [otherUser, setOtherUser] = useState<OtherUser>();
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Fecth user data from Firestore using TanStack Query
-  const fetchUserInfo = async (userUid: string | null) => {
-    if (!userUid) return;
-
-    try {
-      const q = query(usersCollectionRef, where("uid", "==", userUid));
-      const snapshot = await getDocs(q);
-
-      let fetchedInfo = {
-        uid: "",
-        image: "",
-        fullName: "",
-      };
-
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        fetchedInfo = {
-          uid: data?.uid,
-          image: data?.image,
-          fullName: `${data?.surname} ${data?.firstname}`,
-        };
-        setOtherUser({ ...fetchedInfo });
-      });
-    } catch (error: any) {
-      console.log(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserInfo(id as string);
-  }, [id]);
-
-  console.log("Other User: ", otherUser);
+  const { data: otherUser, isPending: isLoadingOtherUser } = useUserProfile(id as string);
 
   // Get chat room id
   const roomId = generateRoomId(userUid!, otherUser?.uid!);
@@ -98,7 +51,7 @@ export default function ChatRoom() {
   // Create chat room if it doesn't exist
   const { createChatRoom, isCreateChatRoomError, createChatRoomError } = useCreateChatRoom();
   useEffect(() => {
-    if (otherUser) createChatRoom({ roomId, userUid: userUid!, otherUser });
+    if (otherUser) createChatRoom({ roomId, currentUserId: userUid!, otherUserId: otherUser?.uid });
   }, [roomId, userUid, otherUser]);
 
   // Fetch message using onSnapshot Real-time listener + Tanstack Query for caching
@@ -111,13 +64,14 @@ export default function ChatRoom() {
       sendMessage({
         roomId,
         messageInfo: newMessages[0],
-        userImage: user?.image,
+        userImage: currentUser?.image,
       });
     },
-    [roomId, user?.image],
+    [roomId, currentUser?.image],
   );
 
-  if (!otherUser) return;
+  // Check if both users are loaded
+  if (!currentUser || !otherUser) return;
 
   // Extract user first name
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
@@ -125,7 +79,7 @@ export default function ChatRoom() {
   // Format message count
   const messageCount = formatMessageCount(messages.length);
 
-  if (isLoadingMessages || isLoading) return <OverlayLoadingIndicator />;
+  if (isLoadingMessages || isLoadingOtherUser) return <OverlayLoadingIndicator />;
 
   if (isCreateChatRoomError)
     return Alert.alert("Error", `Error creating chat room:${createChatRoomError?.message}`);
