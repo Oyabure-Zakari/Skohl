@@ -1,5 +1,6 @@
 import createMessage from "@/firebase/messages/createMessage";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -8,7 +9,16 @@ export const useSendMessage = () => {
 
   const { mutate: sendMessage, isPending: isSendingMessage } = useMutation({
     mutationFn: createMessage,
+
+    onSuccess: () => {
+      // Success haptic: short confirmation vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    },
+
     onError: (error: any) => {
+      // Error haptic: warning vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+
       Toast.show({
         type: "error",
         text1: "Failed to send message",
