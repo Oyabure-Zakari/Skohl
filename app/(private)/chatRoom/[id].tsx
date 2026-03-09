@@ -51,7 +51,7 @@ export default function ChatRoom() {
   // Create chat room if it doesn't exist
   const { createChatRoom, isCreateChatRoomError, createChatRoomError } = useCreateChatRoom();
   useEffect(() => {
-    if (otherUser) createChatRoom({ roomId, currentUserId: userUid!, otherUserId: otherUser?.uid });
+    createChatRoom({ roomId, currentUserId: userUid!, otherUserId: otherUser?.uid });
   }, [roomId, userUid, otherUser]);
 
   // Fetch message using onSnapshot Real-time listener + Tanstack Query for caching
@@ -69,9 +69,6 @@ export default function ChatRoom() {
     },
     [roomId, currentUser?.image],
   );
-
-  // Check if both users are loaded
-  if (!currentUser || !otherUser) return;
 
   // Extract user first name
   const firstName = formatFullName(otherUser?.fullName).split(" ")[1];
