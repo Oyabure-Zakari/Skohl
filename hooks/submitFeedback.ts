@@ -1,5 +1,6 @@
 import sendFeedback from "@/firebase/feedbacks/sendFeedback";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -29,10 +30,13 @@ export const useSubmitFeedback = ({
       if (!feedbackText && rating === 0) throw new Error("Please provide feedback or a rating.");
 
       // Firebase function t send feedback
-      await sendFeedback(userUid, feedbackText, rating)
+      await sendFeedback(userUid, feedbackText, rating);
     },
 
     onSuccess: () => {
+      // Success haptic: short confirmation vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
       Toast.show({
         type: "success",
         text1: "Feedback Sent",
@@ -48,6 +52,9 @@ export const useSubmitFeedback = ({
     },
 
     onError: (error: any) => {
+      // Error haptic: error vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
       Toast.show({
         type: "error",
         text1: "Error",
