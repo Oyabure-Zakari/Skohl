@@ -1,19 +1,13 @@
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
 
-type OtherUser = {
-  fullName: string;
-  image: string;
-  uid: string;
-};
-
 type CreateChatRoomParams = {
   roomId: string;
-  userUid: string;
-  otherUser: OtherUser;
+  currentUserId: string;
+  otherUserId: string;
 };
 
-const createChatRoom = async ({ roomId, userUid, otherUser }: CreateChatRoomParams) => {
+const createChatRoom = async ({ roomId, currentUserId, otherUserId }: CreateChatRoomParams) => {
   try {
     const docRef = doc(db, "chatRooms", roomId);
     const docSnap = await getDoc(docRef);
@@ -24,12 +18,11 @@ const createChatRoom = async ({ roomId, userUid, otherUser }: CreateChatRoomPara
     // Create the chat room
     await setDoc(docRef, {
       roomId,
-      otherUser,
       createdAt: serverTimestamp(),
       lastMessage: null,
       lastMessageSender: null,
       lastMessageTime: null,
-      participants: [userUid, otherUser?.uid].sort(),
+      participants: [currentUserId, otherUserId].sort(),
     });
   } catch (error: any) {
     throw new Error(error?.message || "Failed to create chat room");
