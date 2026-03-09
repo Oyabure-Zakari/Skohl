@@ -39,7 +39,7 @@ export default function ChatRoom() {
 
   // Currently logged in user
   const { userUid } = useAuth();
-  const { data: currentUser } = useUserProfile(userUid!);
+  const { data: currentUser, isPending: isLoadingCurrentUser } = useUserProfile(userUid!);
 
   // Fetch other user
   const { id } = useLocalSearchParams();
@@ -79,7 +79,9 @@ export default function ChatRoom() {
   // Format message count
   const messageCount = formatMessageCount(messages.length);
 
-  if (isLoadingMessages || isLoadingOtherUser) return <OverlayLoadingIndicator />;
+  if (isLoadingMessages || isLoadingCurrentUser || isLoadingOtherUser) {
+    return <OverlayLoadingIndicator />;
+  }
 
   if (isCreateChatRoomError)
     return Alert.alert("Error", `Error creating chat room:${createChatRoomError?.message}`);
