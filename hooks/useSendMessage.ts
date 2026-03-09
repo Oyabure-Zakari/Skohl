@@ -16,8 +16,8 @@ export const useSendMessage = () => {
     },
 
     onError: (error: any) => {
-      // Error haptic: warning vibration
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      // Error haptic: error vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
       Toast.show({
         type: "error",
