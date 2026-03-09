@@ -3,6 +3,7 @@ import postEventLogic from "@/firebase/posts/postEventLogic";
 import usePhotoStore from "@/store/photoStore";
 import isEventFormValid from "@/utils/postsFormValidation/eventForm";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -54,7 +55,7 @@ export const usePostEvent = ({
           dateRef,
           eventDescriptionRef,
           selectedEventType,
-          selectedEventCategory
+          selectedEventCategory,
         );
 
         // Call function to post product
@@ -75,6 +76,9 @@ export const usePostEvent = ({
     },
 
     onSuccess: () => {
+      // Success haptic: short confirmation vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
       Toast.show({
         type: "success",
         text1: "Post Sent",
@@ -96,6 +100,9 @@ export const usePostEvent = ({
     },
 
     onError: (error: any) => {
+      // Error haptic: error vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
       Toast.show({
         type: "error",
         text1: "Error",

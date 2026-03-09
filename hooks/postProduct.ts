@@ -3,6 +3,7 @@ import postProductLogic from "@/firebase/posts/postProductLogic";
 import usePhotoStore from "@/store/photoStore";
 import isProductFormValid from "@/utils/postsFormValidation/productForm";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -44,7 +45,7 @@ export const usePostProduct = ({
           productNameRef.current,
           productPriceRef.current,
           productDescriptionRef.current,
-          selectedProductCategory
+          selectedProductCategory,
         );
 
         // Call function to post product
@@ -62,6 +63,9 @@ export const usePostProduct = ({
     },
 
     onSuccess: () => {
+      // Success haptic: short confirmation vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
       Toast.show({
         type: "success",
         text1: "Post Sent",
@@ -80,6 +84,9 @@ export const usePostProduct = ({
     },
 
     onError: (error: any) => {
+      // Error haptic: error vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
       Toast.show({
         type: "error",
         text1: "Error",

@@ -3,6 +3,7 @@ import postServiceLogic from "@/firebase/posts/postServiceLogic";
 import usePhotoStore from "@/store/photoStore";
 import isServiceFormValid from "@/utils/postsFormValidation/serviceForm";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -46,7 +47,7 @@ export const usePostService = ({
           servicePriceRef,
           serviceScheduleRef,
           serviceDescriptionRef,
-          selectedServiceCategory
+          selectedServiceCategory,
         );
 
         // Call function to post product
@@ -65,6 +66,9 @@ export const usePostService = ({
     },
 
     onSuccess: () => {
+      // Success haptic: short confirmation vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
       Toast.show({
         type: "success",
         text1: "Post Sent",
@@ -84,6 +88,9 @@ export const usePostService = ({
     },
 
     onError: (error: any) => {
+      // Error haptic: error vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
       Toast.show({
         type: "error",
         text1: "Error",
