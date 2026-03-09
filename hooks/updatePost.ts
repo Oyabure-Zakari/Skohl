@@ -4,6 +4,7 @@ import { Post } from "@/types/PostTypes";
 import postImageUrl from "@/utils/cloudinary/postImageUrl";
 import extractPublicId from "@/utils/extractPublicId";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { doc, updateDoc } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
@@ -107,6 +108,9 @@ export default function useUpdatePost({
           break;
 
         default:
+          // Error haptic: error vibration
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
           Toast.show({
             type: "error",
             text1: "Post not updated",
@@ -119,6 +123,9 @@ export default function useUpdatePost({
 
       // If the user didn't change anything, let them know, stop here and skip the Firestore write entirely
       if (Object.keys(updatedFields).length === 0) {
+        // Error haptic: warning vibration
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+
         Toast.show({
           type: "info",
           text1: "Post not updated",
@@ -132,7 +139,9 @@ export default function useUpdatePost({
       try {
         // At this point we have confirmed changes, so update only the changed fields in Firestore
         await updateDoc(doc(db, "posts", EditPostId as string), updatedFields);
-        // console.log(updatedFields);
+        // Success haptic: short confirmation vibration
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
         Toast.show({
           type: "success",
           text1: "Post updated",
@@ -141,6 +150,9 @@ export default function useUpdatePost({
           text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
         });
       } catch (error: any) {
+        // Error haptic: error vibration
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
         Toast.show({
           type: "error",
           text1: "Post not updated",
