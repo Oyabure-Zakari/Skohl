@@ -4,6 +4,7 @@ import UserProfileType from "@/types/userProfileTypes";
 import postImageUrl from "@/utils/cloudinary/postImageUrl";
 import extractPublicId from "@/utils/extractPublicId";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { collection, doc, getDocs, query, updateDoc, where, writeBatch } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
@@ -39,6 +40,9 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
 
       // User did not make any changes
       if (!imageChanged && !bioChanged) {
+        // Error haptic: warning vibration
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+
         Toast.show({
           type: "info",
           text1: "Profile not updated",
@@ -78,6 +82,9 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
         queryKey: ["user", user?.uid],
       });
 
+      // Success haptic: short confirmation vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
       // Show success toast
       Toast.show({
         type: "success",
@@ -90,6 +97,9 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
 
     // Error callback runs if mutation fails
     onError: (error: any) => {
+      // Error haptic: error vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
       // Don't show error toast if it's just "No changes made"
       if (error.message === "No changes made") return;
 
