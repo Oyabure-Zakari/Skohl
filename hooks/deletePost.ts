@@ -2,6 +2,7 @@ import { db } from "@/firebase/firebase.config";
 import { Post } from "@/types/PostTypes";
 import deletePostImageFromCloudinary from "@/utils/cloudinary/deletePostImage";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { Router } from "expo-router";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
@@ -29,6 +30,9 @@ export const useDeletePost = ({ post, screenName, router }: UseDeletePost) => {
 
     // Success callback runs after mutation is successful
     onSuccess: () => {
+      // Success haptic: short confirmation vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
       // Show success toast
       Toast.show({
         type: "success",
@@ -44,6 +48,9 @@ export const useDeletePost = ({ post, screenName, router }: UseDeletePost) => {
 
     // Error callback runs after mutation fails
     onError: (error: any) => {
+      // Error haptic: error vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
       Toast.show({
         type: "error",
         text1: "Post not deleted",
