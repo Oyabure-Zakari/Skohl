@@ -20,10 +20,13 @@ export const useSendMessage = () => {
     },
 
     onError: (error: any) => {
+      // Plays error sound
       playSound({ soundSource: AUDIO?.error, volume: 0.4 });
-      // Error haptic: error vibration
+
+      // Haptic  feedback
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
+      // Toast notification
       Toast.show({
         type: "error",
         text1: "Failed to send message",
