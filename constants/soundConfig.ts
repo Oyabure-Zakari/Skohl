@@ -15,3 +15,8 @@ export const ERRORSOUND: SoundType = {
   soundSource: AUDIO?.error,
   volume: 0.4,
 };
+
+export const SUCCESSSOUND: SoundType = {
+  soundSource: AUDIO?.success,
+  volume: 0.4,
+};
