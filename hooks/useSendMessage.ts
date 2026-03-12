@@ -1,4 +1,4 @@
-import AUDIO from "@/constants/audio";
+import { ERRORSOUND, MESSAGESOUND } from "@/constants/soundConfig";
 import createMessage from "@/firebase/messages/createMessage";
 import { useMutation } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
@@ -16,12 +16,12 @@ export const useSendMessage = () => {
 
     onSuccess: () => {
       // Plays sound after message has sent successfully
-      playSound({ soundSource: AUDIO?.message, volume: 0.04 });
+      playSound(MESSAGESOUND);
     },
 
     onError: (error: any) => {
       // Plays error sound
-      playSound({ soundSource: AUDIO?.error, volume: 0.4 });
+      playSound(ERRORSOUND);
 
       // Haptic  feedback
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
