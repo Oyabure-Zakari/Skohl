@@ -1,3 +1,4 @@
+import { ERRORSOUND, SUCCESSSOUND } from "@/constants/soundConfig";
 import { useAuth } from "@/contexts/AuthContext";
 import postProductLogic from "@/firebase/posts/postProductLogic";
 import usePhotoStore from "@/store/photoStore";
@@ -6,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 type UsePostProductParams = {
   inputRef: React.RefObject<any>;
@@ -26,6 +28,8 @@ export const usePostProduct = ({
   selectedProductCategory,
   setSelectedProductCategory,
 }: UsePostProductParams) => {
+  const { playSound } = usePlaySound();
+
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
 
@@ -63,8 +67,7 @@ export const usePostProduct = ({
     },
 
     onSuccess: () => {
-      // Success haptic: short confirmation vibration
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      playSound(SUCCESSSOUND);
 
       Toast.show({
         type: "success",
@@ -84,9 +87,13 @@ export const usePostProduct = ({
     },
 
     onError: (error: any) => {
-      // Error haptic: error vibration
+      // Plays error sound
+      playSound(ERRORSOUND);
+
+      // Haptic  feedback
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
+      // Toast notification
       Toast.show({
         type: "error",
         text1: "Error",

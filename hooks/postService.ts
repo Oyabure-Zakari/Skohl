@@ -1,3 +1,4 @@
+import { ERRORSOUND, SUCCESSSOUND } from "@/constants/soundConfig";
 import { useAuth } from "@/contexts/AuthContext";
 import postServiceLogic from "@/firebase/posts/postServiceLogic";
 import usePhotoStore from "@/store/photoStore";
@@ -6,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 type UsePostServiceParams = {
   inputRef: React.RefObject<any>;
@@ -30,6 +32,8 @@ export const usePostService = ({
 }: UsePostServiceParams) => {
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
+
+  const { playSound } = usePlaySound();
 
   // Get user UID
   const { userUid } = useAuth();
@@ -66,8 +70,7 @@ export const usePostService = ({
     },
 
     onSuccess: () => {
-      // Success haptic: short confirmation vibration
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      playSound(SUCCESSSOUND);
 
       Toast.show({
         type: "success",
@@ -88,9 +91,13 @@ export const usePostService = ({
     },
 
     onError: (error: any) => {
-      // Error haptic: error vibration
+      // Plays error sound
+      playSound(ERRORSOUND);
+
+      // Haptic  feedback
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
+      // Toast notification
       Toast.show({
         type: "error",
         text1: "Error",
