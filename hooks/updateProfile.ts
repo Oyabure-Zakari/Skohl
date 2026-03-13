@@ -1,4 +1,5 @@
 import deleteCloudinaryImage from "@/app/apis/deleteCloudinaryImage";
+import { ERRORSOUND, SUCCESSSOUND } from "@/constants/soundConfig";
 import { db } from "@/firebase/firebase.config";
 import UserProfileType from "@/types/userProfileTypes";
 import postImageUrl from "@/utils/cloudinary/postImageUrl";
@@ -8,6 +9,7 @@ import * as Haptics from "expo-haptics";
 import { collection, doc, getDocs, query, updateDoc, where, writeBatch } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 type UseUpdateProfile = {
   user: UserProfileType;
@@ -18,6 +20,8 @@ type UseUpdateProfile = {
 export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateProfile) => {
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
+
+  const { playSound } = usePlaySound();
 
   // Get query client to invalidate queries
   const queryClient = useQueryClient();
@@ -82,8 +86,7 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
         queryKey: ["user", user?.uid],
       });
 
-      // Success haptic: short confirmation vibration
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      playSound(SUCCESSSOUND);
 
       // Show success toast
       Toast.show({
@@ -97,11 +100,14 @@ export const useUpdateProfile = ({ user, userImage, userBioTextRef }: UseUpdateP
 
     // Error callback runs if mutation fails
     onError: (error: any) => {
-      // Error haptic: error vibration
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-
       // Don't show error toast if it's just "No changes made"
       if (error.message === "No changes made") return;
+
+      // Plays error sound
+      playSound(ERRORSOUND);
+
+      // Error haptic: error vibration
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
       // Show error toast
       Toast.show({
