@@ -1,8 +1,11 @@
+import { ERRORSOUND, SUCCESSSOUND } from "@/constants/soundConfig";
 import addBookmarks from "@/firebase/bookmarks/addBookmarks";
 import { Post } from "@/types/PostTypes";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 type UseAddToBookmarks = {
   postId: string;
@@ -14,6 +17,8 @@ export default function useAddToBookmarks({ postId, userUid, post }: UseAddToBoo
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
 
+  const { playSound } = usePlaySound();
+
   // useMutation gives us methods and states which is saved in mutation variable
   const mutation = useMutation({
     mutationFn: async () => {
@@ -22,6 +27,8 @@ export default function useAddToBookmarks({ postId, userUid, post }: UseAddToBoo
 
     // Success callback runs after mutation is successful
     onSuccess: () => {
+      playSound(SUCCESSSOUND);
+
       // Show success toast
       Toast.show({
         type: "success",
@@ -34,6 +41,13 @@ export default function useAddToBookmarks({ postId, userUid, post }: UseAddToBoo
 
     // Error callback runs after mutation fails
     onError: (error: any) => {
+      // Plays error sound
+      playSound(ERRORSOUND);
+
+      // Haptic  feedback
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+      // Toast notification
       Toast.show({
         type: "error",
         text1: "Error",
