@@ -1,4 +1,5 @@
 import deleteCloudinaryImage from "@/app/apis/deleteCloudinaryImage";
+import { ERRORSOUND, SUCCESSSOUND } from "@/constants/soundConfig";
 import { db } from "@/firebase/firebase.config";
 import { Post } from "@/types/PostTypes";
 import postImageUrl from "@/utils/cloudinary/postImageUrl";
@@ -8,6 +9,7 @@ import * as Haptics from "expo-haptics";
 import { doc, updateDoc } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 type UseUpdatePostParams = {
   EditPostId: string | string[];
@@ -43,6 +45,8 @@ export default function useUpdatePost({
   selectedEventCategory,
 }: UseUpdatePostParams) {
   const { fontScale } = useWindowDimensions();
+
+  const { playSound } = usePlaySound();
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -108,9 +112,13 @@ export default function useUpdatePost({
           break;
 
         default:
-          // Error haptic: error vibration
+          // Plays error sound
+          playSound(ERRORSOUND);
+
+          // Haptic  feedback
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
+          // Toast notification
           Toast.show({
             type: "error",
             text1: "Post not updated",
@@ -139,8 +147,8 @@ export default function useUpdatePost({
       try {
         // At this point we have confirmed changes, so update only the changed fields in Firestore
         await updateDoc(doc(db, "posts", EditPostId as string), updatedFields);
-        // Success haptic: short confirmation vibration
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+        playSound(SUCCESSSOUND);
 
         Toast.show({
           type: "success",
@@ -150,9 +158,13 @@ export default function useUpdatePost({
           text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
         });
       } catch (error: any) {
-        // Error haptic: error vibration
+        // Plays error sound
+        playSound(ERRORSOUND);
+
+        // Haptic  feedback
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
+        // Toast notification
         Toast.show({
           type: "error",
           text1: "Post not updated",
