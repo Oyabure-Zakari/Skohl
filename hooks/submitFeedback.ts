@@ -1,8 +1,10 @@
+import { ERRORSOUND, SUCCESSSOUND } from "@/constants/soundConfig";
 import sendFeedback from "@/firebase/feedbacks/sendFeedback";
 import { useMutation } from "@tanstack/react-query";
 import * as Haptics from "expo-haptics";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 type UseSubmitFeedbackParams = {
   userUid: string;
@@ -19,6 +21,8 @@ export const useSubmitFeedback = ({
   setRating,
   inputRef,
 }: UseSubmitFeedbackParams) => {
+  const { playSound } = usePlaySound();
+
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
   // useMutation gives us methods and states which is saved in mutation variable
@@ -34,8 +38,7 @@ export const useSubmitFeedback = ({
     },
 
     onSuccess: () => {
-      // Success haptic: short confirmation vibration
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      playSound(SUCCESSSOUND);
 
       Toast.show({
         type: "success",
@@ -52,9 +55,13 @@ export const useSubmitFeedback = ({
     },
 
     onError: (error: any) => {
-      // Error haptic: error vibration
+      // Plays error sound
+      playSound(ERRORSOUND);
+
+      // Haptic  feedback
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
 
+      // Toast notification
       Toast.show({
         type: "error",
         text1: "Error",
