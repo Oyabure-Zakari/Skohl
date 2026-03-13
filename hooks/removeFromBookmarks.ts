@@ -1,8 +1,11 @@
+import { ERRORSOUND, SUCCESSSOUND } from "@/constants/soundConfig";
 import { db } from "@/firebase/firebase.config";
 import { useMutation } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 type UseRemoveFromBookmark = {
   postId: string;
@@ -11,6 +14,8 @@ type UseRemoveFromBookmark = {
 export const useRemoveFromBookmark = ({ postId }: UseRemoveFromBookmark) => {
   // Get font scale for responsive toast text sizing
   const { fontScale } = useWindowDimensions();
+
+  const { playSound } = usePlaySound();
 
   // useMutation gives us methods and states which is saved in mutation variable
   const mutation = useMutation({
@@ -21,6 +26,8 @@ export const useRemoveFromBookmark = ({ postId }: UseRemoveFromBookmark) => {
 
     // Success callback runs after mutation is successful
     onSuccess: () => {
+      playSound(SUCCESSSOUND);
+
       // Show success toast
       Toast.show({
         type: "success",
@@ -33,6 +40,13 @@ export const useRemoveFromBookmark = ({ postId }: UseRemoveFromBookmark) => {
 
     // Error callback runs after mutation fails
     onError: (error: any) => {
+      // Plays error sound
+      playSound(ERRORSOUND);
+
+      // Haptic  feedback
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+      // Toast notification
       Toast.show({
         type: "error",
         text1: "Error",
