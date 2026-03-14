@@ -1,14 +1,18 @@
+import { ERRORSOUND } from "@/constants/soundConfig";
 import { db } from "@/firebase/firebase.config";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect } from "react";
 import { useWindowDimensions } from "react-native";
 import { IMessage } from "react-native-gifted-chat";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 export const useFetchChatMessages = (roomId: string) => {
   const { fontScale } = useWindowDimensions();
   const queryClient = useQueryClient();
+  const { playSound } = usePlaySound();
 
   const { data: messages = [], isLoading: isLoadingMessages } = useQuery<IMessage[]>({
     queryKey: ["messages", roomId],
@@ -43,6 +47,13 @@ export const useFetchChatMessages = (roomId: string) => {
         queryClient.setQueryData(["messages", roomId], fetchedMessages.reverse());
       },
       (error: any) => {
+        // Plays error sound
+        playSound(ERRORSOUND);
+
+        // Haptic  feedback
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+        // Toast notification
         Toast.show({
           type: "error",
           text1: "Failed to load messages",

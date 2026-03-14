@@ -1,13 +1,18 @@
+import { ERRORSOUND } from "@/constants/soundConfig";
 import postsCollectionRef from "@/firebase/collectionRef/postsCollectionRef";
 import { Post } from "@/types/PostTypes";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useEffect } from "react";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 export const useUserPosts = (userUid: string | null | undefined) => {
   const { fontScale } = useWindowDimensions();
+
+  const { playSound } = usePlaySound();
 
   // Gives us access to tanstack query methods
   const queryClient = useQueryClient();
@@ -56,12 +61,18 @@ export const useUserPosts = (userUid: string | null | undefined) => {
         // setQueryData will update TanStack Query's cache with the fresh data from Firestore
         queryClient.setQueryData(["userPosts", userUid], fetchedPosts);
       },
-      (error) => {
-        console.error("Posts real-time error:", error);
+      (error: any) => {
+        // Plays error sound
+        playSound(ERRORSOUND);
+
+        // Haptic  feedback
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+        // Toast notification
         Toast.show({
           type: "error",
           text1: "Failed to load posts",
-          text2: error.message,
+          text2: error?.message,
           text1Style: { fontSize: fontScale * 16, fontFamily: "Segoe_UI_Bold" },
           text2Style: { fontSize: fontScale * 12, fontFamily: "Segoe_UI_Bold" },
         });

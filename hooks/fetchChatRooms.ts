@@ -1,13 +1,18 @@
+import { ERRORSOUND } from "@/constants/soundConfig";
 import chatRoomsCollectionRef from "@/firebase/collectionRef/chatRoomsCollectionRef";
 import ChatRoomsType from "@/types/chatRoomType";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import { onSnapshot, orderBy, query, where } from "firebase/firestore";
 import { useEffect } from "react";
 import { useWindowDimensions } from "react-native";
 import Toast from "react-native-toast-message";
+import { usePlaySound } from "./playSound";
 
 export const useFetchChatRooms = (userUid: string | null) => {
   const { fontScale } = useWindowDimensions();
+
+  const { playSound } = usePlaySound();
 
   // Give us access to tanstack query methods
   const queryClient = useQueryClient();
@@ -50,6 +55,13 @@ export const useFetchChatRooms = (userUid: string | null) => {
         queryClient.setQueryData(["chatRooms", userUid], rooms);
       },
       (error: any) => {
+        // Plays error sound
+        playSound(ERRORSOUND);
+
+        // Haptic  feedback
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+        // Toast notification
         Toast.show({
           type: "error",
           text1: "Failed to load chats",
