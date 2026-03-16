@@ -46,6 +46,24 @@ WhatsApp + Jiji + Eventbrite + campus group chats made just for uni students.
 - **Bottom Sheets**: @gorhom/bottom-sheet
 - **Date Formatting**: react-time-ago
 
+## Prerequisites
+
+To run or develop Skohl, you need:
+
+- **Node.js** ≥ 18.x (recommended: latest LTS)
+- **npm** ≥ 8.x or **yarn** / **pnpm**
+- **Expo CLI** (installed globally): `npm install -g expo-cli`
+- **Git** (for cloning the repo)
+- **Android Studio** (for Android emulator) or **Xcode** (for iOS simulator)
+- **Expo Go** app on your physical device (for quick testing) — or a development build
+- **Firebase project** (Firestore + Authentication setup) — add your config to `firebase.config.ts`
+- **Cloudinary account** (for image uploads) — add credentials to your environment
+
+Optional but recommended:
+
+- **VS Code** + extensions: ESLint, Prettier, React Native Tools, Expo Tools
+- **Android emulator** or **iOS simulator** (or physical device)
+
 ## Getting Started
 
 1. Clone the repo
