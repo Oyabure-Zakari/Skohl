@@ -1,9 +1,9 @@
 # Skohl – Campus Social & Marketplace App
 
-**Skohl** is a mobile-first social platform built for university students in Nigeria. It combines a marketplace for buying/selling items, event discovery, service offerings, and real-time chat — all in one clean, student-friendly app.
+**Skohl** is a mobile-first social platform built for university students in Nigeria. It combines a marketplace for buying/selling items, event discovery, service offerings, and real-time chat all in one clean, student-friendly app.
 
 Think of it as:  
-WhatsApp + Jiji + Eventbrite + campus group chats — made just for uni students.
+WhatsApp + Jiji + Eventbrite + campus group chats made just for uni students.
 
 ## Core Features
 
@@ -11,7 +11,7 @@ WhatsApp + Jiji + Eventbrite + campus group chats — made just for uni students
   Buy & sell products, services, and more — with categories, photos, prices, and direct chat
 
 - **Events & Campus Life**  
-  Discover on/off-campus events, parties, tutorials, seminars — with date, time, venue & RSVP
+  Discover on/off-campus events, parties, tutorials, seminars with date, time & venue
 
 - **Services Hub**  
   Offer or find tutoring, graphics design, hair styling, laundry, food delivery — student-to-student
@@ -30,20 +30,21 @@ WhatsApp + Jiji + Eventbrite + campus group chats — made just for uni students
 
 ## Tech Stack & Key Packages
 
-- **Framework**: Expo (SDK 51) + React Native
+- **Framework**: Expo (SDK 54) + React Native
 - **Routing**: Expo Router (file-based)
 - **State Management**: Zustand (lightweight), React Context
 - **Data Fetching & Real-time**: TanStack Query + Firebase Firestore (onSnapshot)
 - **Backend**: Firebase (Firestore, Authentication)
 - **Image Handling**: Cloudinary (uploads, deletes), expo-image
 - **Chat UI**: react-native-gifted-chat (custom bubbles, input, send button)
-- **Haptics**: expo-haptics (success/error feedback on actions)
+- **Web Content Viewing**: react-native-webview (embedded browser for external links, previews, or web-based features)
+- **Haptics**: expo-haptics (success/error feedback on send, post update, profile changes)
 - **Audio (optional)**: expo-av (future success notification sounds)
 - **Styling**: StyleSheet + custom hooks
 - **Icons**: @expo/vector-icons
 - **Lists**: @shopify/flash-list (fast FlatList replacement)
 - **Bottom Sheets**: @gorhom/bottom-sheet
-- **Other**: date-fns, react-time-ago, numeral.js (number formatting)
+- **Date Formatting**: react-time-ago
 
 ## Getting Started
 
@@ -77,11 +78,11 @@ WhatsApp + Jiji + Eventbrite + campus group chats — made just for uni students
 
 ## Development Notes
 
-Real-time chat & chat list use Firestore onSnapshot + TanStack Query caching
-Profile updates use partial Firestore updates (only changed fields)
-Images handled via Cloudinary (upload + delete old on change)
-Haptic feedback on send/update success (expo-haptics)
-Chat rooms created dynamically with sorted participant array for array-contains queries
+- Real-time chat & chat list use Firestore onSnapshot + TanStack Query caching
+- Profile updates use partial Firestore updates (only changed fields)
+- Images handled via Cloudinary (upload + delete old on change)
+- Haptic feedback on send/update success (expo-haptics)
+- Chat rooms created dynamically with sorted participant array for array-contains queries
 
 ## Contributing
 
