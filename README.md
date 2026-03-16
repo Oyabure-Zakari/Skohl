@@ -6,7 +6,7 @@
 
 # Skohl – Campus Social & Marketplace App
 
-**Skohl** is a mobile-first social platform built for university students in Nigeria. It combines a marketplace for buying/selling items, event discovery, service offerings, and real-time chat all in one clean, student-friendly app.
+**Skohl** is a mobile-first social platform built for students of Ahmadu Bello University (ABU). It combines a marketplace for buying/selling items, event discovery, service offerings, and real-time chat all in one clean, student-friendly app.
 
 Think of it as:  
 WhatsApp + Jiji + Eventbrite + campus group chats made just for uni students.
@@ -121,4 +121,4 @@ Feel free to open issues or PRs!
 ## License
 
 MIT
-Made with ❤️ for Nigerian students.
+Made with ❤️ for ABU students.
