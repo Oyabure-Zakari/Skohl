@@ -5,6 +5,17 @@
 Think of it as:  
 WhatsApp + Jiji + Eventbrite + campus group chats made just for uni students.
 
+
+
+
+<img width="428" height="926" alt="1 Splash Screen" src="https://github.com/user-attachments/assets/f0aeec0a-645e-4e67-9f35-3ba1e2cee737" />
+<img width="428" height="926" alt="5 Home" src="https://github.com/user-attachments/assets/38c89362-f8f0-4d7d-8160-8f99837db425" />
+<img width="428" height="926" alt="18 Profile" src="https://github.com/user-attachments/assets/071d47f6-e276-4cac-8062-6602cc780c6b" />
+<img width="428" height="926" alt="16  Event Details" src="https://github.com/user-attachments/assets/38d13ce7-7449-4352-9580-26c0ddcc66fb" />
+
+
+
+
 ## Core Features
 
 - **Marketplace**  
