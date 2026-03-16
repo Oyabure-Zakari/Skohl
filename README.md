@@ -1,3 +1,9 @@
+[![Expo SDK 54](https://img.shields.io/badge/Expo%20SDK-54-blue.svg)](https://docs.expo.dev/versions/v54.0.0/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![Stars](https://img.shields.io/github/stars/Oyabure-Zakari/skohl?style=social)](https://github.com/Oyabure-Zakari/skohl)
+[![Forks](https://img.shields.io/github/forks/Oyabure-Zakari/skohl?style=social)](https://github.com/Oyabure-Zakari/skohl)
+
 # Skohl – Campus Social & Marketplace App
 
 **Skohl** is a mobile-first social platform built for university students in Nigeria. It combines a marketplace for buying/selling items, event discovery, service offerings, and real-time chat all in one clean, student-friendly app.
@@ -8,7 +14,7 @@ WhatsApp + Jiji + Eventbrite + campus group chats made just for uni students.
 ## Core Features
 
 - **Marketplace**  
-  Buy & sell products, services, and more — with categories, photos, prices, and direct chat
+  Buy & sell products, services, and more with categories, photos, prices, and direct chat
 
 - **Events & Campus Life**  
   Discover on/off-campus events, parties, tutorials, seminars with date, time & venue
@@ -20,23 +26,29 @@ WhatsApp + Jiji + Eventbrite + campus group chats made just for uni students.
   Instant messaging with typing indicators, read receipts, and haptic feedback on send
 
 - **User Profiles & Bookmarks**  
-  Custom profiles, profile picture updates (Cloudinary), bookmark favorite posts
+  Custom profiles, profile picture updates (Cloudinary), and bookmark favorite posts
 
 - **Real-time Updates**  
   Live message sync, last-message previews in chat list, dynamic "other user" display
 
 - **Beautiful & Performant UI**  
-  Dark mode support, custom haptics, smooth animations, Expo Router file-based routing
+  Custom haptics, smooth animations, Expo Router file-based routing
 
-## Tech Stack & Key Packages
+## Tech Stack
 
 - **Framework**: Expo (SDK 54) + React Native
-- **Routing**: Expo Router (file-based)
-- **State Management**: Zustand (lightweight), React Context
-- **Data Fetching & Real-time**: TanStack Query + Firebase Firestore (onSnapshot)
+- **State Management**: Zustand (lightweight) and React Context
+- **Data Fetching**: TanStack Query
 - **Backend**: Firebase (Firestore, Authentication)
-- **Image Handling**: Cloudinary (uploads, deletes), expo-image
+- **Storage Bucket**: Cloudinary (uploads and deletes images)
+- **Animation**: React Native Reanimated
+
+## Key Packages
+
+- **Images**: expo-image, expo-image-picker, expo-image-manipulator (image resizing/compression before upload)  
+- **Crypto & Security**: expo-crypto (hashing for IDs or tokens)
 - **Chat UI**: react-native-gifted-chat (custom bubbles, input, send button)
+- **Keyboard Handling**: react-native-keyboard-controller (smooth keyboard avoidance & custom behavior)
 - **Web Content Viewing**: react-native-webview (embedded browser for external links, previews, or web-based features)
 - **Haptics**: expo-haptics (success/error feedback on send, post update, profile changes)
 - **Audio (optional)**: expo-av (future success notification sounds)
@@ -69,7 +81,7 @@ Optional but recommended:
 1. Clone the repo
 
    ```bash
-   git clone https://github.com/yourusername/skohl.git
+   git clone https://github.com/Oyabure-Zakari/skohl.git
    cd skohl
 
    ```
