@@ -1,10 +1,4 @@
-﻿[![Expo SDK 54](https://img.shields.io/badge/Expo%20SDK-54-blue.svg)](https://docs.expo.dev/versions/v54.0.0/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
-[![Stars](https://img.shields.io/github/stars/Oyabure-Zakari/skohl?style=social)](https://github.com/Oyabure-Zakari/skohl)
-[![Forks](https://img.shields.io/github/forks/Oyabure-Zakari/skohl?style=social)](https://github.com/Oyabure-Zakari/skohl)
-
-# Skohl - Campus Social & Marketplace App
+﻿# Skohl - Campus Social & Marketplace App
 
 **Skohl** is a mobile-first social platform built for students of Ahmadu Bello University (ABU). It combines a marketplace for buying/selling items, event discovery, service offerings, and real-time chat all in one clean, student-friendly app.
 
@@ -81,7 +75,7 @@ Skohl/
 
 ## Key Packages
 
-- **Images**: expo-image, expo-image-picker, expo-image-manipulator (image resizing/compression before upload)  
+- **Images**: expo-image, expo-image-picker, expo-image-manipulator (image resizing/compression before upload)
 - **Crypto & Security**: expo-crypto (hashing for IDs or tokens)
 - **Chat UI**: react-native-gifted-chat (custom bubbles, input, send button)
 - **Keyboard Handling**: react-native-keyboard-controller (smooth keyboard avoidance & custom behavior)
