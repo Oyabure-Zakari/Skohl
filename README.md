@@ -87,13 +87,6 @@ WhatsApp + Jiji + Eventbrite + campus group chats made just for uni students.
 ## Contributing
 
 Feel free to open issues or PRs!
-Especially welcome:
-
-## Bug fixes
-
-New category icons
-Performance improvements
-Dark mode polish
 
 ## License
 
