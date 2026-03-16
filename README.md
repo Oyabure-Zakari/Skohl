@@ -1,50 +1,100 @@
-# Welcome to your Expo app 👋
+# Skohl – Campus Social & Marketplace App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Skohl** is a mobile-first social platform built for university students in Nigeria. It combines a marketplace for buying/selling items, event discovery, service offerings, and real-time chat — all in one clean, student-friendly app.
 
-## Get started
+Think of it as:  
+WhatsApp + Jiji + Eventbrite + campus group chats — made just for uni students.
 
-1. Install dependencies
+## Core Features
+
+- **Marketplace**  
+  Buy & sell products, services, and more — with categories, photos, prices, and direct chat
+
+- **Events & Campus Life**  
+  Discover on/off-campus events, parties, tutorials, seminars — with date, time, venue & RSVP
+
+- **Services Hub**  
+  Offer or find tutoring, graphics design, hair styling, laundry, food delivery — student-to-student
+
+- **Real-time 1-on-1 Chat**  
+  Instant messaging with typing indicators, read receipts, and haptic feedback on send
+
+- **User Profiles & Bookmarks**  
+  Custom profiles, profile picture updates (Cloudinary), bookmark favorite posts
+
+- **Real-time Updates**  
+  Live message sync, last-message previews in chat list, dynamic "other user" display
+
+- **Beautiful & Performant UI**  
+  Dark mode support, custom haptics, smooth animations, Expo Router file-based routing
+
+## Tech Stack & Key Packages
+
+- **Framework**: Expo (SDK 51) + React Native
+- **Routing**: Expo Router (file-based)
+- **State Management**: Zustand (lightweight), React Context
+- **Data Fetching & Real-time**: TanStack Query + Firebase Firestore (onSnapshot)
+- **Backend**: Firebase (Firestore, Authentication)
+- **Image Handling**: Cloudinary (uploads, deletes), expo-image
+- **Chat UI**: react-native-gifted-chat (custom bubbles, input, send button)
+- **Haptics**: expo-haptics (success/error feedback on actions)
+- **Audio (optional)**: expo-av (future success notification sounds)
+- **Styling**: StyleSheet + custom hooks
+- **Icons**: @expo/vector-icons
+- **Lists**: @shopify/flash-list (fast FlatList replacement)
+- **Bottom Sheets**: @gorhom/bottom-sheet
+- **Other**: date-fns, react-time-ago, numeral.js (number formatting)
+
+## Getting Started
+
+1. Clone the repo
+
+   ```bash
+   git clone https://github.com/yourusername/skohl.git
+   cd skohl
+
+   ```
+
+2. Install dependencies
 
    ```bash
    npm install
+   # or yarn install
+
    ```
 
-2. Start the app
+3. Start development server
 
    ```bash
-   npx expo start
+   npx expo start --clear
+
    ```
 
-In the output, you'll find options to open the app in a
+4. Run on device/emulator:
+   - iOS Simulator: press i
+   - Android Emulator: press a
+   - Expo Go: scan QR code
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Development Notes
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Real-time chat & chat list use Firestore onSnapshot + TanStack Query caching
+Profile updates use partial Firestore updates (only changed fields)
+Images handled via Cloudinary (upload + delete old on change)
+Haptic feedback on send/update success (expo-haptics)
+Chat rooms created dynamically with sorted participant array for array-contains queries
 
-## Get a fresh project
+## Contributing
 
-When you're ready, run:
+Feel free to open issues or PRs!
+Especially welcome:
 
-```bash
-npm run reset-project
-```
+## Bug fixes
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+New category icons
+Performance improvements
+Dark mode polish
 
-## Learn more
+## License
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+MIT
+Made with ❤️ for Nigerian students.
