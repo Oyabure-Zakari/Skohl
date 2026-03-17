@@ -8,7 +8,7 @@ WhatsApp + Jiji + Eventbrite + campus group chats made just for uni students.
 
 
 
-<img width="1080" height="2280" alt="Screenshot_2026-03-17-03-23-36-511_host exp exponent" src="https://github.com/user-attachments/assets/10976e62-cd98-4b30-a71a-7f71f497c90d" />25" />
+<img width="1080" height="2280" alt="Screenshot_2026-03-17-03-23-36-511_host exp exponent" src="https://github.com/user-attachments/assets/10976e62-cd98-4b30-a71a-7f71f497c90d" />
 <img width="1080" height="2280" alt="Screenshot_2026-03-17-03-19-39-372_host exp exponent" src="https://github.com/user-attachments/assets/c44470f1-c730-434a-bbfc-42a1aa4f9736" />
 <img width="1080" height="2280" alt="Screenshot_2026-03-17-03-20-00-831_host exp exponent" src="https://github.com/user-attachments/assets/4b96609e-4644-49bc-a583-313efe66de50" />
 <img width="1080" height="2280" alt="Screenshot_2026-03-17-03-19-04-260_host exp exponent" src="https://github.com/user-attachments/assets/69a34bc9-b0c6-49b1-9983-fe38dc6ca02b" />
